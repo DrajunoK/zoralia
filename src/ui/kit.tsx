@@ -46,6 +46,15 @@ export function Card({ title, children, action, className = '' }: { title?: Reac
   );
 }
 
+/** Bandeau coloré qui ouvre un groupe (catégorie de missions, palier de la boutique). */
+export function Banner({ icon, label, count, hint, color }: { icon: string; label: string; count: number; hint?: string; color: string }) {
+  return (
+    <h3 className="cat-head" style={{ ['--c' as string]: color } as React.CSSProperties}>
+      <span aria-hidden>{icon}</span> {label} <b>{count}</b>{hint && <small>{hint}</small>}
+    </h3>
+  );
+}
+
 export function Empty({ children }: { children: ReactNode }) {
   return <p className="empty">{children}</p>;
 }

@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { api } from '../../lib/api';
 import { REWARD_ICONS } from '../../lib/themes';
 import { useAction, useFamilyCtx, useRewards } from '../../state/family';
-import { Card, Coins, Empty, Field } from '../../ui/kit';
+import { groupByTier } from '../../lib/shop';
+import { Banner, Card, Coins, Empty, Field } from '../../ui/kit';
 
 interface Draft { id?: string; title: string; description: string; cost: number; image_key: string; stock: string; is_active: boolean }
 const blank: Draft = { title: '', description: '', cost: 5, image_key: 'gift', stock: '', is_active: true };
@@ -27,14 +28,19 @@ export default function ShopAdmin() {
       <h1>🎁 Boutique</h1>
       <Card action={<button className="btn" onClick={() => setDraft({ ...blank })}>+ Récompense</button>}>
         {(rewards.data ?? []).length === 0 && <Empty>Aucune récompense.</Empty>}
-        <ul className="list">
-          {(rewards.data ?? []).map((r) => (
+        {groupByTier(rewards.data ?? []).map(({ tier, items }) => (
+          <div key={tier.key}>
+            <Banner icon={tier.icon} label={tier.label} count={items.length} hint={tier.hint} color={tier.color} />
+            <ul className="list">
+          {items.map((r) => (
             <li key={r.id} className={r.is_active ? '' : 'inactive'}>
               <span><span aria-hidden>{REWARD_ICONS[r.image_key] ?? '🎁'}</span> <strong>{r.title}</strong>{r.stock !== null && <small>Stock : {r.stock}</small>}{!r.is_active && <small>désactivée</small>}</span>
               <span className="row"><Coins n={r.cost} /><button className="btn ghost" onClick={() => setDraft({ id: r.id, title: r.title, description: r.description, cost: r.cost, image_key: r.image_key, stock: r.stock === null ? '' : String(r.stock), is_active: r.is_active })}>Modifier</button></span>
             </li>
           ))}
-        </ul>
+            </ul>
+          </div>
+        ))}
       </Card>
       {draft && (
         <Card title={draft.id ? 'Modifier la récompense' : 'Nouvelle récompense'}>

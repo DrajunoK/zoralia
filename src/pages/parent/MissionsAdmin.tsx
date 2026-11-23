@@ -4,13 +4,13 @@ import type { Recurrence } from '../../lib/game';
 import type { Category, Mission } from '../../lib/types';
 import { useAction, useChildren, useFamilyCtx, useMissionChildren, useMissions } from '../../state/family';
 import { useSession } from '../../state/session';
-import { Card, Empty, Field, Steps } from '../../ui/kit';
+import { Banner, Card, Empty, Field, Steps } from '../../ui/kit';
 
 const CATS: Record<Category, string> = { daily: 'Quotidienne', heroic: 'Héroïque', surprise: 'Surprise' };
-const CAT_HEAD: Record<Category, { icon: string; label: string; hint: string }> = {
-  daily: { icon: '☀️', label: 'Quotidiennes', hint: 'les routines de chaque jour' },
-  heroic: { icon: '🦸', label: 'Héroïques', hint: 'les grands efforts, plus de pas' },
-  surprise: { icon: '🌟', label: 'Surprises', hint: 'un beau geste inattendu' },
+const CAT_HEAD: Record<Category, { icon: string; label: string; hint: string; color: string }> = {
+  daily: { icon: '☀️', label: 'Quotidiennes', hint: 'les routines de chaque jour', color: 'var(--second)' },
+  heroic: { icon: '🦸', label: 'Héroïques', hint: 'les grands efforts, plus de pas', color: '#f26d3d' },
+  surprise: { icon: '🌟', label: 'Surprises', hint: 'un beau geste inattendu', color: '#8b5cf6' },
 };
 const DAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 
@@ -60,7 +60,7 @@ export default function MissionsAdmin() {
           if (!list.length) return null;
           return (
             <div key={cat}>
-              <h3 className={`cat-head ${cat}`}><span aria-hidden>{CAT_HEAD[cat].icon}</span> {CAT_HEAD[cat].label} <b>{list.length}</b><small>{CAT_HEAD[cat].hint}</small></h3>
+              <Banner icon={CAT_HEAD[cat].icon} label={CAT_HEAD[cat].label} count={list.length} hint={CAT_HEAD[cat].hint} color={CAT_HEAD[cat].color} />
               <ul className="list">
                 {list.map((m) => {
                   const who = (assignments.data ?? []).filter((a) => a.mission_id === m.id).length;
