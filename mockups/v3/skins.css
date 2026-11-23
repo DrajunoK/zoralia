@@ -1,0 +1,149 @@
+/* Zoralia v3 — 5 styles pour comparer. Même HTML, mêmes données : seul ce fichier change.
+   arcade = v2 (base, game.css) · douceur · candy · carnet · nuit.
+   Niveaux d'animation : douceur ≈ 1/5 · carnet 2/5 · nuit 3/5 · arcade 4/5 · candy 5/5. */
+
+.skinbar { top: 44px; background: rgba(35, 26, 51, .92); padding-top: 4px; }
+
+/* ═════════ 1. ARCADE (v2) — base, rien à surcharger ═════════ */
+
+/* ═════════ 2. DOUCEUR — pastel, aplats doux, presque immobile ═════════ */
+body[data-skin="douceur"] {
+  --ink: #4a4266; --line: 2px; --r: 28px; --muted: #8d86a6;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--sky1) 28%, #fff), color-mix(in srgb, var(--sky2) 18%, #fff)) fixed;
+}
+body[data-skin="douceur"] .decor i { opacity: .12; animation: none; }
+body[data-skin="douceur"] .hello, body[data-skin="douceur"] .title, body[data-skin="douceur"] .top .who, body[data-skin="douceur"] .logo { color: var(--ink); text-shadow: none; -webkit-text-stroke: 0; }
+body[data-skin="douceur"] .logo small { text-shadow: none; }
+body[data-skin="douceur"] h1, body[data-skin="douceur"] h2, body[data-skin="douceur"] h3, body[data-skin="douceur"] .hello, body[data-skin="douceur"] .title, body[data-skin="douceur"] .pill, body[data-skin="douceur"] .logo { font-family: var(--font); font-weight: 700; letter-spacing: 0; }
+body[data-skin="douceur"] .panel, body[data-skin="douceur"] .card, body[data-skin="douceur"] .mission, body[data-skin="douceur"] .qi, body[data-skin="douceur"] .kid, body[data-skin="douceur"] .pcard {
+  background: #fff; border-color: transparent; box-shadow: 0 10px 30px color-mix(in srgb, var(--sky2) 22%, transparent); }
+body[data-skin="douceur"] .btn { border-color: transparent; box-shadow: 0 6px 16px color-mix(in srgb, var(--primary) 40%, transparent); border-radius: 99px; background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 82%, #fff), var(--primary)); }
+body[data-skin="douceur"] .btn:active { transform: scale(.97); box-shadow: 0 2px 6px color-mix(in srgb, var(--primary) 40%, transparent); }
+body[data-skin="douceur"] .btn.green { background: linear-gradient(180deg, #7ae0a2, var(--good)); } body[data-skin="douceur"] .btn.ghost { background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+body[data-skin="douceur"] .btn.check { border-radius: 18px; }
+body[data-skin="douceur"] .pill, body[data-skin="douceur"] .avatar { border-width: 2px; box-shadow: 0 4px 12px rgba(0,0,0,.12); background-color: #fff; }
+body[data-skin="douceur"] .avatar { box-shadow: 0 0 0 3px #fff inset, 0 4px 12px rgba(0,0,0,.14); }
+body[data-skin="douceur"] .bar { border-width: 0; height: 14px; background: color-mix(in srgb, var(--sky2) 14%, #fff); }
+body[data-skin="douceur"] .bar > i { border-right: 0; animation: none; background: linear-gradient(90deg, color-mix(in srgb, var(--primary) 70%, #fff), var(--primary)); }
+body[data-skin="douceur"] .tile { border-color: transparent; box-shadow: 0 10px 22px color-mix(in srgb, var(--t) 35%, transparent); text-shadow: none; font-family: var(--font); font-weight: 700; font-size: .9rem; border-radius: 26px; }
+body[data-skin="douceur"] .tile .ic, body[data-skin="douceur"] .card .big, body[data-skin="douceur"] .chest { animation: none; filter: none; }
+body[data-skin="douceur"] .tile:hover { transform: translateY(-2px); }
+body[data-skin="douceur"] .seg button { border-color: transparent; box-shadow: 0 4px 12px rgba(0,0,0,.08); border-radius: 99px; background: #fff; }
+body[data-skin="douceur"] .seg button.on { transform: none; box-shadow: 0 6px 14px color-mix(in srgb, var(--second) 40%, transparent); }
+body[data-skin="douceur"] .mission .ic { border-width: 0; background: color-mix(in srgb, var(--sky1) 18%, #fff); }
+body[data-skin="douceur"] .nav-in { border-color: transparent; box-shadow: 0 10px 30px rgba(0,0,0,.18); border-radius: 30px; background: rgba(255,255,255,.92); backdrop-filter: blur(8px); }
+body[data-skin="douceur"] .nav a.on { background: color-mix(in srgb, var(--primary) 22%, #fff); box-shadow: none; color: var(--ink); } body[data-skin="douceur"] .nav a.on span { transform: translateY(-2px) scale(1.12); }
+body[data-skin="douceur"] .panel .more { border-width: 0; background: color-mix(in srgb, var(--second) 14%, #fff); }
+body[data-skin="douceur"] .lvl { border-width: 0; font-family: var(--font); font-weight: 700; }
+body[data-skin="douceur"] .wobble, body[data-skin="douceur"] .tile .dot, body[data-skin="douceur"] .medal .m::after { animation: none; }
+body[data-skin="douceur"] .screen.on { animation-duration: .25s; } body[data-skin="douceur"] .pop > * { animation-duration: .3s; }
+body[data-skin="douceur"] .worldmap { border: 0; box-shadow: 0 12px 34px color-mix(in srgb, var(--sky2) 30%, transparent); }
+body[data-skin="douceur"] .worldmap .amb, body[data-skin="douceur"] .worldmap .deco { animation: none; }
+body[data-skin="douceur"] .ribbon, body[data-skin="douceur"] .mnode, body[data-skin="douceur"] .banner { border-width: 2px; box-shadow: 0 4px 12px rgba(0,0,0,.18); }
+body[data-skin="douceur"] .mhero .avatar, body[data-skin="douceur"] .mhero .tag { animation-duration: 2.4s; }
+
+/* ═════════ 3. CANDY — saturé, brillant, tout bouge ═════════ */
+body[data-skin="candy"] { --line: 4px; --r: 30px;
+  background: linear-gradient(135deg, var(--sky1), var(--second), var(--primary), var(--sky2)) fixed; background-size: 300% 300%; animation: candybg 14s ease-in-out infinite; }
+@keyframes candybg { 50% { background-position: 100% 100%; } }
+body[data-skin="candy"] .decor i { opacity: .5; font-size: 1.5em; animation-duration: 5s; }
+body[data-skin="candy"] .decor::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle, rgba(255,255,255,.9) 0 2px, transparent 3px) 0 0 / 70px 70px; animation: snowy 6s linear infinite; opacity: .5; }
+@keyframes snowy { to { background-position: 70px 140px; } }
+body[data-skin="candy"] .panel, body[data-skin="candy"] .card, body[data-skin="candy"] .pcard, body[data-skin="candy"] .kid, body[data-skin="candy"] .qi {
+  border: 4px solid transparent; background: linear-gradient(var(--panel), var(--panel)) padding-box, conic-gradient(from var(--a, 0deg), #ff5a8a, #ffc93c, #3ecf7a, #4aa8f0, #8b5cf6, #ff5a8a) border-box; animation: spinborder 6s linear infinite; box-shadow: 0 8px 0 rgba(35,26,51,.35); }
+@property --a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes spinborder { to { --a: 360deg; } }
+body[data-skin="candy"] .mission { border-width: 4px; }
+body[data-skin="candy"] .btn { position: relative; overflow: hidden; background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 70%, #fff) 0, var(--primary) 55%, color-mix(in srgb, var(--primary) 80%, #000) 100%); box-shadow: 0 7px 0 var(--ink), 0 12px 18px rgba(0,0,0,.25); font-size: 1.1rem; text-shadow: 0 1px 0 rgba(255,255,255,.4); }
+body[data-skin="candy"] .btn::after { content: ""; position: absolute; top: 0; left: -80%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.7), transparent); transform: skewX(-20deg); animation: sweep 2.6s ease-in-out infinite; }
+@keyframes sweep { 0%, 60% { left: -80%; } 100% { left: 160%; } }
+body[data-skin="candy"] .btn:active { transform: translateY(6px); box-shadow: 0 1px 0 var(--ink); }
+body[data-skin="candy"] .btn.green { background: linear-gradient(180deg, #a6f5c4, var(--good) 55%, var(--good-d)); } body[data-skin="candy"] .btn.ghost { background: linear-gradient(180deg, #fff, var(--soft)); }
+body[data-skin="candy"] .tile { background: linear-gradient(160deg, color-mix(in srgb, var(--t) 70%, #fff), var(--t) 60%, color-mix(in srgb, var(--t) 75%, #000)); overflow: hidden; animation: tilepop 3s ease-in-out infinite; }
+body[data-skin="candy"] .tile:nth-child(2n) { animation-delay: -1s; } body[data-skin="candy"] .tile:nth-child(3n) { animation-delay: -2s; }
+@keyframes tilepop { 0%, 100% { transform: rotate(-1.5deg) scale(1); } 50% { transform: rotate(1.5deg) scale(1.04); } }
+body[data-skin="candy"] .tile::before { content: ""; position: absolute; top: 4px; left: 8%; width: 84%; height: 38%; border-radius: 99px; background: linear-gradient(180deg, rgba(255,255,255,.55), transparent); }
+body[data-skin="candy"] .tile .ic { font-size: 2.7rem; animation-duration: 1.6s; }
+body[data-skin="candy"] .hello, body[data-skin="candy"] .title { animation: rainbowtxt 6s linear infinite; text-shadow: 0 4px 0 var(--ink); -webkit-text-stroke: 1.5px var(--ink); paint-order: stroke fill; }
+@keyframes rainbowtxt { 0%, 100% { color: #fff; } 25% { color: #ffe27a; } 50% { color: #b9f5d0; } 75% { color: #ffd0e6; } }
+body[data-skin="candy"] .pill { animation: bobd2 2.4s ease-in-out infinite; } @keyframes bobd2 { 50% { transform: translateY(-3px) rotate(-1.5deg); } }
+body[data-skin="candy"] .coin { animation: coinspin 2.2s linear infinite; } @keyframes coinspin { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(.25); } }
+body[data-skin="candy"] .bar > i { animation-duration: .5s; } body[data-skin="candy"] .bar { height: 28px; }
+body[data-skin="candy"] .nav-in { background: linear-gradient(90deg, #fff, var(--soft), #fff); }
+body[data-skin="candy"] .nav a.on { animation: tilepop 1.6s ease-in-out infinite; }
+body[data-skin="candy"] .avatar { animation: bob 2s ease-in-out infinite; }
+body[data-skin="candy"] .mission:hover, body[data-skin="candy"] .card:hover { transform: scale(1.03) rotate(-.6deg); }
+body[data-skin="candy"] .worldmap .deco { animation-duration: 2.6s; } body[data-skin="candy"] .worldmap .amb { opacity: 1; }
+body[data-skin="candy"] .ribbon { background: linear-gradient(90deg, var(--primary), var(--second)); color: #fff; animation: bump 2.4s infinite; }
+body[data-skin="candy"] .mnode.done { animation: nodein .5s cubic-bezier(.3, 1.8, .5, 1) both, nodepulse 1.8s ease-in-out infinite; animation-delay: calc(var(--i) * 70ms + .2s), calc(var(--i) * 140ms); }
+@keyframes nodepulse { 50% { box-shadow: 0 0 0 7px rgba(255, 201, 60, .45); } }
+
+/* ═════════ 4. CARNET — papier, stickers, traits crayon ═════════ */
+body[data-skin="carnet"] { --ink: #3a2f2a; --line: 2.5px; --r: 14px; --muted: #8a7b6e;
+  background: #fbf4e4; background-image: linear-gradient(rgba(120, 160, 200, .22) 1px, transparent 1px), linear-gradient(90deg, rgba(120, 160, 200, .22) 1px, transparent 1px), linear-gradient(90deg, transparent 48px, rgba(255, 120, 120, .35) 48px, rgba(255, 120, 120, .35) 50px, transparent 50px); background-size: 26px 26px, 26px 26px, 100% 100%; background-attachment: fixed; }
+body[data-skin="carnet"] .decor i { opacity: .55; filter: saturate(.9); animation-duration: 14s; }
+body[data-skin="carnet"] .hello, body[data-skin="carnet"] .title, body[data-skin="carnet"] .top .who, body[data-skin="carnet"] .logo { color: var(--ink); text-shadow: none; -webkit-text-stroke: 0; }
+body[data-skin="carnet"] .logo { background: var(--gold); display: block; width: max-content; margin: 8px auto; padding: 4px 22px; border: var(--line) solid var(--ink); border-radius: 8px; transform: rotate(-2deg); box-shadow: 4px 5px 0 var(--ink); }
+body[data-skin="carnet"] .panel, body[data-skin="carnet"] .card, body[data-skin="carnet"] .pcard, body[data-skin="carnet"] .kid, body[data-skin="carnet"] .qi, body[data-skin="carnet"] .mission {
+  background: #fff; border-radius: 6px 14px 8px 12px / 12px 8px 14px 6px; box-shadow: 4px 5px 0 rgba(58, 47, 42, .85); }
+body[data-skin="carnet"] .panel:nth-of-type(odd) { transform: rotate(-.5deg); } body[data-skin="carnet"] .panel:nth-of-type(even) { transform: rotate(.5deg); }
+body[data-skin="carnet"] .panel::before { content: ""; position: absolute; top: -12px; left: 50%; width: 80px; height: 22px; margin-left: -40px; background: rgba(255, 205, 90, .75); border: 1.5px dashed rgba(58, 47, 42, .35); transform: rotate(-2deg); }
+body[data-skin="carnet"] .btn { border-radius: 10px 16px 12px 14px / 14px 10px 16px 12px; box-shadow: 3px 4px 0 var(--ink); background-image: radial-gradient(rgba(255,255,255,.35) 1.2px, transparent 1.4px); background-size: 8px 8px; transition: transform .12s; }
+body[data-skin="carnet"] .btn:hover { transform: rotate(-1.5deg) scale(1.02); } body[data-skin="carnet"] .btn:active { transform: translate(3px, 4px); box-shadow: 0 0 0 var(--ink); }
+body[data-skin="carnet"] .btn.green { background-color: var(--good); } body[data-skin="carnet"] .btn.ghost { background-color: #fff; background-image: none; }
+body[data-skin="carnet"] .tile { border-radius: 10px 18px 12px 16px / 16px 12px 18px 10px; box-shadow: 4px 5px 0 var(--ink); text-shadow: none; animation: none; transform: rotate(-1.5deg); background-image: radial-gradient(rgba(255,255,255,.3) 1.4px, transparent 1.6px); background-size: 10px 10px; }
+body[data-skin="carnet"] .tile:nth-child(2n) { transform: rotate(1.8deg); } body[data-skin="carnet"] .tile:nth-child(3n) { transform: rotate(-.8deg); }
+body[data-skin="carnet"] .tile:hover { transform: rotate(0) translateY(-3px); }
+body[data-skin="carnet"] .tile .ic { animation: none; filter: none; }
+body[data-skin="carnet"] h1, body[data-skin="carnet"] h2, body[data-skin="carnet"] h3 { letter-spacing: 1px; }
+body[data-skin="carnet"] .pill, body[data-skin="carnet"] .seg button, body[data-skin="carnet"] .panel .more, body[data-skin="carnet"] .lvl { box-shadow: 2px 3px 0 var(--ink); }
+body[data-skin="carnet"] .bar { border-radius: 4px; height: 20px; background: repeating-linear-gradient(90deg, #fff 0 9px, #f0e8d4 9px 10px); }
+body[data-skin="carnet"] .bar > i { border-radius: 3px; animation: none; background: repeating-linear-gradient(-45deg, var(--primary) 0 6px, color-mix(in srgb, var(--primary) 60%, #fff) 6px 12px); }
+body[data-skin="carnet"] .nav-in { border-radius: 14px; box-shadow: 4px 5px 0 var(--ink); background: #fff; }
+body[data-skin="carnet"] .nav a.on { border-radius: 10px; box-shadow: inset 0 0 0 2.5px var(--ink); }
+body[data-skin="carnet"] .mission:nth-child(odd) { transform: rotate(-.4deg); } body[data-skin="carnet"] .mission:nth-child(even) { transform: rotate(.4deg); }
+body[data-skin="carnet"] .badge-state, body[data-skin="carnet"] .tile .dot { box-shadow: 2px 2px 0 var(--ink); }
+body[data-skin="carnet"] .worldmap { border-radius: 6px; box-shadow: 5px 6px 0 var(--ink); transform: rotate(.3deg); }
+body[data-skin="carnet"] .worldmap .deco { filter: none; } body[data-skin="carnet"] .worldmap .amb { opacity: .6; }
+body[data-skin="carnet"] .ribbon { border-radius: 4px; transform: translate(-50%, -50%) rotate(-3deg); background: var(--gold); color: var(--ink); text-shadow: none; box-shadow: 3px 4px 0 var(--ink); }
+body[data-skin="carnet"] .ribbon.now { background: var(--primary); } body[data-skin="carnet"] .ribbon.locked { filter: grayscale(.7); }
+body[data-skin="carnet"] .medal .m { box-shadow: 3px 4px 0 var(--ink); } body[data-skin="carnet"] .die { box-shadow: 6px 7px 0 var(--ink); }
+
+/* ═════════ 5. NUIT — verre dépoli, néons, aurore lente ═════════ */
+body[data-skin="nuit"] { --ink: #f4f1ff; --muted: #b9b2d8; --line: 1px; --r: 24px; --panel-ink: #f4f1ff;
+  background: radial-gradient(70% 50% at 15% 0%, color-mix(in srgb, var(--sky1) 60%, #000), transparent 70%), radial-gradient(60% 45% at 95% 35%, color-mix(in srgb, var(--second) 55%, #000), transparent 70%), radial-gradient(70% 50% at 20% 100%, color-mix(in srgb, var(--primary) 40%, #000), transparent 70%), #0c0a22 fixed; color: var(--ink); }
+body[data-skin="nuit"]::before { content: ""; position: fixed; inset: -20%; z-index: 0; pointer-events: none; background: conic-gradient(from 0deg at 50% 50%, transparent, color-mix(in srgb, var(--primary) 30%, transparent), transparent 40%, color-mix(in srgb, var(--second) 35%, transparent), transparent 80%); filter: blur(60px); opacity: .55; animation: aurora 40s linear infinite; }
+@keyframes aurora { to { transform: rotate(360deg); } }
+body[data-skin="nuit"] .decor i { opacity: .18; filter: blur(.5px); }
+body[data-skin="nuit"] .panel, body[data-skin="nuit"] .card, body[data-skin="nuit"] .pcard, body[data-skin="nuit"] .kid, body[data-skin="nuit"] .qi, body[data-skin="nuit"] .mission, body[data-skin="nuit"] .banner-parent {
+  background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .22); backdrop-filter: blur(16px) saturate(1.3); box-shadow: 0 12px 40px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .25); color: var(--ink); }
+body[data-skin="nuit"] .mission.claimed { background: rgba(255, 201, 60, .16); } body[data-skin="nuit"] .mission.approved { background: rgba(62, 207, 122, .18); }
+body[data-skin="nuit"] .mission .ic { background: rgba(255,255,255,.12); border-width: 1px; border-color: rgba(255,255,255,.3); }
+body[data-skin="nuit"] .btn { border: 0; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.4); background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 45%, var(--second))); box-shadow: 0 0 22px color-mix(in srgb, var(--primary) 70%, transparent), inset 0 1px 0 rgba(255,255,255,.4); border-radius: 16px; }
+body[data-skin="nuit"] .btn:active { transform: scale(.96); box-shadow: 0 0 10px color-mix(in srgb, var(--primary) 70%, transparent); }
+body[data-skin="nuit"] .btn.green { background: linear-gradient(135deg, #3ecf7a, #17b3a6); box-shadow: 0 0 22px rgba(62, 207, 122, .6), inset 0 1px 0 rgba(255,255,255,.4); }
+body[data-skin="nuit"] .btn.ghost { background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); }
+body[data-skin="nuit"] .btn[disabled] { box-shadow: none; background: rgba(255,255,255,.12); }
+body[data-skin="nuit"] .pill { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.3); box-shadow: 0 0 18px rgba(255, 201, 60, .35); color: #fff; backdrop-filter: blur(10px); }
+body[data-skin="nuit"] .coin { box-shadow: 0 0 12px rgba(255, 201, 60, .9); border-color: rgba(255,255,255,.8); }
+body[data-skin="nuit"] .avatar { border: 2px solid rgba(255,255,255,.8); box-shadow: 0 0 20px rgba(255,255,255,.25); }
+body[data-skin="nuit"] .hello, body[data-skin="nuit"] .title, body[data-skin="nuit"] .top .who, body[data-skin="nuit"] .logo { text-shadow: 0 0 22px color-mix(in srgb, var(--primary) 80%, transparent); }
+body[data-skin="nuit"] .logo { -webkit-text-stroke: 0; }
+body[data-skin="nuit"] .tile { border: 1px solid rgba(255,255,255,.4); background: linear-gradient(150deg, color-mix(in srgb, var(--t) 80%, #fff), color-mix(in srgb, var(--t) 70%, #000)); box-shadow: 0 0 26px color-mix(in srgb, var(--t) 60%, transparent); text-shadow: 0 1px 3px rgba(0,0,0,.5); }
+body[data-skin="nuit"] .bar { border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.08); } body[data-skin="nuit"] .bar > i { border-right: 0; box-shadow: 0 0 16px var(--primary); }
+body[data-skin="nuit"] .seg button { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.25); box-shadow: none; color: var(--ink); } body[data-skin="nuit"] .seg button.on { background: var(--second); box-shadow: 0 0 18px var(--second); transform: none; }
+body[data-skin="nuit"] .panel .more { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.3); color: var(--ink); }
+body[data-skin="nuit"] .nav-in { background: rgba(20, 16, 50, .75); backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,.25); box-shadow: 0 10px 40px rgba(0,0,0,.5); }
+body[data-skin="nuit"] .nav a { color: var(--ink); } body[data-skin="nuit"] .nav a.on { background: color-mix(in srgb, var(--primary) 35%, transparent); box-shadow: 0 0 20px color-mix(in srgb, var(--primary) 70%, transparent), inset 0 0 0 1px rgba(255,255,255,.4); color: #fff; }
+body[data-skin="nuit"] .badge-state { color: #231a33; border: 0; } body[data-skin="nuit"] .lvl { border: 0; color: #231a33; } body[data-skin="nuit"] .card b, body[data-skin="nuit"] .mission .tx b { color: var(--ink); }
+body[data-skin="nuit"] .kid .row b { color: var(--ink); } body[data-skin="nuit"] .contrib { border-color: rgba(255,255,255,.2); }
+body[data-skin="nuit"] .die { background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.6); box-shadow: 0 0 40px color-mix(in srgb, var(--primary) 70%, transparent); backdrop-filter: blur(6px); } body[data-skin="nuit"] .result { color: #fff; text-shadow: 0 0 14px var(--primary); }
+body[data-skin="nuit"] .faces div { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.3); }
+body[data-skin="nuit"] .medal .m { border: 2px solid rgba(255,255,255,.7); box-shadow: 0 0 30px rgba(255, 201, 60, .6); } body[data-skin="nuit"] .medal.locked .m { box-shadow: none; background: rgba(255,255,255,.12); }
+body[data-skin="nuit"] .chest { filter: drop-shadow(0 0 30px rgba(255, 201, 60, .7)); }
+body[data-skin="nuit"] .worldmap { border: 1px solid rgba(255,255,255,.35); box-shadow: 0 0 50px color-mix(in srgb, var(--second) 50%, transparent); }
+body[data-skin="nuit"] .ribbon { background: rgba(20,16,50,.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.4); box-shadow: 0 0 22px color-mix(in srgb, var(--primary) 50%, transparent); } body[data-skin="nuit"] .ribbon.now { background: color-mix(in srgb, var(--primary) 60%, #000); }
+body[data-skin="nuit"] .mnode { border: 1px solid rgba(255,255,255,.7); box-shadow: 0 0 14px rgba(255,255,255,.35); } body[data-skin="nuit"] .mnode.done { box-shadow: 0 0 20px rgba(255, 201, 60, .9); }
+body[data-skin="nuit"] .r-ink { stroke: rgba(0,0,0,.55); } body[data-skin="nuit"] .r-gold { filter: drop-shadow(0 0 6px #ffc93c); }
+body[data-skin="nuit"] .mhero .avatar { box-shadow: 0 0 0 4px rgba(255,255,255,.9), 0 0 30px var(--primary); }
+body[data-skin="nuit"] .toast { background: rgba(255,255,255,.95); color: #231a33; }

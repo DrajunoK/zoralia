@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zoralia — comparer les 5 styles</title>
+  <style>
+    :root { --s: .56; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.4 system-ui, sans-serif; background: #17142b; color: #fff; }
+    header { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; padding: 12px 20px; background: #231f44; border-bottom: 1px solid #fff2; }
+    h1 { font-size: 1.1rem; margin: 0; }
+    label { display: inline-flex; gap: 8px; align-items: center; font-size: .9rem; }
+    select, button { font: inherit; padding: 6px 10px; border-radius: 8px; border: 1px solid #fff4; background: #2f2a5a; color: #fff; }
+    main { padding: 20px; display: grid; gap: 34px; }
+    .row { display: grid; gap: 12px; }
+    .row h2 { margin: 0; font-size: 1.15rem; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
+    .row h2 small { font-weight: 400; color: #cfc9ff; font-size: .9rem; }
+    .anim { letter-spacing: 2px; }
+    .shots { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; }
+    .phone { flex: none; width: calc(390px * var(--s)); height: calc(760px * var(--s)); border-radius: 22px; overflow: hidden; border: 3px solid #0008; background: #000; box-shadow: 0 10px 30px #0006; position: relative; }
+    .phone iframe { width: 390px; height: 760px; border: 0; transform: scale(var(--s)); transform-origin: 0 0; }
+    .cap { position: absolute; left: 0; right: 0; bottom: 0; text-align: center; font-size: .75rem; background: #000a; padding: 2px; pointer-events: none; }
+    p.hint { color: #cfc9ff; margin: 0 20px; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎨 Zoralia — 5 styles à comparer</h1>
+    <label>Univers <select id="theme"><option value="aventuriers">🛡️ Aventuriers</option><option value="princesses">👑 Princesses</option><option value="pirates">🏴‍☠️ Pirates</option><option value="espace">🚀 Espace</option><option value="dinosaures">🦖 Dinosaures</option></select></label>
+    <label>Taille <select id="scale"><option value=".45">petite</option><option value=".56" selected>moyenne</option><option value=".75">grande</option><option value="1">100 %</option></select></label>
+    <label><input type="checkbox" id="still"> Figer les animations</label>
+  </header>
+  <p class="hint">Chaque écran est cliquable (valider une mission, lancer le dé, etc.). Les animations tournent en direct, sauf si tu coches « Figer ».</p>
+  <main id="rows"></main>
+  <script>
+    const SKINS = [
+      ['arcade', '🎮 Arcade', 'Contours épais, boutons 3D, aplats vifs. La v2 d’avant.', '🔥🔥🔥🔥'],
+      ['douceur', '☁️ Douceur', 'Pastel, ombres douces, quasi immobile. Calme et lisible.', '🔥'],
+      ['candy', '🍭 Candy', 'Très saturé, bordures arc-en-ciel, reflets, tout bouge.', '🔥🔥🔥🔥🔥'],
+      ['carnet', '📒 Carnet', 'Papier quadrillé, stickers, traits crayon, léger.', '🔥🔥'],
+      ['nuit', '🌙 Nuit', 'Verre dépoli, néons, aurore lente. Sombre et lumineux.', '🔥🔥🔥'],
+    ];
+    const SCREENS = [['accueil', 'Accueil'], ['missions', 'Missions'], ['carte', 'Carte'], ['boutique', 'Boutique'], ['tresor', 'Trésor']];
+    function render() {
+      const theme = document.getElementById('theme').value;
+      const still = document.getElementById('still').checked ? '&shot' : '';
+      document.documentElement.style.setProperty('--s', document.getElementById('scale').value);
+      const rows = SKINS.map(function (sk) {
+        const k = sk[0], name = sk[1], desc = sk[2], fire = sk[3];
+        const phones = SCREENS.map(function (sc) {
+          return '<div class="phone"><iframe loading="lazy" title="' + name + ' — ' + sc[1] + '" src="index.html?skin=' + k + '&theme=' + theme + still + '#' + sc[0] + '"></iframe><div class="cap">' + sc[1] + '</div></div>';
+        }).join('');
+        return '<section class="row"><h2>' + name + ' <small>' + desc + '</small><span class="anim" title="niveau d’animation">' + fire + '</span></h2><div class="shots">' + phones + '</div></section>';
+      });
+      document.getElementById('rows').innerHTML = rows.join('');
+    }
+    ['theme', 'scale', 'still'].forEach(function (id) { document.getElementById(id).addEventListener('change', render); });
+    if (new URLSearchParams(location.search).has('still')) document.getElementById('still').checked = true;
+    render();
+  </script>
+</body>
+</html>
