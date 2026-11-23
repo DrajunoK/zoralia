@@ -47,10 +47,10 @@ select t.eq('2 enfants', (select count(*) from children), 2::bigint);
 select t.logout();
 
 -- Liste de départ : 22 missions, renommées « à la première personne », créées une seule fois
-select t.eq('24 missions de départ', (select count(*) from zoralia.missions where family_id = (select v from ctx where k='famA')), 24::bigint);
+select t.eq('25 missions de départ', (select count(*) from zoralia.missions where family_id = (select v from ctx where k='famA')), 25::bigint);
 select t.eq('mission renommée présente', (select count(*) from zoralia.missions where title = 'Ranger ma chambre' and family_id = (select v from ctx where k='famA')), 1::bigint);
 select zoralia_private.seed_starter_missions((select v from ctx where k='famA'), 'aaaaaaaa-0000-0000-0000-000000000001');
-select t.eq('semis idempotent', (select count(*) from zoralia.missions where family_id = (select v from ctx where k='famA')), 24::bigint);
+select t.eq('semis idempotent', (select count(*) from zoralia.missions where family_id = (select v from ctx where k='famA')), 25::bigint);
 
 select t.login('bbbbbbbb-0000-0000-0000-000000000002');
 insert into ctx select 'famB', create_family('Famille B');
