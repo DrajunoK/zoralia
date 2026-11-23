@@ -7,6 +7,11 @@ import { useSession } from '../../state/session';
 import { Card, Empty, Field, Steps } from '../../ui/kit';
 
 const CATS: Record<Category, string> = { daily: 'Quotidienne', heroic: 'Héroïque', surprise: 'Surprise' };
+const CAT_HEAD: Record<Category, { icon: string; label: string; hint: string }> = {
+  daily: { icon: '☀️', label: 'Quotidiennes', hint: 'les routines de chaque jour' },
+  heroic: { icon: '🦸', label: 'Héroïques', hint: 'les grands efforts, plus de pas' },
+  surprise: { icon: '🌟', label: 'Surprises', hint: 'un beau geste inattendu' },
+};
 const DAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 
 interface Draft {
@@ -55,7 +60,7 @@ export default function MissionsAdmin() {
           if (!list.length) return null;
           return (
             <div key={cat}>
-              <h3>{CATS[cat]}s</h3>
+              <h3 className={`cat-head ${cat}`}><span aria-hidden>{CAT_HEAD[cat].icon}</span> {CAT_HEAD[cat].label} <b>{list.length}</b><small>{CAT_HEAD[cat].hint}</small></h3>
               <ul className="list">
                 {list.map((m) => {
                   const who = (assignments.data ?? []).filter((a) => a.mission_id === m.id).length;
