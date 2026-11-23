@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import { AVATARS, COLORS } from '../lib/themes';
-import { useFamilyCtx } from '../state/family';
 
 export function Avatar({ avatar, color, size = 48 }: { avatar: string; color: string; size?: number }) {
   return (
@@ -10,23 +9,18 @@ export function Avatar({ avatar, color, size = 48 }: { avatar: string; color: st
   );
 }
 
-export function Coins({ n, big }: { n: number; big?: boolean }) {
-  const { theme } = useFamilyCtx();
-  return <span className={`coins ${big ? 'big' : ''}`}><span aria-hidden>{theme.coin}</span> {n} <span className="sr">pépites</span></span>;
+/** Pépite : une pépite d'or (public/icons/pepite.svg). */
+export function Nugget({ className = '' }: { className?: string }) {
+  return <img className={`ico nugget ${className}`} src="/icons/pepite.svg" alt="" aria-hidden="true" draggable={false} />;
 }
 
-/** Une empreinte de pied : l'icône des pas (missions → carte). */
+/** Pas : l'empreinte blanche sur pastille orange (public/icons/pas.svg). */
 export function Footprint({ className = '' }: { className?: string }) {
-  return (
-    <svg className={`foot ${className}`} viewBox="14 4 48 68" aria-hidden="true" focusable="false">
-      <path d="M30 24 C44 22 54 32 52 46 C51 54 49 58 47 63 C45 69 40 71 35 70 C29 69 25 64 24 57 C23 50 21 46 20 40 C19 32 22 25 30 24 Z" />
-      <ellipse cx="22.5" cy="17" rx="7.2" ry="8.6" transform="rotate(-12 22.5 17)" />
-      <ellipse cx="36" cy="11.5" rx="5.4" ry="6.4" transform="rotate(-4 36 11.5)" />
-      <ellipse cx="46" cy="14.5" rx="4.8" ry="5.8" transform="rotate(8 46 14.5)" />
-      <ellipse cx="53.5" cy="21" rx="4.2" ry="5.2" transform="rotate(18 53.5 21)" />
-      <ellipse cx="58" cy="30" rx="3.6" ry="4.6" transform="rotate(26 58 30)" />
-    </svg>
-  );
+  return <img className={`ico foot ${className}`} src="/icons/pas.svg" alt="" aria-hidden="true" draggable={false} />;
+}
+
+export function Coins({ n, big }: { n: number; big?: boolean }) {
+  return <span className={`coins ${big ? 'big' : ''}`}><Nugget /> {n} <span className="sr">pépites</span></span>;
 }
 
 /** Pas : la monnaie de la carte (gagnée avec les missions, jamais dépensée). */

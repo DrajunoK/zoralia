@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { MAP_CELLS, STEPS_PER_CELL } from '../../lib/game';
 import { useChild } from '../../state/child';
 import { useFamilyCtx, useRewards, useTreasure } from '../../state/family';
-import { Card, Coins, Empty, Gauge } from '../../ui/kit';
+import { Card, Coins, Empty, Gauge, Nugget } from '../../ui/kit';
 import Fellowship, { useFellowship } from './Fellowship';
 import MissionCard from './MissionCard';
 
@@ -28,7 +28,7 @@ export default function Home() {
         <p><b>{cell}</b> / {MAP_CELLS} étapes · {theme.territories[territory]}</p>
         <Gauge value={steps % STEPS_PER_CELL} max={STEPS_PER_CELL} label="Progression vers l’étape suivante" />
         <p className="muted">{nextAt ? `Encore ${nextAt - steps} pas pour la prochaine étape.` : 'Tu as atteint le bout de la carte !'}</p>
-        {chest && <p className="muted">🧰 Prochain coffre dans <b>{chest.missing} pas</b> : +{chest.value} <span aria-hidden>{theme.coin}</span> pépites</p>}
+        {chest && <p className="muted">🧰 Prochain coffre dans <b>{chest.missing} pas</b> : +{chest.value} <Nugget /> pépites</p>}
       </Card>
 
       {fellows.length > 1 && (

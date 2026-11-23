@@ -1,6 +1,6 @@
 // Règles de jeu pures (affichage). Le serveur (RPC Supabase) reste l'autorité pour tout gain ou débit.
 //
-// Deux monnaies : les pas 👣 (missions → carte, jamais dépensés) et les pépites 🪙 (coffres → boutique, trésor).
+// Deux monnaies : les pas (missions → carte, jamais dépensés) et les pépites (coffres → boutique, trésor).
 // Carte : 100 étapes de 5 pas = 500 pas, 5 territoires de 100 pas. Miroir de supabase/migrations/0005_pas_et_coffres.sql.
 
 export const STEPS_PER_CELL = 5;

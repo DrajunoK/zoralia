@@ -1,5 +1,5 @@
 import { useChildren, useStepTransactions, useTransactions } from '../../state/family';
-import { Card, Empty, Footprint, formatDate } from '../../ui/kit';
+import { Card, Empty, Footprint, formatDate, Nugget } from '../../ui/kit';
 
 export const TYPE_LABELS: Record<string, string> = {
   mission_reward: 'Mission', shop_purchase: 'Boutique', family_treasure_contribution: 'Trésor', dice_bonus: 'Dé du destin',
@@ -24,7 +24,7 @@ export default function Journal() {
             {rows.map((x) => (
               <li key={`${x.unit}${x.id}`}>
                 <span><strong>{children.data?.find((c) => c.id === x.child_id)?.display_name}</strong> · {TYPE_LABELS[x.type] ?? x.type}{x.description ? ` — ${x.description}` : ''}<small>{formatDate(x.created_at)}</small></span>
-                <b className={x.amount > 0 ? 'plus' : 'minus'}>{x.amount > 0 ? '+' : ''}{x.amount} {x.unit === 'steps' ? <Footprint /> : '🪙'}</b>
+                <b className={x.amount > 0 ? 'plus' : 'minus'}>{x.amount > 0 ? '+' : ''}{x.amount} {x.unit === 'steps' ? <Footprint /> : <Nugget />}</b>
               </li>
             ))}
           </ul>

@@ -62,7 +62,7 @@ input[type=checkbox] { min-height: 0; width: 22px; height: 22px; accent-color: v
 
 /* pastilles, avatars, jauges */
 .avatar { display: inline-grid; place-items: center; border-radius: 50%; flex: none; box-shadow: 0 0 0 3px #fff inset, var(--shadow-s); }
-.coins { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; white-space: nowrap; background: #fff; border-radius: 99px; padding: 3px 12px; box-shadow: var(--shadow-s); }
+.coins { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; white-space: nowrap; background: #fff; border-radius: 99px; padding: 3px 12px 3px 8px; box-shadow: var(--shadow-s); }
 .coins.big { font-size: 1.15rem; }
 .counters { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 .gauge { height: 14px; background: color-mix(in srgb, var(--sky2) 14%, #fff); border-radius: 99px; overflow: hidden; margin: 8px 0; }
@@ -148,11 +148,11 @@ input[type=checkbox] { min-height: 0; width: 22px; height: 22px; accent-color: v
 .kid-card .row { flex-wrap: wrap; } .kid-card .row select { flex: 1 1 160px; }
 .hero-bar.parent .who strong { font-size: 1.15rem; }
 
-/* empreinte (icône des pas) : orange vif cerclé d'encre, lisible même en petit */
-.foot { width: .95em; height: 1.35em; flex: none; vertical-align: -.25em; }
-.foot path, .foot ellipse { fill: var(--primary); stroke: #3b2f1a; stroke-width: 3.6; paint-order: stroke; stroke-linejoin: round; }
-.coins .foot { width: 1em; height: 1.4em; }
-.hero-bar .counters .foot { width: 1.05em; height: 1.5em; }
+/* icônes : pépite d'or et empreinte des pas (SVG dans public/icons) */
+.ico { display: inline-block; flex: none; vertical-align: -.3em; -webkit-user-drag: none; user-select: none; }
+.nugget { width: 1.35em; height: 1.35em; } .foot { width: 1.3em; height: 1.3em; }
+.coins .ico { margin-left: -2px; }
+.hero-bar .counters .ico { width: 1.5em; height: 1.5em; }
 
 /* carte partagée : tous les avatars de la famille */
 .step .others { position: absolute; top: -12px; right: -6px; display: flex; flex-direction: row-reverse; } .step .others .avatar { margin-left: -9px; box-shadow: 0 0 0 2px #fff, var(--shadow-s); }

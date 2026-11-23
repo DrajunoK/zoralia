@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { MAP_CELLS, mapCell, nextChest } from '../../lib/game';
-import { useAction, useChildren, useDiceRolls, useFamilyCtx, useMissions, useOccurrences, useRedemptions, useRewards, useTransactions, useTreasure, useWallets } from '../../state/family';
-import { Avatar, Card, Coins, Empty, formatDate, Footprint, Gauge, Steps } from '../../ui/kit';
+import { useAction, useChildren, useDiceRolls, useMissions, useOccurrences, useRedemptions, useRewards, useTransactions, useTreasure, useWallets } from '../../state/family';
+import { Avatar, Card, Coins, Empty, formatDate, Footprint, Gauge, Nugget, Steps } from '../../ui/kit';
 import { FACES } from '../child/Dice';
 import { TYPE_LABELS } from './Journal';
 
 export default function Dashboard() {
-  const { theme } = useFamilyCtx();
+  
   const children = useChildren();
   const wallets = useWallets();
   const missions = useMissions();
@@ -119,7 +119,7 @@ export default function Dashboard() {
             <strong>Ajuster pour {kid(adj.child)?.display_name}</strong>
             <div className="seg" role="tablist">
               <button type="button" role="tab" aria-selected={adj.kind === 'steps'} className={adj.kind === 'steps' ? 'on' : ''} onClick={() => setAdj({ ...adj, kind: 'steps' })}><Footprint /> Pas</button>
-              <button type="button" role="tab" aria-selected={adj.kind === 'points'} className={adj.kind === 'points' ? 'on' : ''} onClick={() => setAdj({ ...adj, kind: 'points' })}>🪙 Pépites</button>
+              <button type="button" role="tab" aria-selected={adj.kind === 'points'} className={adj.kind === 'points' ? 'on' : ''} onClick={() => setAdj({ ...adj, kind: 'points' })}><Nugget /> Pépites</button>
             </div>
             <div className="row">
               <input type="number" aria-label="Montant" min={adj.kind === 'steps' ? 1 : undefined} placeholder={adj.kind === 'steps' ? '+3' : '+3 ou -2'} value={adj.amount} onChange={(e) => setAdj({ ...adj, amount: e.target.value })} />
@@ -133,7 +133,7 @@ export default function Dashboard() {
       </Card>
 
       {t && t.status !== 'archived' && (
-        <Card title={`${theme.coin} Trésor commun`} action={<Link to="tresor" className="link">Gérer</Link>}>
+        <Card title={<><Nugget /> Trésor commun</>} action={<Link to="tresor" className="link">Gérer</Link>}>
           <p>{t.title} · {t.current_points} / {t.target_points}</p>
           <Gauge value={t.current_points} max={t.target_points} label="Trésor" />
         </Card>
@@ -144,7 +144,7 @@ export default function Dashboard() {
           <ul className="list">
             {(tx.data ?? []).slice(0, 5).map((x) => (
               <li key={x.id}><span>{kid(x.child_id)?.display_name} · {TYPE_LABELS[x.type] ?? x.type}{x.description ? ` — ${x.description}` : ''}</span>
-                <b className={x.amount > 0 ? 'plus' : 'minus'}>{x.amount > 0 ? '+' : ''}{x.amount} 🪙</b></li>
+                <b className={x.amount > 0 ? 'plus' : 'minus'}>{x.amount > 0 ? '+' : ''}{x.amount} <Nugget /></b></li>
             ))}
           </ul>
         )}
