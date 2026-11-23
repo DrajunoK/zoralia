@@ -162,3 +162,46 @@ input[type=checkbox] { min-height: 0; width: 22px; height: 22px; accent-color: v
 .fellowship li.me strong { color: var(--second); } .fw-num { text-align: right; white-space: nowrap; } .fw-num small { display: flex; align-items: center; gap: 3px; justify-content: flex-end; }
 
 .list > li > span.avatar { flex: none; }
+
+/* ───────── Carte illustrée (WorldMap) ───────── */
+.wm { position: relative; width: 100%; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin: 14px 0; isolation: isolate; user-select: none; }
+.wm::before { content: ""; position: absolute; inset: 0; z-index: 0; background: radial-gradient(rgba(255,255,255,.28) 11%, transparent 12%) 0 0 / 22px 22px, radial-gradient(rgba(0,0,0,.05) 10%, transparent 11%) 11px 11px / 22px 22px; }
+.wm-svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
+.wm > * { --u: inherit; }
+.wm-deco, .wm-amb, .wm-node, .wm-token, .wm-ribbon, .wm-start { position: absolute; transform: translate(-50%, -50%); }
+.wm-deco { z-index: 1; line-height: 1; font-style: normal; filter: drop-shadow(0 3px 0 rgba(0,0,0,.16)); }
+.wm-deco.sway { animation: wmsway 4.2s ease-in-out infinite; transform-origin: 50% 90%; } .wm-deco.bob { animation: wmbob 5.2s ease-in-out infinite; }
+.wm-deco.landmark { z-index: 3; filter: drop-shadow(0 6px 0 rgba(0,0,0,.2)) drop-shadow(0 0 14px rgba(255,255,255,.55)); animation: wmbob 4s ease-in-out infinite; }
+@keyframes wmsway { 0%, 100% { transform: translate(-50%, -50%) rotate(-5deg); } 50% { transform: translate(-50%, -50%) rotate(5deg); } }
+@keyframes wmbob { 0%, 100% { transform: translate(-50%, -50%); } 50% { transform: translate(-50%, calc(-50% - 6px)); } }
+.wm-ripple { animation: wmripple 2.4s linear infinite; } @keyframes wmripple { to { stroke-dashoffset: -56; } }
+.wm-cloud { animation: wmcloud 26s ease-in-out infinite alternate; } @keyframes wmcloud { to { transform: translateX(40px); } }
+.wm-twinkle { animation: wmtw 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; } @keyframes wmtw { 0%, 100% { opacity: .25; transform: scale(.6); } 50% { opacity: 1; transform: scale(1.3); } }
+.wm-done { stroke-dasharray: 1; animation: wmdraw 2.4s .3s ease-out both; } @keyframes wmdraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.wm-amb { z-index: 3; width: var(--s); height: var(--s); border-radius: 50%; pointer-events: none; }
+.wm-amb.fireflies { background: #fff6a8; box-shadow: 0 0 12px 5px #ffe94d; animation: wmglow 4s ease-in-out infinite; }
+.wm-amb.stars, .wm-amb.sparkles { background: #fff; box-shadow: 0 0 10px 3px rgba(255,255,255,.8); animation: wmtwk 2.6s ease-in-out infinite; }
+.wm-amb.bubbles { background: rgba(255,255,255,.35); box-shadow: inset 0 0 0 2px #fff; animation: wmrise 7s linear infinite; }
+.wm-amb.embers { background: #ffb347; box-shadow: 0 0 10px 3px #ff7a2f; animation: wmrise 6s ease-out infinite; }
+.wm-amb.dust { background: rgba(255,255,255,.5); animation: wmrise 9s linear infinite; }
+.wm-amb.petals, .wm-amb.snow, .wm-amb.birds, .wm-amb.clouds { background: rgba(255,255,255,.85); box-shadow: 0 0 6px rgba(255,255,255,.9); animation: wmfall 9s linear infinite; }
+@keyframes wmglow { 0%, 100% { opacity: .1; } 50% { opacity: 1; } } @keyframes wmtwk { 0%, 100% { opacity: .2; transform: translate(-50%, -50%) scale(.6); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); } }
+@keyframes wmrise { from { transform: translate(-50%, -50%); opacity: 0; } 15% { opacity: .9; } to { transform: translate(-50%, calc(-50% - 90px)); opacity: 0; } }
+@keyframes wmfall { from { transform: translate(-50%, -60px); opacity: 0; } 15% { opacity: 1; } to { transform: translate(calc(-50% + 30px), 90px); opacity: 0; } }
+.wm-node { z-index: 4; display: grid; place-items: center; align-content: center; border-radius: 50%; background: #fff7df; border: 2.5px solid var(--ink); color: var(--ink); font-weight: 700; box-shadow: 0 3px 0 rgba(0,0,0,.25); }
+.wm-node.done { background: #ffc93c; animation: wmnode .45s cubic-bezier(.3, 1.8, .5, 1) both; animation-delay: calc(var(--i) * 50ms + .2s); }
+@keyframes wmnode { from { transform: translate(-50%, -50%) scale(0); } }
+.wm-node.far { opacity: .85; }
+.wm-node.chest { border-radius: 30%; background: #ffe8b0; } .wm-node.chest.done { background: #ffc93c; } .wm-node.chest small { position: absolute; bottom: -9px; background: var(--ink); color: #fff; border-radius: 99px; padding: 0 6px; font-weight: 700; white-space: nowrap; }
+.wm-node.finish { width: auto; height: auto; background: none; border: 0; box-shadow: none; filter: drop-shadow(0 4px 0 rgba(0,0,0,.25)); animation: wmbob 2.6s ease-in-out infinite; } .wm-node.finish small { background: var(--ink); color: #fff; border-radius: 99px; padding: 0 8px; font-weight: 700; margin-top: 2px; }
+.wm-start { z-index: 5; background: var(--ink); color: #fff; font-weight: 700; padding: 3px 12px; border-radius: 99px; white-space: nowrap; }
+.wm-token { z-index: 8; display: grid; justify-items: center; margin-left: var(--dx, 0); }
+.wm-token .avatar { box-shadow: 0 0 0 3px #fff, 0 6px 0 rgba(0,0,0,.25); } .wm-me .avatar { box-shadow: 0 0 0 4px #fff, 0 0 0 7px var(--primary), 0 8px 0 rgba(0,0,0,.25); animation: wmhop 1s cubic-bezier(.3, 0, .3, 1) infinite; }
+@keyframes wmhop { 50% { transform: translateY(-9px); } }
+.wm-tag { position: absolute; top: -26px; background: var(--ink); color: #fff; font-weight: 700; padding: 1px 9px; border-radius: 9px; white-space: nowrap; animation: wmhop 1s cubic-bezier(.3, 0, .3, 1) infinite; }
+.wm-name { position: absolute; top: calc(100% + 1px); background: rgba(255,255,255,.92); color: var(--ink); font-weight: 700; padding: 0 6px; border-radius: 8px; white-space: nowrap; }
+.wm-ribbon { z-index: 6; display: flex; align-items: center; gap: .5em; padding: .35em .9em; white-space: nowrap; max-width: 92%; border-radius: 16px; background: var(--second); color: #fff; box-shadow: 0 6px 16px rgba(0,0,0,.25); transform: translate(-50%, -50%) rotate(-1.2deg); text-shadow: 0 1px 2px rgba(0,0,0,.3); }
+.wm-ribbon div { display: grid; min-width: 0; } .wm-ribbon b { line-height: 1.15; } .wm-ribbon small { opacity: .95; font-weight: 600; }
+.wm-ribbon.now { background: var(--primary); color: var(--primary-ink); text-shadow: none; } .wm-ribbon.locked { filter: grayscale(.7); opacity: .92; }
+.wm-fog { position: absolute; left: 0; right: 0; z-index: 7; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .wm-done { animation: none; stroke-dasharray: none; } }
