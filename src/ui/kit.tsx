@@ -88,6 +88,10 @@ export function AvatarPicker({ avatar, color, onChange }: { avatar: string; colo
   );
 }
 
+export function formatTime(iso: string) {
+  return new Date(iso).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+}
+
 export function formatDate(iso: string) {
   return new Date(iso).toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 }

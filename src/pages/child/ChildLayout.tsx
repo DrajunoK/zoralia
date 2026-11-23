@@ -17,7 +17,7 @@ export default function ChildLayout() {
   return (
     <div className="shell">
       <header className="hero-bar">
-        <Link to="/profils" className="back" aria-label="Changer de profil"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></Link>
+        <Link to="/profils" className="back" aria-label="Changer de profil"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/></svg></Link>
         <Avatar avatar={child.avatar_key} color={child.color_key} size={52} />
         <div className="who"><strong>{child.display_name}</strong><small>{theme.name}</small></div>
         <div className="counters"><Steps n={steps} /><Coins n={balance} big /></div>

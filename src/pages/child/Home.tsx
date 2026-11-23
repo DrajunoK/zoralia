@@ -5,6 +5,7 @@ import { useFamilyCtx, useRewards, useTreasure } from '../../state/family';
 import { Card, Coins, Empty, Gauge, Nugget } from '../../ui/kit';
 import Fellowship, { useFellowship } from './Fellowship';
 import MissionCard from './MissionCard';
+import WaitingBanner from './WaitingBanner';
 
 export default function Home() {
   const { theme, settings } = useFamilyCtx();
@@ -37,6 +38,7 @@ export default function Home() {
         </Card>
       )}
 
+      <WaitingBanner />
       <Card title="⚔️ Missions du jour" action={<Link to="missions" className="link">Toutes les missions</Link>}>
         {todo.length === 0 ? <Empty>Plus rien à faire aujourd’hui, bravo ! 🎉</Empty>
           : <ul className="list">{todo.map((v) => <MissionCard key={v.mission.id} view={v} childId={child.id} />)}</ul>}

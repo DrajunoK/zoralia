@@ -31,8 +31,11 @@ export function useChild() {
     });
   }, [child, missions.data, assignments.data, occurrences.data, today]);
 
+  // missions envoyées les jours précédents et pas encore validées par les parents
+  const waitingOld = (occurrences.data ?? []).filter((o) => o.child_id === child?.id && o.status === 'claimed' && o.due_date < today);
+
   return {
-    child, balance, steps,
+    child, balance, steps, waitingOld,
     cell: mapCell(steps), nextAt: nextCellAt(steps), territory: territoryIndex(steps),
     chest: nextChest(steps), chestsOpened: chestsReached(steps),
     missionViews,

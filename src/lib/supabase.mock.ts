@@ -12,6 +12,7 @@ const activeTheme = themes.find((t) => t.slug === params.get('theme')) ?? themes
 
 const FAMILY = U(1), LEA = U(11), TOM = U(12), MIA = U(13);
 const day = new Date().toISOString().slice(0, 10);
+const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
 
 const mission = (n: number, title: string, category: string, points: number, description = '') => ({
   id: U(200 + n), family_id: FAMILY, title, description, category, points, recurrence: { type: 'daily' },
@@ -37,6 +38,10 @@ const rows: Record<string, unknown[]> = {
   mission_occurrences: [
     { id: U(300), mission_id: U(202), child_id: LEA, due_date: day, status: 'claimed', claimed_at: new Date().toISOString(), review_note: null },
     { id: U(301), mission_id: U(204), child_id: LEA, due_date: day, status: 'approved', claimed_at: new Date().toISOString(), review_note: null },
+    { id: U(302), mission_id: U(203), child_id: LEA, due_date: day, status: 'claimed', claimed_at: new Date().toISOString(), review_note: null },
+    { id: U(303), mission_id: U(205), child_id: TOM, due_date: day, status: 'claimed', claimed_at: new Date().toISOString(), review_note: null },
+    { id: U(304), mission_id: U(201), child_id: TOM, due_date: yesterday, status: 'claimed', claimed_at: new Date(Date.now() - 86400000).toISOString(), review_note: null },
+    { id: U(305), mission_id: U(206), child_id: TOM, due_date: yesterday, status: 'claimed', claimed_at: new Date(Date.now() - 86400000).toISOString(), review_note: null },
   ],
   shop_rewards: [
     ['Choisir le film du vendredi', 5, 'film'], ['Se coucher 15 minutes plus tard', 5, 'moon'], ['Choisir le dessert', 10, 'dessert'],

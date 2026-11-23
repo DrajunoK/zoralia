@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createContext, useContext, useEffect, useMemo, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode } from 'react';
 import { api } from '../lib/api';
 import { errorMessage } from '../lib/errors';
-import { localDate } from '../lib/game';
+import { useToday } from './today';
 import { applyTheme, themeBySlug, type Theme } from '../lib/themes';
 import type { Family, FamilySettings } from '../lib/types';
 import { useToast } from './toast';
@@ -25,13 +25,22 @@ export function FamilyProvider({ userId, fallback, children }: { userId: string;
     queryKey: ['fam', family?.id, 'settings'], queryFn: () => api.settings(family!.id), enabled: !!family,
   });
 
+  // La date locale avance toute seule : à minuit les missions du jour reviennent sans recharger la page.
+  const today = useToday(family?.timezone);
+  const qc = useQueryClient();
+  const lastDay = useRef(today);
+  useEffect(() => {
+    if (today && lastDay.current && lastDay.current !== today) qc.invalidateQueries({ queryKey: ['fam'] });
+    lastDay.current = today;
+  }, [today, qc]);
+
   const slug = themesQ.data?.find((t) => t.id === family?.active_theme_id)?.slug;
   const theme = themeBySlug(slug);
   useEffect(() => { applyTheme(theme); }, [theme]);
 
   const value = useMemo(
-    () => (family && settingsQ.data ? { family, settings: settingsQ.data, theme, today: localDate(family.timezone) } : null),
-    [family, settingsQ.data, theme],
+    () => (family && settingsQ.data ? { family, settings: settingsQ.data, theme, today } : null),
+    [family, settingsQ.data, theme, today],
   );
 
   if (familyQ.isLoading || themesQ.isLoading || (family && settingsQ.isLoading)) return <div className="splash">Chargement…</div>;

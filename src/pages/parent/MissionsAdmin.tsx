@@ -66,7 +66,7 @@ export default function MissionsAdmin() {
                   const who = (assignments.data ?? []).filter((a) => a.mission_id === m.id).length;
                   return (
                     <li key={m.id} className={m.is_active ? '' : 'inactive'}>
-                      <span><strong>{m.title}</strong><small>{m.recurrence.type === 'daily' ? 'Tous les jours' : m.recurrence.type === 'once' ? 'Une seule fois' : 'Certains jours'} · {who ? `${who} enfant(s)` : 'Tous les enfants'}{m.is_active ? '' : ' · désactivée'}</small></span>
+                      <span><strong>{m.title}</strong><small>{m.recurrence.type === 'daily' ? 'Tous les jours' : m.recurrence.type === 'once' ? 'Une seule fois' : 'Certains jours'} · {who ? `${who} enfant(s)` : 'Tous les enfants'}{m.requires_approval ? '' : ' · validation auto'}{m.is_active ? '' : ' · désactivée'}</small></span>
                       <span className="row"><Steps n={m.points} /><button className="btn ghost" onClick={() => edit(m)}>Modifier</button></span>
                     </li>
                   );

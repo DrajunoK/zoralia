@@ -49,6 +49,8 @@ export const api = {
   createFamily: async (name: string, theme: string, timezone: string) =>
     ok(await supabase.rpc('create_family', { p_name: name, p_theme_slug: theme, p_timezone: timezone })) as string,
   claimMission: async (mission: string, child: string) => ok(await supabase.rpc('claim_mission', { p_mission: mission, p_child: child })),
+  /** Valide plusieurs missions l'une après l'autre (le verrou de l'enfant les sérialise) ; s'arrête à la première erreur. */
+  approveMany: async (ids: string[]) => { for (const id of ids) ok(await supabase.rpc('approve_mission', { p_occurrence: id, p_note: null })); return ids.length; },
   approveMission: async (occ: string, note?: string) => ok(await supabase.rpc('approve_mission', { p_occurrence: occ, p_note: note || null })),
   rejectMission: async (occ: string, note?: string) => ok(await supabase.rpc('reject_mission', { p_occurrence: occ, p_note: note || null })),
   recordMission: async (mission: string, child: string) => ok(await supabase.rpc('record_mission', { p_mission: mission, p_child: child })),

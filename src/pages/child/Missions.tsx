@@ -3,6 +3,7 @@ import type { Category } from '../../lib/types';
 import { useChild } from '../../state/child';
 import { Empty } from '../../ui/kit';
 import MissionCard from './MissionCard';
+import WaitingBanner from './WaitingBanner';
 
 const TABS: [Category, string][] = [['daily', 'Quotidiennes'], ['heroic', 'Héroïques'], ['surprise', 'Surprises']];
 
@@ -14,6 +15,7 @@ export default function Missions() {
   return (
     <>
       <h1>⚔️ Mes missions</h1>
+      <WaitingBanner />
       <div className="segmented" role="tablist">
         {TABS.map(([k, label]) => (
           <button key={k} role="tab" aria-selected={tab === k} className={tab === k ? 'on' : ''} onClick={() => setTab(k)}>{label}</button>
