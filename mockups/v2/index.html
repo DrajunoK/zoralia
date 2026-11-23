@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zoralia — maquette v2 (jeu)</title>
+  <link rel="stylesheet" href="game.css">
+</head>
+<body data-theme="aventuriers">
+  <div class="themebar" id="themebar" role="group" aria-label="Univers"></div>
+  <div class="decor" id="decor" aria-hidden="true"></div>
+
+  <main class="app">
+    <!-- Profils -->
+    <section class="screen" id="profils">
+      <div class="logo">ZORALIA<small>Chaque jour, une nouvelle aventure</small></div>
+      <h2 class="hello">Qui part à l’aventure ?</h2>
+      <div class="profiles pop">
+        <a class="pcard" href="#accueil"><span class="avatar" style="width:104px;height:104px;font-size:3.4rem;background:#f6b73c">🦊</span>Léa<span class="pill"><i class="coin" ></i><span>14</span></span></a>
+        <a class="pcard" href="#accueil"><span class="avatar" style="width:104px;height:104px;font-size:3.4rem;background:#4aa8f0">🐼</span>Tom<span class="pill"><i class="coin" ></i><span>5</span></span></a>
+      </div>
+      <p style="text-align:center"><a class="btn ghost" href="#parent">🔑 Espace parent</a></p>
+    </section>
+
+    <!-- Enfant : en-tête commun -->
+    <header class="top child-only" id="top">
+      <a href="#profils" class="avatar" style="width:58px;height:58px;font-size:1.9rem;background:#f6b73c;text-decoration:none">🦊</a>
+      <div class="who"><b>Léa</b><span class="lvl">Niv. 3 · Explorateur</span></div>
+      <span class="pill" id="wallet"><i class="coin" ></i><span id="bal">14</span></span>
+    </header>
+
+    <!-- Accueil -->
+    <section class="screen" id="accueil">
+      <h2 class="hello" id="hello">Salut Léa ! Prête pour l’aventure ?</h2>
+      <div class="panel">
+        <h2>🗺️ <span id="terr-name">Rivière des Découvertes</span><a class="more" href="#carte">Carte</a></h2>
+        <div class="bar"><i style="--v:24%"></i></div>
+        <p style="margin:8px 0 0;font-weight:600"><b id="step">12</b> / 50 étapes · plus que <b id="to-next">3</b> <i class="coin"></i> pour avancer !</p>
+      </div>
+      <div class="panel">
+        <h2>⚔️ Missions du jour<a class="more" href="#missions">Tout voir</a></h2>
+        <div id="home-missions"></div>
+      </div>
+      <div class="tiles pop" id="tiles"></div>
+    </section>
+
+    <!-- Missions -->
+    <section class="screen" id="missions">
+      <h1 class="title">⚔️ Mes missions</h1>
+      <div class="seg" id="seg"><button class="on" data-c="daily">Du jour</button><button data-c="heroic">Héroïques</button><button data-c="surprise">Surprises</button></div>
+      <div id="mission-list"></div>
+    </section>
+
+    <!-- Carte -->
+    <section class="screen" id="carte">
+      <h1 class="title">🗺️ Ma carte</h1>
+      <div class="panel tmap-stats"><div><b id="m-step">12</b><span>étape sur 50</span></div><div><b id="m-life">62</b><span>pépites gagnées</span></div><div><b id="m-next">65</b><span>prochaine étape à</span></div></div>
+      <div id="map"></div>
+    </section>
+
+    <!-- Boutique -->
+    <section class="screen" id="boutique">
+      <h1 class="title">🎁 Boutique</h1>
+      <div class="grid pop" id="shop"></div>
+    </section>
+
+    <!-- Trésor -->
+    <section class="screen" id="tresor">
+      <h1 class="title">🏆 Trésor commun</h1>
+      <div class="panel chest-wrap">
+        <div class="chest" id="chest">🧰</div>
+        <h2 style="justify-content:center;margin:6px 0 10px">Le coffre de la famille</h2>
+        <div class="bar good"><i id="tr-bar" style="--v:48%"></i></div>
+        <p style="font-weight:700;margin:8px 0 0"><span id="tr-now">48</span> / 100 pépites</p>
+        <p style="color:var(--muted);margin:2px 0 0">À 100 : une soirée pizza-cinéma pour toute la famille 🍕</p>
+        <div class="chip-row"><button class="btn green" data-give="1">Donner +1</button><button class="btn green" data-give="5">Donner +5</button></div>
+      </div>
+      <div class="panel"><h2>Qui a donné ?</h2>
+        <div class="contrib"><span class="avatar" style="width:40px;height:40px;background:#f6b73c">🦊</span> Léa <b id="c-lea">30</b></div>
+        <div class="contrib"><span class="avatar" style="width:40px;height:40px;background:#4aa8f0">🐼</span> Tom <b>18</b></div>
+      </div>
+    </section>
+
+    <!-- Dé -->
+    <section class="screen" id="de">
+      <h1 class="title">🎲 Dé du destin</h1>
+      <div class="panel stage">
+        <div class="die" id="die" role="button" tabindex="0" aria-label="Lancer le dé">🎲</div>
+        <div class="result" id="result">Ton dé est prêt !</div>
+        <button class="btn big wobble" id="roll">Lancer le dé !</button>
+        <div class="faces"><div><span>✖️2</span>Pépites ×2</div><div><span>➕1</span>+1 pépite</div><div><span>🃏</span>Joker</div><div><span>🎁</span>Surprise</div></div>
+      </div>
+    </section>
+
+    <!-- Badges -->
+    <section class="screen" id="badges">
+      <h1 class="title">🏅 Mes badges</h1>
+      <div class="medals pop" id="medals"></div>
+    </section>
+
+    <!-- Parent -->
+    <section class="screen" id="parent">
+      <div class="banner-parent">🔑 Espace parent · Bobo Family <a class="btn ghost" style="margin-left:auto;min-height:36px;padding:2px 14px" href="#profils">↩️ Profils</a></div>
+      <div class="panel"><h2>✅ À valider <span class="pill" style="padding:0 12px;font-size:.9rem" id="q-count">2</span></h2>
+        <div class="queue" id="queue">
+          <div class="qi"><div class="row"><span class="avatar" style="width:44px;height:44px;background:#f6b73c">🦊</span><div><b>Léa</b> a fait « Ranger sa chambre »<br><small style="color:var(--muted)">+1 pépite · il y a 5 min</small></div></div><div class="acts"><button class="btn green" data-ok>Valider ✅</button><button class="btn ghost" data-no>Refuser</button></div></div>
+          <div class="qi"><div class="row"><span class="avatar" style="width:44px;height:44px;background:#4aa8f0">🐼</span><div><b>Tom</b> demande « Choisir le dessert »<br><small style="color:var(--muted)">10 pépites · il y a 1 h</small></div></div><div class="acts"><button class="btn green" data-ok>🎁 Accorder</button><button class="btn ghost" data-no>Refuser</button></div></div>
+        </div>
+      </div>
+      <div class="panel"><h2>👧 Les enfants</h2>
+        <div class="kid"><div class="row"><span class="avatar" style="width:46px;height:46px;background:#f6b73c">🦊</span><b>Léa</b><span class="pill" style="margin-left:auto"><i class="coin" ></i>14</span></div><div class="bar"><i style="--v:24%"></i></div><small>Étape 12 / 50</small></div>
+        <div class="kid"><div class="row"><span class="avatar" style="width:46px;height:46px;background:#4aa8f0">🐼</span><b>Tom</b><span class="pill" style="margin-left:auto"><i class="coin" ></i>5</span></div><div class="bar"><i style="--v:10%"></i></div><small>Étape 5 / 50</small></div>
+      </div>
+      <div class="panel"><h2>🏆 Trésor</h2><div class="bar good"><i style="--v:48%"></i></div><small>48 / 100 pépites</small></div>
+    </section>
+  </main>
+
+  <nav class="nav child-only" id="nav"><div class="nav-in">
+    <a href="#accueil" data-s="accueil"><span>🏠</span>Aventure</a>
+    <a href="#missions" data-s="missions"><span>⚔️</span>Missions</a>
+    <a href="#carte" data-s="carte"><span>🗺️</span>Carte</a>
+    <a href="#boutique" data-s="boutique"><span>🎁</span>Boutique</a>
+    <a href="#tresor" data-s="tresor"><span>🏆</span>Trésor</a>
+  </div></nav>
+  <script src="game.js"></script>
+</body>
+</html>
