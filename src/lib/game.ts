@@ -1,33 +1,61 @@
 // Règles de jeu pures (affichage). Le serveur (RPC Supabase) reste l'autorité pour tout gain ou débit.
+//
+// Deux monnaies : les pas 👣 (missions → carte, jamais dépensés) et les pépites 🪙 (coffres → boutique, trésor).
+// Carte : 100 étapes de 5 pas = 500 pas, 5 territoires de 100 pas. Miroir de supabase/migrations/0005_pas_et_coffres.sql.
 
-export const POINTS_PER_STEP = 5;
-export const MAP_STEPS = 50;
+export const STEPS_PER_CELL = 5;
+export const MAP_CELLS = 100;
+export const CELLS_PER_TERRITORY = 20;
+export const STEPS_PER_TERRITORY = STEPS_PER_CELL * CELLS_PER_TERRITORY;
+export const CHEST_COUNT = 20;
+const CHEST_VALUES = [5, 8, 10, 15, 20]; // pépites par territoire (4 coffres chacun)
 
-/** 1 case parcourue toutes les 5 pépites gagnées cumulées, plafonnée à 50. */
-export function mapStep(lifetimeEarned: number): number {
-  return Math.min(MAP_STEPS, Math.floor(Math.max(0, lifetimeEarned) / POINTS_PER_STEP));
+/** Étape atteinte sur la carte : 1 étape toutes les 5 pas, plafonnée à 100. */
+export function mapCell(steps: number): number {
+  return Math.min(MAP_CELLS, Math.floor(Math.max(0, steps) / STEPS_PER_CELL));
 }
 
-/** Pépites gagnées cumulées pour atteindre la case suivante (null si la carte est finie). */
-export function nextStepAt(lifetimeEarned: number): number | null {
-  const step = mapStep(lifetimeEarned);
-  return step >= MAP_STEPS ? null : (step + 1) * POINTS_PER_STEP;
+/** Total de pas pour atteindre l'étape suivante (null si la carte est finie). */
+export function nextCellAt(steps: number): number | null {
+  const cell = mapCell(steps);
+  return cell >= MAP_CELLS ? null : (cell + 1) * STEPS_PER_CELL;
 }
 
-/** Territoires du kit : bornes en pépites gagnées cumulées (0-29, 30-79, 80-149, 150-249, 250+). */
-export const TERRITORY_STARTS = [0, 30, 80, 150, 250] as const;
-
-export function territoryIndex(lifetimeEarned: number): number {
-  let idx = 0;
-  TERRITORY_STARTS.forEach((start, i) => {
-    if (lifetimeEarned >= start) idx = i;
-  });
-  return idx;
+/** Pas nécessaires pour ouvrir le coffre n (1..20) : le 1er à 10 pas, puis un tous les 25 pas. */
+export function chestThreshold(n: number): number {
+  return 10 + 25 * (n - 1);
 }
 
-/** Territoire de la case n (1..50), atteinte à 5·n pépites. */
+/** Pépites contenues dans le coffre n : 5, 8, 10, 15 puis 20 selon le territoire. */
+export function chestValue(n: number): number {
+  return CHEST_VALUES[Math.floor((n - 1) / 4)];
+}
+
+/** Étape de la carte où se trouve le coffre n. */
+export function chestCell(n: number): number {
+  return Math.ceil(chestThreshold(n) / STEPS_PER_CELL);
+}
+
+export function chestsReached(steps: number): number {
+  let n = 0;
+  while (n < CHEST_COUNT && chestThreshold(n + 1) <= steps) n++;
+  return n;
+}
+
+/** Prochain coffre à ouvrir (null quand tous sont ouverts). */
+export function nextChest(steps: number): { no: number; at: number; value: number; missing: number } | null {
+  const no = chestsReached(steps) + 1;
+  if (no > CHEST_COUNT) return null;
+  return { no, at: chestThreshold(no), value: chestValue(no), missing: chestThreshold(no) - steps };
+}
+
+export function territoryIndex(steps: number): number {
+  return Math.min(4, Math.floor(Math.max(0, steps) / STEPS_PER_TERRITORY));
+}
+
+/** Territoire de l'étape (1..100). */
 export function territoryOfCell(cell: number): number {
-  return territoryIndex(cell * POINTS_PER_STEP);
+  return Math.min(4, Math.floor((cell - 1) / CELLS_PER_TERRITORY));
 }
 
 export type Recurrence =

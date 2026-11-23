@@ -72,13 +72,13 @@ export default function Settings() {
       </Card>
 
       <Card title="Seuils des badges">
-        <p className="muted">Pépites gagnées au total pour obtenir chaque badge.</p>
+        <p className="muted">Nombre de pas au total pour obtenir chaque badge (la carte fait 500 pas).</p>
         {(badges.data ?? []).map((b) => (
           <Field key={b.slug} label={b.name}>
-            <input type="number" min={1} max={2000} defaultValue={overrides[b.slug] ?? b.threshold.lifetime_earned ?? 0}
+            <input type="number" min={1} max={2000} defaultValue={overrides[b.slug] ?? b.threshold.steps ?? 0}
               onBlur={(e) => {
                 const n = Math.max(1, Number(e.target.value) || 1);
-                if (n !== (overrides[b.slug] ?? b.threshold.lifetime_earned)) set({ settings: { ...settings.settings, badge_thresholds: { ...overrides, [b.slug]: n } } });
+                if (n !== (overrides[b.slug] ?? b.threshold.steps)) set({ settings: { ...settings.settings, badge_thresholds: { ...overrides, [b.slug]: n } } });
               }} />
           </Field>
         ))}

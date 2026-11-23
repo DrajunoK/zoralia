@@ -4,7 +4,7 @@ import type { Recurrence } from '../../lib/game';
 import type { Category, Mission } from '../../lib/types';
 import { useAction, useChildren, useFamilyCtx, useMissionChildren, useMissions } from '../../state/family';
 import { useSession } from '../../state/session';
-import { Card, Coins, Empty, Field } from '../../ui/kit';
+import { Card, Empty, Field, Steps } from '../../ui/kit';
 
 const CATS: Record<Category, string> = { daily: 'Quotidienne', heroic: 'Héroïque', surprise: 'Surprise' };
 const DAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
@@ -62,7 +62,7 @@ export default function MissionsAdmin() {
                   return (
                     <li key={m.id} className={m.is_active ? '' : 'inactive'}>
                       <span><strong>{m.title}</strong><small>{m.recurrence.type === 'daily' ? 'Tous les jours' : m.recurrence.type === 'once' ? 'Une seule fois' : 'Certains jours'} · {who ? `${who} enfant(s)` : 'Tous les enfants'}{m.is_active ? '' : ' · désactivée'}</small></span>
-                      <span className="row"><Coins n={m.points} /><button className="btn ghost" onClick={() => edit(m)}>Modifier</button></span>
+                      <span className="row"><Steps n={m.points} /><button className="btn ghost" onClick={() => edit(m)}>Modifier</button></span>
                     </li>
                   );
                 })}
@@ -79,7 +79,7 @@ export default function MissionsAdmin() {
           <div className="row wrap">
             <Field label="Type"><select value={draft.category} onChange={(e) => setDraft({ ...draft, category: e.target.value as Category })}>
               {Object.entries(CATS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></Field>
-            <Field label="Pépites"><input type="number" min={1} max={20} value={draft.points} onChange={(e) => setDraft({ ...draft, points: Math.min(20, Math.max(1, Number(e.target.value) || 1)) })} /></Field>
+            <Field label="Pas 👣" hint="Gagnés sur la carte quand la mission est validée"><input type="number" min={1} max={20} value={draft.points} onChange={(e) => setDraft({ ...draft, points: Math.min(20, Math.max(1, Number(e.target.value) || 1)) })} /></Field>
             <Field label="Récurrence"><select value={draft.recType} onChange={(e) => setDraft({ ...draft, recType: e.target.value as Recurrence['type'] })}>
               <option value="daily">Tous les jours</option><option value="weekly">Certains jours</option><option value="once">Une seule fois</option></select></Field>
           </div>

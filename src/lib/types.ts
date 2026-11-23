@@ -9,7 +9,9 @@ export interface FamilySettings {
 }
 export interface ThemeRow { id: string; slug: string; name: string }
 export interface Child { id: string; family_id: string; display_name: string; avatar_key: string; color_key: string; is_active: boolean }
-export interface Wallet { child_id: string; balance: number; lifetime_earned_points: number }
+export interface Wallet { child_id: string; balance: number; steps: number }
+export interface ChestClaim { child_id: string; chest_no: number; pepites: number; claimed_at: string }
+export interface StepTransaction { id: string; child_id: string; amount: number; type: string; description: string; created_at: string }
 export interface Mission {
   id: string; family_id: string; title: string; description: string; category: Category; points: number;
   recurrence: Recurrence; starts_at: string | null; ends_at: string | null; requires_approval: boolean; is_active: boolean;
@@ -26,5 +28,5 @@ export interface Contribution { id: string; treasure_id: string; child_id: strin
 export interface Transaction { id: string; child_id: string; amount: number; type: string; description: string; created_at: string }
 export interface DiceRoll { id: string; child_id: string; result_key: 'double' | 'plus_one' | 'joker' | 'surprise'; result_payload: { bonus?: number; resolved?: boolean }; rolled_at: string }
 export interface DiceState { enabled: boolean; mode: 'weekly' | 'quests'; eligible: boolean; progress: number; threshold: number }
-export interface Badge { id: string; slug: string; name: string; description: string; icon_key: string; threshold: { lifetime_earned?: number } }
+export interface Badge { id: string; slug: string; name: string; description: string; icon_key: string; threshold: { steps?: number } }
 export interface ChildBadge { child_id: string; badge_id: string; earned_at: string }

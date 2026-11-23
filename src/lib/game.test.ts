@@ -1,36 +1,66 @@
 import { describe, expect, it } from 'vitest';
 import {
+  CHEST_COUNT,
+  chestCell,
+  chestsReached,
+  chestThreshold,
+  chestValue,
   isMissionAvailable,
   isoWeekday,
   localDate,
-  mapStep,
+  mapCell,
   missionState,
-  nextStepAt,
+  nextCellAt,
+  nextChest,
   territoryIndex,
   territoryOfCell,
 } from './game';
 
 describe('carte', () => {
-  it('avance d’une case toutes les 5 pépites gagnées', () => {
-    expect(mapStep(0)).toBe(0);
-    expect(mapStep(4)).toBe(0);
-    expect(mapStep(5)).toBe(1);
-    expect(mapStep(25)).toBe(5);
+  it('avance d’une étape toutes les 5 pas', () => {
+    expect(mapCell(0)).toBe(0);
+    expect(mapCell(4)).toBe(0);
+    expect(mapCell(5)).toBe(1);
+    expect(mapCell(36)).toBe(7);
   });
-  it('plafonne à 50 cases', () => {
-    expect(mapStep(250)).toBe(50);
-    expect(mapStep(9999)).toBe(50);
-    expect(nextStepAt(250)).toBeNull();
+  it('plafonne à 100 étapes', () => {
+    expect(mapCell(500)).toBe(100);
+    expect(mapCell(9999)).toBe(100);
+    expect(nextCellAt(500)).toBeNull();
   });
-  it('indique la prochaine case', () => {
-    expect(nextStepAt(18)).toBe(20);
-    expect(nextStepAt(20)).toBe(25);
+  it('indique l’étape suivante', () => {
+    expect(nextCellAt(18)).toBe(20);
+    expect(nextCellAt(20)).toBe(25);
   });
-  it('découpe les territoires selon le kit', () => {
-    expect([0, 29, 30, 79, 80, 149, 150, 249, 250].map(territoryIndex)).toEqual([0, 0, 1, 1, 2, 2, 3, 3, 4]);
-    expect(territoryOfCell(5)).toBe(0); // 25 pépites
-    expect(territoryOfCell(6)).toBe(1); // 30 pépites
-    expect(territoryOfCell(50)).toBe(4);
+  it('découpe cinq territoires de 100 pas', () => {
+    expect([0, 99, 100, 199, 200, 399, 400, 500].map(territoryIndex)).toEqual([0, 0, 1, 1, 2, 3, 4, 4]);
+    expect(territoryOfCell(20)).toBe(0);
+    expect(territoryOfCell(21)).toBe(1);
+    expect(territoryOfCell(100)).toBe(4);
+  });
+});
+
+describe('coffres', () => {
+  it('le premier coffre arrive vite, puis un tous les 25 pas', () => {
+    expect([1, 2, 3, 20].map(chestThreshold)).toEqual([10, 35, 60, 485]);
+  });
+  it('la valeur augmente avec les territoires', () => {
+    expect([1, 4, 5, 8, 9, 13, 17, 20].map(chestValue)).toEqual([5, 5, 8, 8, 10, 15, 20, 20]);
+    const total = Array.from({ length: CHEST_COUNT }, (_, i) => chestValue(i + 1)).reduce((a, b) => a + b, 0);
+    expect(total).toBe(232);
+  });
+  it('place chaque coffre sur une étape de la carte', () => {
+    expect(chestCell(1)).toBe(2);
+    expect(chestCell(2)).toBe(7);
+    expect(chestCell(20)).toBe(97);
+  });
+  it('compte les coffres atteints et annonce le suivant', () => {
+    expect(chestsReached(9)).toBe(0);
+    expect(chestsReached(10)).toBe(1);
+    expect(chestsReached(62)).toBe(3);
+    expect(chestsReached(9999)).toBe(CHEST_COUNT);
+    expect(nextChest(62)).toEqual({ no: 4, at: 85, value: 5, missing: 23 });
+    expect(nextChest(485)).toBeNull();
   });
 });
 

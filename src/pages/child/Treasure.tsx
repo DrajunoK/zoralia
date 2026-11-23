@@ -38,7 +38,7 @@ export default function Treasure() {
               <input type="number" min={1} max={max} value={Math.min(amount, Math.max(max, 1))} aria-label="Pépites à donner" onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 1))} />
               <button className="btn" disabled={max < 1 || amount > max || contribute.pending} onClick={() => contribute.run(t.id, child.id, amount)}>Donner</button>
             </div>
-            {max < 1 && <small className="muted">Gagne des pépites pour contribuer.</small>}
+            {max < 1 && <small className="muted">Ouvre des coffres sur la carte pour gagner des pépites.</small>}
           </div>
         )}
       </Card>

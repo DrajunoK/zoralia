@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
-import { POINTS_PER_STEP } from '../../lib/game';
+import { MAP_CELLS, STEPS_PER_CELL } from '../../lib/game';
 import { useChild } from '../../state/child';
 import { useFamilyCtx, useRewards, useTreasure } from '../../state/family';
-import { Card, Coins, Empty, Gauge } from '../../ui/kit';
+import { Card, Coins, Empty, Gauge, Steps } from '../../ui/kit';
 import MissionCard from './MissionCard';
 
 export default function Home() {
   const { theme, settings } = useFamilyCtx();
-  const { child, balance, lifetime, step, nextAt, territory, missionViews } = useChild();
+  const { child, balance, steps, cell, nextAt, territory, chest, missionViews } = useChild();
   const rewards = useRewards();
   const treasure = useTreasure();
   if (!child) return null;
@@ -20,14 +20,14 @@ export default function Home() {
     <>
       <Card className="welcome">
         <h1>Bienvenue dans ton aventure, {child.display_name} ! <span aria-hidden>{theme.heroEmoji}</span></h1>
-        <Coins n={balance} big />
+        <div className="counters"><Steps n={steps} big /><Coins n={balance} big /></div>
       </Card>
 
       <Card title="🗺️ Ma carte" action={<Link to="carte" className="link">Voir la carte</Link>}>
-        <p><b>{step}</b> / 50 étapes · {theme.territories[territory]}</p>
-        <Gauge value={step} max={50} label="Progression sur la carte" />
-        <p className="muted">{nextAt ? `Prochaine étape à ${nextAt} pépites gagnées (encore ${nextAt - lifetime}).` : 'Tu as atteint le bout de la carte !'}</p>
-        <small className="muted">1 étape toutes les {POINTS_PER_STEP} pépites gagnées.</small>
+        <p><b>{cell}</b> / {MAP_CELLS} étapes · {theme.territories[territory]}</p>
+        <Gauge value={steps % STEPS_PER_CELL} max={STEPS_PER_CELL} label="Progression vers l’étape suivante" />
+        <p className="muted">{nextAt ? `Encore ${nextAt - steps} pas pour la prochaine étape.` : 'Tu as atteint le bout de la carte !'}</p>
+        {chest && <p className="muted">🧰 Prochain coffre dans <b>{chest.missing} pas</b> : +{chest.value} <span aria-hidden>{theme.coin}</span> pépites</p>}
       </Card>
 
       <Card title="⚔️ Missions du jour" action={<Link to="missions" className="link">Toutes les missions</Link>}>
@@ -37,7 +37,7 @@ export default function Home() {
 
       <div className="two-col">
         <Card title="🎁 Boutique" action={<Link to="boutique" className="link">Voir la boutique</Link>}>
-          {affordable.length === 0 ? <Empty>Continue à gagner des pépites !</Empty>
+          {affordable.length === 0 ? <Empty>Ouvre des coffres sur la carte pour gagner des pépites !</Empty>
             : <ul className="list">{affordable.map((r) => <li key={r.id}><span>{r.title}</span><Coins n={r.cost} /></li>)}</ul>}
         </Card>
         {settings.treasure_enabled && t && t.status !== 'archived' && (

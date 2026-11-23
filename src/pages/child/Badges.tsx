@@ -5,7 +5,7 @@ const ICONS: Record<string, string> = { seedling: '🌱', compass: '🧭', shiel
 
 export default function Badges() {
   const { settings } = useFamilyCtx();
-  const { child, lifetime } = useChild();
+  const { child, steps } = useChild();
   const badges = useBadges();
   const earned = useChildBadges();
   if (!child) return null;
@@ -15,13 +15,13 @@ export default function Badges() {
       <h1>🏅 Mes badges</h1>
       <div className="badge-grid">
         {(badges.data ?? []).map((b) => {
-          const at = overrides[b.slug] ?? b.threshold.lifetime_earned ?? 0;
-          const got = (earned.data ?? []).some((e) => e.child_id === child.id && e.badge_id === b.id) || lifetime >= at;
+          const at = overrides[b.slug] ?? b.threshold.steps ?? 0;
+          const got = (earned.data ?? []).some((e) => e.child_id === child.id && e.badge_id === b.id) || steps >= at;
           return (
             <article key={b.id} className={`card badge ${got ? 'got' : 'locked'}`}>
               <div className="badge-icon" aria-hidden>{got ? ICONS[b.icon_key] ?? '⭐' : '🔒'}</div>
               <strong>{b.name}</strong>
-              <small>{got ? b.description : `À ${at} pépites gagnées`}</small>
+              <small>{got ? b.description : `À ${at} pas`}</small>
             </article>
           );
         })}

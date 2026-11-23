@@ -117,3 +117,8 @@ input[type=checkbox] { min-height: 0; width: 22px; height: 22px; accent-color: v
 .toast.error { background: var(--danger); color: #fff; }
 
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+.counters { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-left: auto; }
+.hero-bar .counters .coins { margin-left: 0; }
+.step { position: relative; flex-direction: column; } .step.chest { background: var(--soft); } .step.chest small { position: absolute; bottom: 1px; font-size: .6rem; font-weight: 800; color: var(--ink); }
+.step.chest.done { background: var(--accent); } .step.here { font-size: 1.3rem; }

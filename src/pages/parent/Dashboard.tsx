@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../../lib/api';
-import { mapStep } from '../../lib/game';
+import { MAP_CELLS, mapCell, nextChest } from '../../lib/game';
 import { useAction, useChildren, useDiceRolls, useFamilyCtx, useMissions, useOccurrences, useRedemptions, useRewards, useTransactions, useTreasure, useWallets } from '../../state/family';
-import { Avatar, Card, Coins, Empty, formatDate, Gauge } from '../../ui/kit';
+import { Avatar, Card, Coins, Empty, formatDate, Gauge, Steps } from '../../ui/kit';
 import { FACES } from '../child/Dice';
 import { TYPE_LABELS } from './Journal';
 
@@ -24,10 +24,11 @@ export default function Dashboard() {
   const approveR = useAction(api.approveReward, 'Récompense accordée 🎁');
   const rejectR = useAction(api.rejectReward, 'Demande refusée');
   const adjust = useAction(api.adjustPoints, 'Pépites ajustées');
+  const adjustSteps = useAction(api.adjustSteps, 'Pas ajoutés 👣');
   const record = useAction(api.recordMission, 'Mission enregistrée ✅');
   const resolve = useAction(api.resolveRoll, 'Noté comme honoré');
   const [notes, setNotes] = useState<Record<string, string>>({});
-  const [adj, setAdj] = useState<{ child: string; amount: string; reason: string } | null>(null);
+  const [adj, setAdj] = useState<{ child: string; kind: 'steps' | 'points'; amount: string; reason: string } | null>(null);
 
   const kids = (children.data ?? []).filter((c) => c.is_active);
   const kid = (id: string) => children.data?.find((c) => c.id === id);
@@ -46,7 +47,7 @@ export default function Dashboard() {
             const c = kid(o.child_id);
             return (
               <li key={o.id} className="validate">
-                <div><strong>{c?.display_name}</strong> a fait « {m?.title} » <Coins n={m?.points ?? 0} /><small>{formatDate(o.claimed_at)}</small></div>
+                <div><strong>{c?.display_name}</strong> a fait « {m?.title} » <Steps n={m?.points ?? 0} /><small>{formatDate(o.claimed_at)}</small></div>
                 <input aria-label="Note facultative" placeholder="Note (facultatif)" value={notes[o.id] ?? ''} onChange={(e) => setNotes({ ...notes, [o.id]: e.target.value })} />
                 <div className="row">
                   <button className="btn" disabled={approve.pending} onClick={() => approve.run(o.id, notes[o.id])}>Valider</button>
@@ -89,15 +90,15 @@ export default function Dashboard() {
             const todays = (missions.data ?? []).filter((m) => m.is_active);
             return (
               <article key={c.id} className="kid-card">
-                <div className="row"><Avatar avatar={c.avatar_key} color={c.color_key} /><strong>{c.display_name}</strong><Coins n={w?.balance ?? 0} /></div>
-                <Gauge value={mapStep(w?.lifetime_earned_points ?? 0)} max={50} label="Carte" />
-                <small className="muted">Étape {mapStep(w?.lifetime_earned_points ?? 0)} / 50 · {w?.lifetime_earned_points ?? 0} gagnées</small>
+                <div className="row"><Avatar avatar={c.avatar_key} color={c.color_key} /><strong>{c.display_name}</strong><span className="counters"><Steps n={w?.steps ?? 0} /><Coins n={w?.balance ?? 0} /></span></div>
+                <Gauge value={mapCell(w?.steps ?? 0)} max={MAP_CELLS} label="Carte" />
+                <small className="muted">Étape {mapCell(w?.steps ?? 0)} / {MAP_CELLS} · {w?.steps ?? 0} pas 👣{nextChest(w?.steps ?? 0) ? ` · coffre dans ${nextChest(w?.steps ?? 0)!.missing} pas` : ''}</small>
                 <div className="row">
                   <select aria-label="Enregistrer une mission" value="" onChange={(e) => e.target.value && record.run(e.target.value, c.id)}>
                     <option value="">+ Mission accomplie…</option>
                     {todays.map((m) => <option key={m.id} value={m.id}>{m.title} (+{m.points})</option>)}
                   </select>
-                  <button className="btn ghost" onClick={() => setAdj({ child: c.id, amount: '', reason: '' })}>± Pépites</button>
+                  <button className="btn ghost" onClick={() => setAdj({ child: c.id, kind: 'steps', amount: '', reason: '' })}>± Pas / pépites</button>
                 </div>
               </article>
             );
@@ -108,17 +109,25 @@ export default function Dashboard() {
             e.preventDefault();
             const n = Number(adj.amount);
             if (!n) return;
-            if (!window.confirm(`${n > 0 ? 'Ajouter' : 'Retirer'} ${Math.abs(n)} pépites à ${kid(adj.child)?.display_name} ?`)) return;
-            await adjust.run(adj.child, n, adj.reason);
+            const who = kid(adj.child)?.display_name;
+            const unit = adj.kind === 'steps' ? 'pas' : 'pépites';
+            if (!window.confirm(`${n > 0 ? 'Ajouter' : 'Retirer'} ${Math.abs(n)} ${unit} à ${who} ?`)) return;
+            if (adj.kind === 'steps') await adjustSteps.run(adj.child, n, adj.reason);
+            else await adjust.run(adj.child, n, adj.reason);
             setAdj(null);
           }}>
-            <strong>Ajuster les pépites de {kid(adj.child)?.display_name}</strong>
+            <strong>Ajuster pour {kid(adj.child)?.display_name}</strong>
+            <div className="seg" role="tablist">
+              <button type="button" role="tab" aria-selected={adj.kind === 'steps'} className={adj.kind === 'steps' ? 'on' : ''} onClick={() => setAdj({ ...adj, kind: 'steps' })}>👣 Pas</button>
+              <button type="button" role="tab" aria-selected={adj.kind === 'points'} className={adj.kind === 'points' ? 'on' : ''} onClick={() => setAdj({ ...adj, kind: 'points' })}>🪙 Pépites</button>
+            </div>
             <div className="row">
-              <input type="number" aria-label="Montant (négatif pour retirer)" placeholder="+3 ou -2" value={adj.amount} onChange={(e) => setAdj({ ...adj, amount: e.target.value })} />
+              <input type="number" aria-label="Montant" min={adj.kind === 'steps' ? 1 : undefined} placeholder={adj.kind === 'steps' ? '+3' : '+3 ou -2'} value={adj.amount} onChange={(e) => setAdj({ ...adj, amount: e.target.value })} />
               <input aria-label="Raison" placeholder="Raison" value={adj.reason} onChange={(e) => setAdj({ ...adj, reason: e.target.value })} />
-              <button className="btn" disabled={adjust.pending}>Valider</button>
+              <button className="btn" disabled={adjust.pending || adjustSteps.pending}>Valider</button>
               <button type="button" className="btn ghost" onClick={() => setAdj(null)}>Annuler</button>
             </div>
+            <small className="muted">Les pas font avancer la carte (jamais retirés) ; les pépites se dépensent.</small>
           </form>
         )}
       </Card>
@@ -135,7 +144,7 @@ export default function Dashboard() {
           <ul className="list">
             {(tx.data ?? []).slice(0, 5).map((x) => (
               <li key={x.id}><span>{kid(x.child_id)?.display_name} · {TYPE_LABELS[x.type] ?? x.type}{x.description ? ` — ${x.description}` : ''}</span>
-                <b className={x.amount > 0 ? 'plus' : 'minus'}>{x.amount > 0 ? '+' : ''}{x.amount}</b></li>
+                <b className={x.amount > 0 ? 'plus' : 'minus'}>{x.amount > 0 ? '+' : ''}{x.amount} 🪙</b></li>
             ))}
           </ul>
         )}

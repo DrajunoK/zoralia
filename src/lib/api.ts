@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 import type {
-  Badge, Child, ChildBadge, Contribution, DiceRoll, DiceState, Family, FamilySettings, Mission, MissionChild,
+  Badge, Child, ChestClaim, ChildBadge, StepTransaction, Contribution, DiceRoll, DiceState, Family, FamilySettings, Mission, MissionChild,
   Occurrence, Redemption, Reward, ThemeRow, Transaction, Treasure, Wallet,
 } from './types';
 
@@ -18,7 +18,7 @@ export const api = {
   async themes() { return ok(await supabase.from('themes').select('id,slug,name').eq('is_active', true)) as ThemeRow[]; },
   async settings(f: string) { return ok(await supabase.from('family_settings').select('*').eq('family_id', f).single()) as FamilySettings; },
   async children(f: string) { return ok(await supabase.from('children').select('*').eq('family_id', f).order('created_at')) as Child[]; },
-  async wallets(f: string) { return ok(await supabase.from('child_wallet_summary').select('child_id,balance,lifetime_earned_points').eq('family_id', f)) as Wallet[]; },
+  async wallets(f: string) { return ok(await supabase.from('child_wallet_summary').select('child_id,balance,steps').eq('family_id', f)) as Wallet[]; },
   async missions(f: string) { return ok(await supabase.from('missions').select('*').eq('family_id', f).order('created_at')) as Mission[]; },
   async missionChildren() { return ok(await supabase.from('mission_children').select('*')) as MissionChild[]; },
   /** Réclamées (toutes dates) + occurrences depuis `since` (aujourd'hui et historique récent). */
@@ -36,9 +36,13 @@ export const api = {
   async transactions(f: string, limit = 60) {
     return ok(await supabase.from('points_transactions').select('id,child_id,amount,type,description,created_at').eq('family_id', f).order('created_at', { ascending: false }).limit(limit)) as Transaction[];
   },
+  async chestClaims() { return ok(await supabase.from('chest_claims').select('child_id,chest_no,pepites,claimed_at')) as ChestClaim[]; },
+  async stepTransactions(f: string, limit = 60) {
+    return ok(await supabase.from('step_transactions').select('id,child_id,amount,type,description,created_at').eq('family_id', f).order('created_at', { ascending: false }).limit(limit)) as StepTransaction[];
+  },
   async diceRolls(f: string) { return ok(await supabase.from('dice_rolls').select('*').eq('family_id', f).order('rolled_at', { ascending: false }).limit(50)) as DiceRoll[]; },
   async diceState(childId: string) { return ok(await supabase.rpc('dice_eligibility', { p_child: childId })) as DiceState; },
-  async badges() { return ok(await supabase.from('badges').select('*').order('threshold->lifetime_earned')) as Badge[]; },
+  async badges() { return ok(await supabase.from('badges').select('*').order('threshold->steps')) as Badge[]; },
   async childBadges() { return ok(await supabase.from('child_badges').select('*')) as ChildBadge[]; },
 
   // ── Mutations : RPC pour tout ce qui touche aux pépites ──
@@ -55,6 +59,8 @@ export const api = {
     ok(await supabase.rpc('contribute_to_treasure', { p_treasure: treasure, p_child: child, p_amount: amount })),
   rollDice: async (child: string) => ok(await supabase.rpc('roll_dice', { p_child: child })) as { id: string; result_key: DiceRoll['result_key']; result_payload: DiceRoll['result_payload'] },
   resolveRoll: async (id: string) => ok(await supabase.rpc('resolve_dice_roll', { p_roll: id })),
+  adjustSteps: async (child: string, amount: number, reason: string) =>
+    ok(await supabase.rpc('parent_adjust_steps', { p_child: child, p_amount: amount, p_reason: reason })),
   adjustPoints: async (child: string, amount: number, reason: string) =>
     ok(await supabase.rpc('parent_adjust_points', { p_child: child, p_amount: amount, p_reason: reason })),
   exportFamily: async (f: string) => ok(await supabase.rpc('export_family', { p_family: f })),

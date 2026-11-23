@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { mapStep, missionState, nextStepAt, territoryIndex, type MissionState } from '../lib/game';
+import { chestsReached, mapCell, missionState, nextCellAt, nextChest, territoryIndex, type MissionState } from '../lib/game';
 import type { Mission } from '../lib/types';
 import { useChildren, useFamilyCtx, useMissionChildren, useMissions, useOccurrences, useWallets } from './family';
 
@@ -19,7 +19,7 @@ export function useChild() {
   const child = children.data?.find((c) => c.id === childId);
   const wallet = wallets.data?.find((w) => w.child_id === childId);
   const balance = wallet?.balance ?? 0;
-  const lifetime = wallet?.lifetime_earned_points ?? 0;
+  const steps = wallet?.steps ?? 0;
 
   const missionViews = useMemo<MissionView[]>(() => {
     if (!child) return [];
@@ -32,8 +32,9 @@ export function useChild() {
   }, [child, missions.data, assignments.data, occurrences.data, today]);
 
   return {
-    child, balance, lifetime,
-    step: mapStep(lifetime), nextAt: nextStepAt(lifetime), territory: territoryIndex(lifetime),
+    child, balance, steps,
+    cell: mapCell(steps), nextAt: nextCellAt(steps), territory: territoryIndex(steps),
+    chest: nextChest(steps), chestsOpened: chestsReached(steps),
     missionViews,
     loading: children.isLoading || wallets.isLoading || missions.isLoading,
   };

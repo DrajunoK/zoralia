@@ -15,6 +15,11 @@ export function Coins({ n, big }: { n: number; big?: boolean }) {
   return <span className={`coins ${big ? 'big' : ''}`}><span aria-hidden>{theme.coin}</span> {n} <span className="sr">pépites</span></span>;
 }
 
+/** Pas 👣 : la monnaie de la carte (gagnée avec les missions, jamais dépensée). */
+export function Steps({ n, big }: { n: number; big?: boolean }) {
+  return <span className={`coins steps ${big ? 'big' : ''}`}><span aria-hidden>👣</span> {n} <span className="sr">pas</span></span>;
+}
+
 export function Gauge({ value, max, label }: { value: number; max: number; label?: string }) {
   const pct = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0;
   return (

@@ -1,7 +1,7 @@
 import { Link, NavLink, Navigate, Outlet } from 'react-router-dom';
 import { useChild } from '../../state/child';
 import { useFamilyCtx } from '../../state/family';
-import { Avatar, Coins } from '../../ui/kit';
+import { Avatar, Coins, Steps } from '../../ui/kit';
 
 const TABS = [
   ['', '🏠', 'Aventure'], ['missions', '⚔️', 'Missions'], ['carte', '🗺️', 'Carte'], ['boutique', '🎁', 'Boutique'],
@@ -10,7 +10,7 @@ const TABS = [
 
 export default function ChildLayout() {
   const { theme } = useFamilyCtx();
-  const { child, balance, loading } = useChild();
+  const { child, balance, steps, loading } = useChild();
   if (loading) return <div className="splash">Chargement…</div>;
   if (!child || !child.is_active) return <Navigate to="/profils" replace />;
 
@@ -20,7 +20,7 @@ export default function ChildLayout() {
         <Link to="/profils" className="back" aria-label="Changer de profil">⇦</Link>
         <Avatar avatar={child.avatar_key} color={child.color_key} size={52} />
         <div className="who"><strong>{child.display_name}</strong><small>{theme.name}</small></div>
-        <Coins n={balance} big />
+        <div className="counters"><Steps n={steps} /><Coins n={balance} big /></div>
       </header>
       <nav className="tabs" aria-label="Navigation">
         {TABS.map(([to, icon, label]) => (

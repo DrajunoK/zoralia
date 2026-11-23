@@ -57,6 +57,8 @@ export const useOccurrences = () => useFamQuery('occurrences', (_f, today) => {
 export const useRewards = () => useFamQuery('rewards', api.rewards);
 export const useRedemptions = () => useFamQuery('redemptions', api.redemptions);
 export const useTreasure = () => useFamQuery('treasure', api.treasure);
+export const useChestClaims = () => useFamQuery('chest-claims', () => api.chestClaims());
+export const useStepTransactions = () => useFamQuery('step-transactions', (f) => api.stepTransactions(f));
 export const useTransactions = () => useFamQuery('transactions', (f) => api.transactions(f));
 export const useDiceRolls = () => useFamQuery('dice-rolls', api.diceRolls);
 export const useBadges = () => useQuery({ queryKey: ['badges'], queryFn: api.badges, staleTime: Infinity });

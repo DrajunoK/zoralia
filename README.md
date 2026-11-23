@@ -30,4 +30,4 @@ Mise en place de Supabase, de Google et du déploiement : [`docs/SETUP.md`](docs
 - **Projet Supabase partagé avec Popote** : tout Zoralia vit dans le schéma `zoralia` ; le schéma `public` (Popote) n'est jamais touché. Les comptes Google (`auth.users`) sont communs.
 - **Un seul compte : le parent.** Les enfants sont des profils de jeu sur l'appareil familial (pas une frontière de sécurité).
 - **Univers = design tokens** (`src/lib/themes.ts`) ; règles et données sont partagées.
-- Carte : `min(50, floor(pépites gagnées cumulées / 5))`, indépendante du solde.
+- **Deux monnaies** : les pas 👣 (missions) font avancer la carte et ne se dépensent jamais ; les pépites 🪙 viennent des coffres de la carte (et du dé) et se dépensent en boutique ou dans le trésor. Carte : `min(100, floor(pas / 5))`, 20 coffres (1er à 10 pas, puis un tous les 25 pas). Détail : `supabase/migrations/0005_pas_et_coffres.sql`.

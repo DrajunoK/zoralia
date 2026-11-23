@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useChildren, useFamilyCtx, useWallets } from '../state/family';
-import { Avatar, Coins } from '../ui/kit';
+import { Avatar, Coins, Steps } from '../ui/kit';
 
 export default function Profiles() {
   const { family, theme } = useFamilyCtx();
@@ -17,7 +17,7 @@ export default function Profiles() {
           <Link key={c.id} to={`/enfant/${c.id}`} className="profile-card">
             <Avatar avatar={c.avatar_key} color={c.color_key} size={96} />
             <strong>{c.display_name}</strong>
-            <Coins n={wallets.data?.find((w) => w.child_id === c.id)?.balance ?? 0} />
+            <span className="counters"><Steps n={wallets.data?.find((w) => w.child_id === c.id)?.steps ?? 0} /><Coins n={wallets.data?.find((w) => w.child_id === c.id)?.balance ?? 0} /></span>
           </Link>
         ))}
         {!children.isLoading && kids.length === 0 && <p className="empty">Aucun enfant pour l’instant. Ajoute-en depuis l’espace parent.</p>}
