@@ -17,6 +17,8 @@ export default function Settings() {
   const saveSettings = useAction(api.updateSettings, 'Réglages enregistrés');
   const saveFamily = useAction(api.updateFamily, 'Univers changé ✨');
   const [confirmName, setConfirmName] = useState('');
+  const [confirmReset, setConfirmReset] = useState('');
+  const reset = useAction(api.resetActivity, 'Activité remise à zéro ✨');
   const overrides = settings.settings.badge_thresholds ?? {};
 
   async function download() {
@@ -91,7 +93,13 @@ export default function Settings() {
         <div className="row wrap"><button className="btn ghost" onClick={download}>⬇️ Exporter les données du foyer</button><button className="btn ghost" onClick={signOut}>Se déconnecter</button></div>
       </Card>
 
-      <Card title="Zone sensible" className="danger">
+      <Card title="Remettre l’activité à zéro" className="danger">
+        <p>Efface ce que les enfants ont fait : missions réalisées, pas, pépites, coffres ouverts, demandes de la boutique, dé, badges, trésor. <b>Les enfants, les missions, la boutique et les réglages sont conservés.</b> Pense à exporter les données avant si tu veux garder une trace.</p>
+        <Field label="Tape RESET pour confirmer"><input value={confirmReset} onChange={(e) => setConfirmReset(e.target.value)} autoCapitalize="characters" /></Field>
+        <button className="btn danger" disabled={confirmReset !== 'RESET' || reset.pending} onClick={async () => { await reset.run(family.id); setConfirmReset(''); }}>Tout remettre à zéro</button>
+      </Card>
+
+      <Card title="Supprimer le foyer" className="danger">
         <p>Supprimer le foyer efface définitivement enfants, missions, pépites et historique. Ton compte Google (et Popote) n’est pas touché.</p>
         <Field label={`Tape « ${family.name} » pour confirmer`}><input value={confirmName} onChange={(e) => setConfirmName(e.target.value)} /></Field>
         <button className="btn danger" disabled={confirmName !== family.name} onClick={remove}>Supprimer le foyer</button>

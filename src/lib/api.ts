@@ -66,6 +66,7 @@ export const api = {
   adjustPoints: async (child: string, amount: number, reason: string) =>
     ok(await supabase.rpc('parent_adjust_points', { p_child: child, p_amount: amount, p_reason: reason })),
   exportFamily: async (f: string) => ok(await supabase.rpc('export_family', { p_family: f })),
+  resetActivity: async (f: string) => ok(await supabase.rpc('reset_family_activity', { p_family: f })),
   deleteFamily: async (f: string) => ok(await supabase.rpc('delete_family', { p_family: f })),
 
   // ── Écritures directes autorisées par RLS (configuration) ──
