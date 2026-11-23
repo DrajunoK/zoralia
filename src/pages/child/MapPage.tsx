@@ -1,7 +1,7 @@
 import { CELLS_PER_TERRITORY, CHEST_COUNT, MAP_CELLS, STEPS_PER_CELL, STEPS_PER_TERRITORY, chestCell, chestValue } from '../../lib/game';
 import { useChild } from '../../state/child';
 import { useFamilyCtx } from '../../state/family';
-import { Gauge } from '../../ui/kit';
+import { Footprint, Gauge } from '../../ui/kit';
 
 const chestAt = new Map(Array.from({ length: CHEST_COUNT }, (_, i) => [chestCell(i + 1), i + 1]));
 
@@ -18,7 +18,7 @@ export default function MapPage() {
     <>
       <h1>🗺️ Ma carte</h1>
       <section className="card">
-        <p><b>Étape {cell}</b> sur {MAP_CELLS} · <b>{steps}</b> pas 👣 au total</p>
+        <p><b>Étape {cell}</b> sur {MAP_CELLS} · <b>{steps}</b> <Footprint /> pas au total</p>
         <Gauge value={cell} max={MAP_CELLS} label="Progression" />
         <p className="muted">{nextAt ? `Encore ${nextAt - steps} pas pour l’étape suivante.` : 'Bravo, tu as terminé la carte ! 🏆'} Les pas ne se dépensent jamais : ta carte ne recule pas.</p>
         {chest && <p>🧰 Prochain coffre dans <b>{chest.missing} pas</b> : +{chest.value} {theme.coin} pépites</p>}

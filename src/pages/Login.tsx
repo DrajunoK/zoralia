@@ -22,7 +22,7 @@ export default function Login() {
   return (
     <main className="login">
       <div className="login-card">
-        <div className="logo" aria-hidden>🗺️</div>
+        <img className="logo" src="/logo.svg" alt="" width="104" height="104" />
         <h1>Zoralia</h1>
         <p className="tagline">Chaque jour, une nouvelle aventure</p>
         {!supabaseConfigured ? (

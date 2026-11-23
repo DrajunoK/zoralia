@@ -79,7 +79,7 @@ export default function MissionsAdmin() {
           <div className="row wrap">
             <Field label="Type"><select value={draft.category} onChange={(e) => setDraft({ ...draft, category: e.target.value as Category })}>
               {Object.entries(CATS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></Field>
-            <Field label="Pas 👣" hint="Gagnés sur la carte quand la mission est validée"><input type="number" min={1} max={20} value={draft.points} onChange={(e) => setDraft({ ...draft, points: Math.min(20, Math.max(1, Number(e.target.value) || 1)) })} /></Field>
+            <Field label="Pas" hint="Gagnés sur la carte quand la mission est validée"><input type="number" min={1} max={20} value={draft.points} onChange={(e) => setDraft({ ...draft, points: Math.min(20, Math.max(1, Number(e.target.value) || 1)) })} /></Field>
             <Field label="Récurrence"><select value={draft.recType} onChange={(e) => setDraft({ ...draft, recType: e.target.value as Recurrence['type'] })}>
               <option value="daily">Tous les jours</option><option value="weekly">Certains jours</option><option value="once">Une seule fois</option></select></Field>
           </div>

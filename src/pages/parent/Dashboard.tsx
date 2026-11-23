@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { MAP_CELLS, mapCell, nextChest } from '../../lib/game';
 import { useAction, useChildren, useDiceRolls, useFamilyCtx, useMissions, useOccurrences, useRedemptions, useRewards, useTransactions, useTreasure, useWallets } from '../../state/family';
-import { Avatar, Card, Coins, Empty, formatDate, Gauge, Steps } from '../../ui/kit';
+import { Avatar, Card, Coins, Empty, formatDate, Footprint, Gauge, Steps } from '../../ui/kit';
 import { FACES } from '../child/Dice';
 import { TYPE_LABELS } from './Journal';
 
@@ -24,7 +24,7 @@ export default function Dashboard() {
   const approveR = useAction(api.approveReward, 'Récompense accordée 🎁');
   const rejectR = useAction(api.rejectReward, 'Demande refusée');
   const adjust = useAction(api.adjustPoints, 'Pépites ajustées');
-  const adjustSteps = useAction(api.adjustSteps, 'Pas ajoutés 👣');
+  const adjustSteps = useAction(api.adjustSteps, 'Pas ajoutés');
   const record = useAction(api.recordMission, 'Mission enregistrée ✅');
   const resolve = useAction(api.resolveRoll, 'Noté comme honoré');
   const [notes, setNotes] = useState<Record<string, string>>({});
@@ -92,7 +92,7 @@ export default function Dashboard() {
               <article key={c.id} className="kid-card">
                 <div className="row"><Avatar avatar={c.avatar_key} color={c.color_key} /><strong>{c.display_name}</strong><span className="counters"><Steps n={w?.steps ?? 0} /><Coins n={w?.balance ?? 0} /></span></div>
                 <Gauge value={mapCell(w?.steps ?? 0)} max={MAP_CELLS} label="Carte" />
-                <small className="muted">Étape {mapCell(w?.steps ?? 0)} / {MAP_CELLS} · {w?.steps ?? 0} pas 👣{nextChest(w?.steps ?? 0) ? ` · coffre dans ${nextChest(w?.steps ?? 0)!.missing} pas` : ''}</small>
+                <small className="muted">Étape {mapCell(w?.steps ?? 0)} / {MAP_CELLS} · {w?.steps ?? 0} pas{nextChest(w?.steps ?? 0) ? ` · coffre dans ${nextChest(w?.steps ?? 0)!.missing} pas` : ''}</small>
                 <div className="row">
                   <select aria-label="Enregistrer une mission" value="" onChange={(e) => e.target.value && record.run(e.target.value, c.id)}>
                     <option value="">+ Mission accomplie…</option>
@@ -118,7 +118,7 @@ export default function Dashboard() {
           }}>
             <strong>Ajuster pour {kid(adj.child)?.display_name}</strong>
             <div className="seg" role="tablist">
-              <button type="button" role="tab" aria-selected={adj.kind === 'steps'} className={adj.kind === 'steps' ? 'on' : ''} onClick={() => setAdj({ ...adj, kind: 'steps' })}>👣 Pas</button>
+              <button type="button" role="tab" aria-selected={adj.kind === 'steps'} className={adj.kind === 'steps' ? 'on' : ''} onClick={() => setAdj({ ...adj, kind: 'steps' })}><Footprint /> Pas</button>
               <button type="button" role="tab" aria-selected={adj.kind === 'points'} className={adj.kind === 'points' ? 'on' : ''} onClick={() => setAdj({ ...adj, kind: 'points' })}>🪙 Pépites</button>
             </div>
             <div className="row">

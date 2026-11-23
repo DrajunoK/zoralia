@@ -1,6 +1,6 @@
 // Faux client Supabase pour travailler le design sans backend : `npm run dev:mock`.
 // Branché à la place de ./supabase par l'alias de vite.config.ts quand le mode est « mock ».
-// Les écritures sont ignorées ; `?theme=pirates` choisit l'univers, `?kid=tom` l'enfant par défaut des liens.
+// Les écritures sont ignorées ; `?theme=pirates` choisit l'univers, `?logout` affiche l'écran de connexion.
 
 const params = new URLSearchParams(location.search);
 export const supabaseConfigured = true;
@@ -76,7 +76,7 @@ export const supabase = {
     error: null,
   }),
   auth: {
-    getSession: () => Promise.resolve({ data: { session } }),
+    getSession: () => Promise.resolve({ data: { session: params.has('logout') ? null : session } }),
     onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
     signOut: () => Promise.resolve({}),
     signInWithOAuth: () => Promise.resolve({ error: null }),

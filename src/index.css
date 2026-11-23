@@ -72,7 +72,7 @@ input[type=checkbox] { min-height: 0; width: 22px; height: 22px; accent-color: v
 .login, .onboarding, .profiles { max-width: 720px; margin: 0 auto; padding: 24px 16px; }
 .login { min-height: 100vh; display: grid; place-items: center; }
 .login-card { text-align: center; background: #fff; border-radius: 32px; padding: 34px 24px; width: 100%; box-shadow: var(--shadow); }
-.logo { font-size: 4rem; } .tagline { color: var(--muted); font-size: 1.1rem; } .fine { font-size: .85rem; color: var(--muted); margin-top: 20px; }
+.logo { width: 104px; height: 104px; border-radius: 26px; box-shadow: var(--shadow); } .tagline { color: var(--muted); font-size: 1.1rem; } .fine { font-size: .85rem; color: var(--muted); margin-top: 20px; }
 .notice { background: var(--soft); padding: 12px; border-radius: 16px; } .notice.error { background: #fde7e4; color: #8a2a20; }
 .btn.google { width: 100%; max-width: 360px; margin-top: 8px; }
 .stepper { display: flex; gap: 6px; list-style: none; padding: 0; margin: 0 0 12px; }
@@ -147,3 +147,9 @@ input[type=checkbox] { min-height: 0; width: 22px; height: 22px; accent-color: v
 .profile-card .counters { flex-wrap: nowrap; justify-content: center; gap: 6px; } .profile-card .coins { padding: 3px 9px; font-size: .95rem; }
 .kid-card .row { flex-wrap: wrap; } .kid-card .row select { flex: 1 1 160px; }
 .hero-bar.parent .who strong { font-size: 1.15rem; }
+
+/* empreinte (icône des pas) : orange vif cerclé d'encre, lisible même en petit */
+.foot { width: .95em; height: 1.35em; flex: none; vertical-align: -.25em; }
+.foot path, .foot ellipse { fill: var(--primary); stroke: #3b2f1a; stroke-width: 3.6; paint-order: stroke; stroke-linejoin: round; }
+.coins .foot { width: 1em; height: 1.4em; }
+.hero-bar .counters .foot { width: 1.05em; height: 1.5em; }

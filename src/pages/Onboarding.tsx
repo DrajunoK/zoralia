@@ -5,7 +5,7 @@ import { errorMessage } from '../lib/errors';
 import { applyTheme, THEMES, themeBySlug } from '../lib/themes';
 import { useSession } from '../state/session';
 import { useToast } from '../state/toast';
-import { AvatarPicker, Avatar, Field } from '../ui/kit';
+import { AvatarPicker, Avatar, Field, Footprint } from '../ui/kit';
 
 interface Draft { name: string; avatar: string; color: string }
 const AVATAR_CYCLE = ['fox', 'cat', 'panda', 'owl', 'dragon', 'unicorn'];
@@ -98,7 +98,7 @@ export default function Onboarding({ userName }: { userName: string }) {
           <h1>Les règles du jeu</h1>
           <ul className="rules">
             <li>⚔️ Les enfants réalisent des <b>missions</b> et déclarent « J’ai terminé » ; <b>tu valides</b>.</li>
-            <li>👣 Chaque mission validée donne des <b>pas</b> : 1 pour une routine, 3 à 5 pour un exploit. Les pas font avancer sur la carte et ne se dépensent jamais.</li>
+            <li><Footprint /> Chaque mission validée donne des <b>pas</b> : 1 pour une routine, 3 à 5 pour un exploit. Les pas font avancer sur la carte et ne se dépensent jamais.</li>
             <li>🧰 Sur la carte, des <b>coffres</b> contiennent des pépites : de 5 au début jusqu’à 20 près du sommet.</li>
             <li>{t.coin} Les <b>pépites</b> s’échangent contre des récompenses que tu approuves, ou remplissent le trésor commun.</li>
             <li>🎲 Un <b>dé du destin</b> offre de petites surprises.</li>
