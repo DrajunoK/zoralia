@@ -16,7 +16,7 @@ export interface MapLayout {
 }
 
 const MARGIN_X = 42;
-const TOP = 130;
+const TOP = 88;
 const BOTTOM = 130;
 
 export function layoutMap(width: number): MapLayout {

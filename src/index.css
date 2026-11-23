@@ -132,7 +132,7 @@ input[type=checkbox] { min-height: 0; width: 22px; height: 22px; accent-color: v
 .card:has(.die) { text-align: center; } .card:has(.die) .btn { margin-top: 8px; }
 .contribute input { width: 90px; }
 .kids { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr)); gap: 12px; }
-.kid-card { min-width: 0; border-radius: 20px; padding: 12px; display: grid; gap: 4px; background: color-mix(in srgb, var(--sky1) 8%, #fff); } .kid-card select { flex: 1; min-width: 0; }
+.kid-card { min-width: 0; border-radius: 20px; padding: 12px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; background: color-mix(in srgb, var(--sky1) 8%, #fff); } .kid-card select { flex: 1; min-width: 0; width: 100%; }
 .adjust { margin-top: 12px; padding-top: 12px; border-top: 1px dashed color-mix(in srgb, var(--sky2) 25%, #fff); } .adjust input { flex: 1; min-width: 80px; }
 .validate input { width: 100%; margin: 6px 0; }
 
@@ -205,3 +205,4 @@ input[type=checkbox] { min-height: 0; width: 22px; height: 22px; accent-color: v
 .wm-ribbon.now { background: var(--primary); color: var(--primary-ink); text-shadow: none; } .wm-ribbon.locked { filter: grayscale(.7); opacity: .92; }
 .wm-fog { position: absolute; left: 0; right: 0; z-index: 7; pointer-events: none; }
 @media (prefers-reduced-motion: reduce) { .wm-done { animation: none; stroke-dasharray: none; } }
+.kid-card > * { min-width: 0; } .kid-card .row select { flex: 1 1 150px; width: auto; }

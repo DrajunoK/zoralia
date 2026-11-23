@@ -123,7 +123,7 @@ export default function WorldMap({ worldKey, territories, members }: Props) {
           </div>
         );
       })}
-      <div className="wm-node finish" style={{ ...pos(layout.pts[MAP_CELLS].x, layout.pts[MAP_CELLS].y - 36), fontSize: px(34 * u) }} aria-label="Arrivée">🏆<small style={{ fontSize: px(10 * u) }}>ARRIVÉE</small></div>
+      <div className="wm-node finish" style={{ ...pos(layout.pts[MAP_CELLS].x, layout.pts[MAP_CELLS].y - 46), fontSize: px(34 * u) }} aria-label="Arrivée">🏆<small style={{ fontSize: px(10 * u) }}>ARRIVÉE</small></div>
       <div className="wm-start" style={{ ...pos(layout.pts[0].x + 40, layout.pts[0].y - 18), fontSize: px(12 * u) }}>🚩 DÉPART</div>
 
       {members.map((m, idx) => {
