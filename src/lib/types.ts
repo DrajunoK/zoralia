@@ -5,7 +5,7 @@ export type Category = 'daily' | 'heroic' | 'surprise';
 export interface Family { id: string; name: string; timezone: string; active_theme_id: string | null }
 export interface FamilySettings {
   family_id: string; dice_enabled: boolean; dice_mode: 'weekly' | 'quests'; dice_quest_threshold: number;
-  treasure_enabled: boolean; approval_required: boolean; settings: { badge_thresholds?: Record<string, number> };
+  treasure_enabled: boolean; approval_required: boolean; settings: { badge_thresholds?: Record<string, number>; show_siblings?: boolean };
 }
 export interface ThemeRow { id: string; slug: string; name: string }
 export interface Child { id: string; family_id: string; display_name: string; avatar_key: string; color_key: string; is_active: boolean }

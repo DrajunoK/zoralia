@@ -153,3 +153,12 @@ input[type=checkbox] { min-height: 0; width: 22px; height: 22px; accent-color: v
 .foot path, .foot ellipse { fill: var(--primary); stroke: #3b2f1a; stroke-width: 3.6; paint-order: stroke; stroke-linejoin: round; }
 .coins .foot { width: 1em; height: 1.4em; }
 .hero-bar .counters .foot { width: 1.05em; height: 1.5em; }
+
+/* carte partagée : tous les avatars de la famille */
+.step .others { position: absolute; top: -12px; right: -6px; display: flex; flex-direction: row-reverse; } .step .others .avatar { margin-left: -9px; box-shadow: 0 0 0 2px #fff, var(--shadow-s); }
+.step.here { overflow: visible; } .step.here .avatar { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--second); }
+.startline { display: flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 700; margin: 8px 4px; }
+.fellowship > li { gap: 12px; } .fellowship .fw-main { flex: 1; min-width: 0; display: grid; } .fellowship .gauge { margin: 4px 0 0; height: 10px; }
+.fellowship li.me strong { color: var(--second); } .fw-num { text-align: right; white-space: nowrap; } .fw-num small { display: flex; align-items: center; gap: 3px; justify-content: flex-end; }
+
+.list > li > span.avatar { flex: none; }

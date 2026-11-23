@@ -54,6 +54,7 @@ export default function Settings() {
 
       <Card title="Règles du foyer">
         <label className="check"><input type="checkbox" checked={settings.approval_required} onChange={(e) => set({ approval_required: e.target.checked })} /> Valider toutes les missions (recommandé au début)</label>
+        <label className="check"><input type="checkbox" checked={settings.settings.show_siblings !== false} onChange={(e) => set({ settings: { ...settings.settings, show_siblings: e.target.checked } })} /> Montrer les autres enfants sur la carte (chacun voit où en sont les autres)</label>
         <label className="check"><input type="checkbox" checked={settings.treasure_enabled} onChange={(e) => set({ treasure_enabled: e.target.checked })} /> Trésor commun activé</label>
         <label className="check"><input type="checkbox" checked={settings.dice_enabled} onChange={(e) => set({ dice_enabled: e.target.checked })} /> Dé du destin activé</label>
         {settings.dice_enabled && (

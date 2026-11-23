@@ -3,6 +3,7 @@ import { MAP_CELLS, STEPS_PER_CELL } from '../../lib/game';
 import { useChild } from '../../state/child';
 import { useFamilyCtx, useRewards, useTreasure } from '../../state/family';
 import { Card, Coins, Empty, Gauge } from '../../ui/kit';
+import Fellowship, { useFellowship } from './Fellowship';
 import MissionCard from './MissionCard';
 
 export default function Home() {
@@ -10,6 +11,7 @@ export default function Home() {
   const { child, balance, steps, cell, nextAt, territory, chest, missionViews } = useChild();
   const rewards = useRewards();
   const treasure = useTreasure();
+  const fellows = useFellowship(child?.id);
   if (!child) return null;
 
   const todo = missionViews.filter((v) => v.state === 'available' || v.state === 'claimed').slice(0, 4);
@@ -28,6 +30,12 @@ export default function Home() {
         <p className="muted">{nextAt ? `Encore ${nextAt - steps} pas pour la prochaine étape.` : 'Tu as atteint le bout de la carte !'}</p>
         {chest && <p className="muted">🧰 Prochain coffre dans <b>{chest.missing} pas</b> : +{chest.value} <span aria-hidden>{theme.coin}</span> pépites</p>}
       </Card>
+
+      {fellows.length > 1 && (
+        <Card title="👨‍👩‍👧 Les aventuriers" action={<Link to="carte" className="link">La carte</Link>}>
+          <Fellowship currentId={child.id} />
+        </Card>
+      )}
 
       <Card title="⚔️ Missions du jour" action={<Link to="missions" className="link">Toutes les missions</Link>}>
         {todo.length === 0 ? <Empty>Plus rien à faire aujourd’hui, bravo ! 🎉</Empty>

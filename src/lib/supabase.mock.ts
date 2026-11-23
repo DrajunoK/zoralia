@@ -10,7 +10,7 @@ const THEME_SLUGS = ['aventuriers', 'princesses', 'pirates', 'espace', 'dinosaur
 const themes = THEME_SLUGS.map((slug, i) => ({ id: U(100 + i), slug, name: slug, is_active: true }));
 const activeTheme = themes.find((t) => t.slug === params.get('theme')) ?? themes[0];
 
-const FAMILY = U(1), LEA = U(11), TOM = U(12);
+const FAMILY = U(1), LEA = U(11), TOM = U(12), MIA = U(13);
 const day = new Date().toISOString().slice(0, 10);
 
 const mission = (n: number, title: string, category: string, points: number, description = '') => ({
@@ -24,8 +24,9 @@ const rows: Record<string, unknown[]> = {
   children: [
     { id: LEA, family_id: FAMILY, display_name: 'Léa', avatar_key: 'fox', color_key: 'sun', is_active: true },
     { id: TOM, family_id: FAMILY, display_name: 'Tom', avatar_key: 'panda', color_key: 'sky', is_active: true },
+    { id: MIA, family_id: FAMILY, display_name: 'Mia', avatar_key: 'unicorn', color_key: 'rose', is_active: true },
   ],
-  child_wallet_summary: [{ child_id: LEA, family_id: FAMILY, balance: 14, steps: 62 }, { child_id: TOM, family_id: FAMILY, balance: 5, steps: 27 }],
+  child_wallet_summary: [{ child_id: LEA, family_id: FAMILY, balance: 14, steps: 62 }, { child_id: TOM, family_id: FAMILY, balance: 5, steps: 62 }, { child_id: MIA, family_id: FAMILY, balance: 30, steps: 205 }],
   missions: [
     mission(1, 'Mettre la table', 'daily', 1), mission(2, 'Ranger ma chambre', 'daily', 1),
     mission(3, 'Je mange correctement', 'daily', 1, 'Avec ma fourchette et mon couteau, et je ne me lève pas de table.'),
