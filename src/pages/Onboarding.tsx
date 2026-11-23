@@ -46,7 +46,7 @@ export default function Onboarding({ userName }: { userName: string }) {
 
   return (
     <main className="onboarding">
-      <ol className="steps" aria-label="Étapes">
+      <ol className="stepper" aria-label="Étapes">
         {['Foyer', 'Enfants', 'Univers', 'Règles'].map((s, i) => (
           <li key={s} className={i === step ? 'on' : i < step ? 'done' : ''}>{s}</li>
         ))}

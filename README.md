@@ -22,6 +22,7 @@ Mise en place de Supabase, de Google et du déploiement : [`docs/SETUP.md`](docs
 |---|---|
 | `npm test` | tests des règles de jeu (Vitest) |
 | `npm run test:sql` | migrations + tests d'acceptation SQL/RLS dans un Postgres jetable (Docker) |
+| `npm run dev:mock` | l'appli avec de fausses données (sans Supabase) pour travailler le design : `?theme=pirates` change d'univers, `/profils`, `/enfant/00000000-0000-4000-8000-000000000011`, `/parent` |
 | `npm run build` | typecheck + build de production dans `dist/` |
 
 ## Architecture en bref

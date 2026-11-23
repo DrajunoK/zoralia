@@ -11,7 +11,7 @@ export default function ParentLayout() {
   return (
     <div className="shell">
       <header className="hero-bar parent">
-        <Link to="/profils" className="back" aria-label="Retour aux profils">⇦</Link>
+        <Link to="/profils" className="back" aria-label="Retour aux profils"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></Link>
         <div className="who"><strong>Espace parent</strong><small>{family.name}</small></div>
       </header>
       <nav className="tabs" aria-label="Navigation parent">

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { MAP_CELLS, STEPS_PER_CELL } from '../../lib/game';
 import { useChild } from '../../state/child';
 import { useFamilyCtx, useRewards, useTreasure } from '../../state/family';
-import { Card, Coins, Empty, Gauge, Steps } from '../../ui/kit';
+import { Card, Coins, Empty, Gauge } from '../../ui/kit';
 import MissionCard from './MissionCard';
 
 export default function Home() {
@@ -20,7 +20,6 @@ export default function Home() {
     <>
       <Card className="welcome">
         <h1>Bienvenue dans ton aventure, {child.display_name} ! <span aria-hidden>{theme.heroEmoji}</span></h1>
-        <div className="counters"><Steps n={steps} big /><Coins n={balance} big /></div>
       </Card>
 
       <Card title="🗺️ Ma carte" action={<Link to="carte" className="link">Voir la carte</Link>}>
@@ -48,7 +47,10 @@ export default function Home() {
           </Card>
         )}
       </div>
-      {settings.dice_enabled && <Link to="de" className="btn ghost wide">🎲 Dé du destin</Link>}
+      <div className="tiles">
+        {settings.dice_enabled && <Link to="de" className="tile" style={{ '--t': '#ff6f9c' } as React.CSSProperties}><span className="ic" aria-hidden>🎲</span>Dé du destin</Link>}
+        <Link to="badges" className="tile" style={{ '--t': '#8b5cf6' } as React.CSSProperties}><span className="ic" aria-hidden>🏅</span>Mes badges</Link>
+      </div>
     </>
   );
 }

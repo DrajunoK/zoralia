@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:sql": "supabase/tests/run.sh",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "dev:mock": "vite --mode mock"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.2",

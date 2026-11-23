@@ -10,7 +10,7 @@ export interface Theme {
   vars: Record<string, string>;
 }
 
-const base = { '--radius': '18px' };
+const base = { '--radius': '24px' };
 
 export const THEMES: Theme[] = [
   {
@@ -20,7 +20,7 @@ export const THEMES: Theme[] = [
     coin: '🪙',
     heroEmoji: '🛡️',
     territories: ['Forêt des Premiers Pas', 'Rivière des Découvertes', 'Château du Foyer', 'Montagnes des Héros', 'Sommet des Légendes'],
-    vars: { ...base, '--bg': '#f5f0e6', '--card': '#fffdf8', '--ink': '#283247', '--muted': '#6c7384', '--line': '#e2d9ca', '--primary': '#2f6f4f', '--primary-ink': '#ffffff', '--accent': '#d9a21b', '--soft': '#f1e5c7', '--hero': 'linear-gradient(120deg,#2f6f4f,#d9a21b)', '--font': 'system-ui, sans-serif', '--font-title': 'Georgia, "Times New Roman", serif' },
+    vars: { ...base, '--sky1': '#43b184', '--sky2': '#1b5e4b', '--primary': '#ff9f1c', '--primary-ink': '#3b2f1a', '--second': '#2f7d5b', '--soft': '#ffe7b0', '--hero': 'linear-gradient(120deg,#43b184,#ffd36e)' },
   },
   {
     slug: 'princesses',
@@ -29,7 +29,7 @@ export const THEMES: Theme[] = [
     coin: '💎',
     heroEmoji: '👑',
     territories: ['Jardins enchantés', 'Lac des souhaits', 'Palais', 'Nuages', 'Étoiles'],
-    vars: { ...base, '--bg': '#fdf2f8', '--card': '#ffffff', '--ink': '#4a2545', '--muted': '#8b6a88', '--line': '#f3d4e8', '--primary': '#c2459b', '--primary-ink': '#ffffff', '--accent': '#7c5cd6', '--soft': '#fbe3f2', '--hero': 'linear-gradient(120deg,#e879b9,#9b8cf0)', '--font': 'system-ui, sans-serif', '--font-title': '"Trebuchet MS", system-ui, sans-serif' },
+    vars: { ...base, '--sky1': '#ff9ad5', '--sky2': '#8e6cf0', '--primary': '#ff5fa8', '--primary-ink': '#ffffff', '--second': '#8b5cf6', '--soft': '#ffd6f0', '--hero': 'linear-gradient(120deg,#ff9ad5,#9b8cf0)' },
   },
   {
     slug: 'pirates',
@@ -38,7 +38,7 @@ export const THEMES: Theme[] = [
     coin: '🪙',
     heroEmoji: '🏴‍☠️',
     territories: ['Port', 'Jungle', 'Crique', 'Île au trésor', 'Grand large'],
-    vars: { ...base, '--bg': '#eaf3f6', '--card': '#ffffff', '--ink': '#13324a', '--muted': '#5d7788', '--line': '#c9dde6', '--primary': '#0e6e8c', '--primary-ink': '#ffffff', '--accent': '#d8602b', '--soft': '#d6eaf1', '--hero': 'linear-gradient(120deg,#0e6e8c,#13324a)', '--font': 'system-ui, sans-serif', '--font-title': '"Palatino Linotype", Palatino, serif' },
+    vars: { ...base, '--sky1': '#52d0f5', '--sky2': '#1d4e89', '--primary': '#ff6b35', '--primary-ink': '#ffffff', '--second': '#0b7285', '--soft': '#ffe0a8', '--hero': 'linear-gradient(120deg,#52d0f5,#1d4e89)' },
   },
   {
     slug: 'espace',
@@ -47,7 +47,7 @@ export const THEMES: Theme[] = [
     coin: '⭐',
     heroEmoji: '🚀',
     territories: ['Base', 'Lune', 'Planète rouge', 'Nébuleuse', 'Constellations'],
-    vars: { ...base, '--bg': '#12142b', '--card': '#1c2043', '--ink': '#eef0ff', '--muted': '#a0a6d6', '--line': '#2d3365', '--primary': '#7c6cff', '--primary-ink': '#ffffff', '--accent': '#ffcf4a', '--soft': '#262b5a', '--hero': 'linear-gradient(120deg,#4b3fd1,#d84a8f)', '--font': 'system-ui, sans-serif', '--font-title': '"Avenir Next", system-ui, sans-serif' },
+    vars: { ...base, '--sky1': '#6a55d8', '--sky2': '#1a1650', '--primary': '#ffd23f', '--primary-ink': '#2a2350', '--second': '#7c6cff', '--soft': '#d8ceff', '--hero': 'linear-gradient(120deg,#4b3fd1,#d84a8f)' },
   },
   {
     slug: 'dinosaures',
@@ -56,7 +56,7 @@ export const THEMES: Theme[] = [
     coin: '🥚',
     heroEmoji: '🦖',
     territories: ['Camp', 'Jungle', 'Vallée', 'Volcan', 'Fossiles'],
-    vars: { ...base, '--bg': '#f1f4e6', '--card': '#fdfef7', '--ink': '#2d3a1f', '--muted': '#6b7a55', '--line': '#d9e1c2', '--primary': '#5a8a1f', '--primary-ink': '#ffffff', '--accent': '#e0662a', '--soft': '#e3ebc9', '--hero': 'linear-gradient(120deg,#5a8a1f,#e0662a)', '--font': 'system-ui, sans-serif', '--font-title': '"Arial Rounded MT Bold", "Trebuchet MS", sans-serif' },
+    vars: { ...base, '--sky1': '#a6e04e', '--sky2': '#2f7d32', '--primary': '#ff7a2f', '--primary-ink': '#ffffff', '--second': '#3f8f2f', '--soft': '#ecf3b8', '--hero': 'linear-gradient(120deg,#a6e04e,#ff7a2f)' },
   },
 ];
 
@@ -70,7 +70,7 @@ export function applyTheme(theme: Theme) {
   const root = document.documentElement;
   root.dataset.theme = theme.slug;
   for (const [k, v] of Object.entries(theme.vars)) root.style.setProperty(k, v);
-  root.style.colorScheme = theme.slug === 'espace' ? 'dark' : 'light';
+  root.style.colorScheme = 'light';
 }
 
 export const AVATARS: Record<string, string> = {

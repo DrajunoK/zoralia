@@ -3,9 +3,9 @@ import { useChild } from '../../state/child';
 import { useFamilyCtx } from '../../state/family';
 import { Avatar, Coins, Steps } from '../../ui/kit';
 
+// Barre du bas : les 5 écrans du quotidien ; le dé et les badges sont des tuiles sur l'accueil.
 const TABS = [
-  ['', '🏠', 'Aventure'], ['missions', '⚔️', 'Missions'], ['carte', '🗺️', 'Carte'], ['boutique', '🎁', 'Boutique'],
-  ['tresor', '🏆', 'Trésor'], ['de', '🎲', 'Dé'], ['badges', '🏅', 'Badges'],
+  ['', '🏠', 'Aventure'], ['missions', '⚔️', 'Missions'], ['carte', '🗺️', 'Carte'], ['boutique', '🎁', 'Boutique'], ['tresor', '🏆', 'Trésor'],
 ] as const;
 
 export default function ChildLayout() {
@@ -17,19 +17,19 @@ export default function ChildLayout() {
   return (
     <div className="shell">
       <header className="hero-bar">
-        <Link to="/profils" className="back" aria-label="Changer de profil">⇦</Link>
+        <Link to="/profils" className="back" aria-label="Changer de profil"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></Link>
         <Avatar avatar={child.avatar_key} color={child.color_key} size={52} />
         <div className="who"><strong>{child.display_name}</strong><small>{theme.name}</small></div>
         <div className="counters"><Steps n={steps} /><Coins n={balance} big /></div>
       </header>
-      <nav className="tabs" aria-label="Navigation">
+      <main className="page"><Outlet /></main>
+      <nav className="bottomnav" aria-label="Navigation"><div className="bottomnav-in">
         {TABS.map(([to, icon, label]) => (
-          <NavLink key={to} to={to} end={to === ''} className={({ isActive }) => `tab ${isActive ? 'on' : ''}`}>
-            <span aria-hidden>{icon}</span> {label}
+          <NavLink key={to} to={to} end={to === ''} className={({ isActive }) => (isActive ? 'on' : '')}>
+            <span aria-hidden>{icon}</span>{label}
           </NavLink>
         ))}
-      </nav>
-      <main className="page"><Outlet /></main>
+      </div></nav>
     </div>
   );
 }
