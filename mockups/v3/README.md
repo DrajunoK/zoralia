@@ -13,3 +13,10 @@
 | Nuit | néons sur fond sombre | ●●●○○ | verre dépoli, aurore |
 
 Les univers (aventuriers, princesses, pirates, espace, dinosaures) fonctionnent avec chaque style.
+
+## Modèle de jeu montré par cette maquette (deux monnaies)
+
+- 👣 **Pas** : gagnés en validant des missions, font avancer la carte (100 étapes de 5 pas), ne se dépensent jamais.
+- 🧰 **Coffres** sur la carte (1er à 10 pas, puis un tous les 25 pas ; 5, 8, 10, 15, 20 pépites selon le territoire) : seule source automatique de pépites.
+- 🪙 **Pépites** : boutique et trésor commun. Dépenser ne fait jamais reculer la carte.
+- Dans l'espace parent, « Valider » une mission donne +1 pas et peut ouvrir un coffre (animation + pépites).

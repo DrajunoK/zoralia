@@ -235,3 +235,13 @@ body.shot *, body.shot *::before, body.shot *::after { animation: none !importan
 .ribbon span { font-size: calc(var(--u) * 24); } .ribbon div { display: grid; min-width: 0; } .ribbon b { font: 400 calc(var(--u) * 12.5) var(--display); line-height: 1.15; } .ribbon small { font-weight: 700; font-size: calc(var(--u) * 10.5); opacity: .95; }
 .ribbon.now { background: var(--primary); color: var(--primary-ink); text-shadow: none; animation: bump 3s infinite; } .ribbon.locked { filter: grayscale(.8) brightness(.9); }
 @media (prefers-reduced-motion: reduce) { .r-gold, .r-ink.gold { stroke-dashoffset: 0; } }
+
+/* v3 : deux compteurs (pas 👣 + pépites 🪙) et coffres sur la carte */
+.counters-m { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; } .top .counters-m .pill { margin-left: 0; }
+.steps-pill { padding-left: 12px; } .stp { font-style: normal; }
+.mnode small { position: absolute; bottom: calc(var(--u) * -9); background: var(--ink); color: #fff; border-radius: 99px; padding: 0 6px; font: 400 calc(var(--u) * 9) var(--display); }
+.mnode.chestn { overflow: visible; }
+
+/* capture : ?crop=Y n'affiche que la carte, décalée de Y px (vérification visuelle sans page géante) */
+body.crop .top, body.crop .title, body.crop .tmap-stats, body.crop .nav, body.crop .themebar { display: none !important; }
+body.crop .worldmap { position: fixed; top: calc(-1 * var(--crop)); left: 14px; right: 14px; width: auto; margin: 0; }

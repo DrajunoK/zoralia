@@ -11,8 +11,15 @@ const THEMES = {
   dinosaures: { name: 'Dinosaures', hero: '🦖', glyph: '●', decor: ['🦕', '🌋', '🌿', '🥚', '🦴', '🌴'],
     terr: ['Camp', 'Jungle', 'Vallée', 'Volcan', 'Fossiles'] },
 };
-const STARTS = [0, 30, 80, 150, 250];
-const state = { theme: 'aventuriers', balance: 14, lifetime: 62, tab: 'daily', treasure: 48, lea: 30 };
+const state = { theme: 'aventuriers', balance: 14, steps: 62, tab: 'daily', treasure: 48, lea: 30 };
+// Deux monnaies : pas (missions → carte) et pépites (coffres → boutique). Miroir de src/lib/game.ts.
+const MAP_CELLS = 100, STEPS_PER_CELL = 5, CHEST_COUNT = 20, CHEST_VALUES = [5, 8, 10, 15, 20];
+const chestThreshold = (n) => 10 + 25 * (n - 1);
+const chestValue = (n) => CHEST_VALUES[Math.floor((n - 1) / 4)];
+const chestCell = (n) => Math.ceil(chestThreshold(n) / STEPS_PER_CELL);
+const chestsReached = (s) => { let n = 0; while (n < CHEST_COUNT && chestThreshold(n + 1) <= s) n++; return n; };
+const nextChest = (s) => { const no = chestsReached(s) + 1; return no > CHEST_COUNT ? null : { no, value: chestValue(no), missing: chestThreshold(no) - s }; };
+const CHEST_AT = new Map(Array.from({ length: CHEST_COUNT }, (_, i) => [chestCell(i + 1), i + 1]));
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const coin = () => `<i class="coin" data-g="${THEMES[state.theme].glyph}"></i>`;
@@ -27,10 +34,10 @@ const MISSIONS = [
   { ic: '🌟', t: 'Un beau geste spontané', d: 'Ton parent te le donne !', p: 2, c: 'surprise', s: 'none' },
 ];
 const REWARDS = [['🎬', 'Choisir le film du vendredi', 5], ['🌙', 'Se coucher 15 min plus tard', 5], ['🍰', 'Choisir le dessert', 10], ['🎲', 'Choisir le jeu en famille', 10], ['🥞', 'Sortie choisie', 15], ['👑', 'Journée « c’est moi qui décide »', 40]];
-const BADGES = [['🌱', 'Petit aventurier', 5], ['🧭', 'Explorateur', 30], ['🛡️', 'Gardien de la maison', 80], ['🎖️', 'Héros confirmé', 150], ['🏆', 'Maître des missions', 250]];
+const BADGES = [['🌱', 'Petit aventurier', 10], ['🧭', 'Explorateur', 75], ['🛡️', 'Gardien de la maison', 175], ['🎖️', 'Héros confirmé', 300], ['🏆', 'Maître des missions', 250]];
 
-const mapStep = (p) => Math.min(50, Math.floor(p / 5));
-const terrOf = (p) => STARTS.reduce((t, s, i) => (p >= s ? i : t), 0);
+const mapStep = (p) => Math.min(MAP_CELLS, Math.floor(p / STEPS_PER_CELL));
+const terrOf = (p) => Math.min(4, Math.floor(p / 100));
 
 function applyTheme(name) {
   state.theme = name; const t = THEMES[name];
@@ -42,11 +49,13 @@ function applyTheme(name) {
 }
 
 function renderAll() {
-  const step = mapStep(state.lifetime), ti = terrOf(state.lifetime), t = THEMES[state.theme];
-  $('#bal').textContent = state.balance;
+  const step = mapStep(state.steps), ti = terrOf(state.steps), t = THEMES[state.theme], nc = nextChest(state.steps);
+  $('#bal').textContent = state.balance; $('#stp').textContent = state.steps;
   $$('.coin').forEach((c) => (c.dataset.g = t.glyph));
-  $('#step').textContent = step; $('#m-step').textContent = step; $('#m-life').textContent = state.lifetime;
-  $('#to-next').textContent = (step + 1) * 5 - state.lifetime; $('#m-next').textContent = (step + 1) * 5;
+  $('#step').textContent = step; $('#m-step').textContent = step; $('#m-life').textContent = state.steps;
+  $('#to-next').textContent = (step + 1) * STEPS_PER_CELL - state.steps; $('#m-next').textContent = nc ? nc.missing : '—';
+  $('#next-chest').innerHTML = nc ? `🧰 Prochain coffre dans <b>${nc.missing} pas</b> : +${nc.value} ${coin()}` : '🏆 Tous les coffres sont ouverts !';
+  $('#gauge-cell').style.setProperty('--v', ((state.steps % STEPS_PER_CELL) / STEPS_PER_CELL * 100) + '%');
   $('#terr-name').textContent = t.terr[ti];
   $('#hello').textContent = `Salut Léa ! ${t.hero} Prête pour l’aventure ?`;
   $('#tiles').innerHTML = [['🎲', 'Dé du destin', 'de', '#ff5a8a', '1'], ['🏅', 'Badges', 'badges', '#8b5cf6', ''], ['🎁', 'Boutique', 'boutique', '#ff7a45', ''], ['🏆', 'Trésor', 'tresor', '#2fb36b', ''], ['🗺️', 'Carte', 'carte', '#2f8de0', '']]
@@ -57,7 +66,7 @@ function renderAll() {
 function missionHTML(m, i) {
   const state_ = m.s === 'claimed' ? '<span class="badge-state">⏳ À valider</span>' : m.s === 'approved' ? '<span class="badge-state ok">✅ Validée !</span>'
     : m.s === 'none' ? '' : `<button class="btn green check" data-claim="${i}" aria-label="J’ai terminé"></button>`;
-  return `<div class="mission ${m.s}"><div class="ic">${m.ic}</div><div class="tx"><b>${m.t}</b>${m.d ? `<small>${m.d}</small>` : ''}<span class="rw">+${m.p} ${coin()}</span></div>${state_}</div>`;
+  return `<div class="mission ${m.s}"><div class="ic">${m.ic}</div><div class="tx"><b>${m.t}</b>${m.d ? `<small>${m.d}</small>` : ''}<span class="rw">+${m.p} <span class="stp">👣</span></span></div>${state_}</div>`;
 }
 function renderMissions() {
   const list = MISSIONS.map((m, i) => [m, i]).filter(([m]) => m.c === state.tab);
@@ -66,7 +75,7 @@ function renderMissions() {
 }
 
 /* ───────── Carte illustrée : un monde par univers ───────── */
-const MAPW = 360, MAPH = 3300, TOP = 130, BOT = 130;
+const MAPW = 360, MAPH = 5600, TOP = 130, BOT = 130;
 const WORLD = {
   aventuriers: { road: '#f1d49b', fog: 'rgba(255,255,255,.55)', pal: ['#8ee09a', '#8ad9f2', '#e8d7a0', '#c3cedd', '#ffe7a0'],
     deco: [['🌲', '🌳', '🍄', '🦌', '🌿', '🐿️'], ['🌊', '🐟', '🪷', '🦆', '🎣', '🐸'], ['🌷', '🚩', '⚔️', '🛡️', '🐎', '🌹'], ['⛰️', '🏔️', '🦅', '🪨', '🐐', '🌨️'], ['☁️', '🌈', '✨', '🦅', '👑', '💫']],
@@ -89,9 +98,9 @@ const AMB = { fireflies: ['dot', 'glow'], bubbles: ['dot', 'rise'], embers: ['do
 const rng = (seed) => { let s = seed % 2147483647; if (s <= 0) s += 2147483646; return () => ((s = (s * 16807) % 2147483647) - 1) / 2147483646; };
 
 function renderMap() {
-  const W = WORLD[state.theme], th = THEMES[state.theme], step = mapStep(state.lifetime), tIdx = terrOf(state.lifetime);
-  const dy = (MAPH - TOP - BOT) / 49;
-  const P = (i) => ({ x: 180 + 98 * Math.sin(i * 0.55 + 0.6), y: MAPH - BOT - (i - 1) * dy });
+  const W = WORLD[state.theme], th = THEMES[state.theme], step = mapStep(state.steps), tIdx = terrOf(state.steps);
+  const dy = (MAPH - TOP - BOT) / (MAP_CELLS - 1);
+  const P = (i) => ({ x: 180 + 98 * Math.sin(i * 0.42 + 0.6), y: MAPH - BOT - (i - 1) * dy });
   const f = (n) => n.toFixed(1);
   const seg = (a, b) => {
     const p0 = P(a - 1), p1 = P(a), p2 = P(b), p3 = P(b + 1);
@@ -99,7 +108,7 @@ function renderMap() {
   };
   const pathTo = (end) => { let d = `M${f(P(0).x)} ${f(P(0).y)}`; for (let i = 0; i < end; i++) d += seg(i, i + 1); return d; };
   const full = pathTo(50), done = step > 0 ? pathTo(step) : '';
-  const ranges = STARTS.map((s, i) => [Math.max(1, Math.ceil((s || 1) / 5)), i === 4 ? 50 : Math.ceil(STARTS[i + 1] / 5) - 1]);
+  const ranges = [0, 1, 2, 3, 4].map((t) => [t * 20 + 1, t * 20 + 20]);
   const bound = (t) => (t < 0 ? MAPH : t > 4 ? 0 : t === 4 ? 0 : (P(ranges[t][1]).y + P(ranges[t][1] + 1).y) / 2); // frontière en haut du territoire t
   const top = (t) => bound(t), bottom = (t) => (t === 0 ? MAPH : bound(t - 1));
   const pct = (y) => ((y / MAPH) * 100).toFixed(1);
@@ -109,27 +118,27 @@ function renderMap() {
 
   ranges.forEach(([a, b], t) => {
     const r = rng(t * 97 + Object.keys(WORLD).indexOf(state.theme) * 13 + 5), y0 = top(t), y1 = bottom(t);
-    const items = W.deco[t].concat(W.deco[t].slice(0, 4));
+    const items = W.deco[t].concat(W.deco[t]);
     items.forEach((e, k) => {
-      const y = y0 + 40 + r() * (y1 - y0 - 80), i = Math.min(50, Math.max(1, Math.round((MAPH - BOT - y) / dy) + 1)), rx = P(i).x;
+      const y = y0 + 40 + r() * (y1 - y0 - 80), i = Math.min(MAP_CELLS, Math.max(1, Math.round((MAPH - BOT - y) / dy) + 1)), rx = P(i).x;
       const x = rx >= 180 ? 14 + r() * Math.max(10, rx - 105) : Math.min(346, rx + 105) + r() * Math.max(10, 346 - rx - 105);
       html += `<i class="deco ${k % 3 === 0 ? 'sway' : 'bobd'}" style="--x:${f(x)};--y:${f(y)};--s:${28 + Math.floor(r() * 26)};--d:${(r() * 4).toFixed(1)}s">${e}</i>`;
     });
     const lp = P(b), lx = lp.x >= 180 ? 18 + r() * 40 : 270 + r() * 40;
     html += `<i class="deco landmark" style="--x:${f(lx + 20)};--y:${f(lp.y - 6)};--s:76">${W.lm[t]}</i>`;
     const [kind, anim] = AMB[W.amb[t]];
-    for (let k = 0; k < 14; k++) {
+    for (let k = 0; k < 22; k++) {
       const y = y0 + r() * (y1 - y0), x = r() * 350;
       html += `<i class="amb ${anim}${kind === 'dot' ? ' dotp' : ''}" style="--x:${f(x)};--y:${f(y)};--d:${(r() * 6).toFixed(1)}s;--t:${(5 + r() * 6).toFixed(1)}s;--s:${kind === 'dot' ? 6 + Math.floor(r() * 7) : 24 + Math.floor(r() * 16)}">${kind === 'dot' ? '' : kind === '🕊️' && state.theme === 'dinosaures' ? '🦅' : kind === '🕊️' && state.theme === 'pirates' ? '🦜' : kind}</i>`;
     }
     if (t > tIdx) html += `<div class="fog" style="top:${pct(y0)}%;height:${pct(y1 - y0)}%;background:${W.fog}"></div>`;
   });
 
-  for (let i = 1; i <= 50; i++) {
-    const p = P(i), isEnd = ranges.some(([, b]) => b === i);
+  for (let i = 1; i <= MAP_CELLS; i++) {
+    const p = P(i), cn = CHEST_AT.get(i);
     if (i === step) continue;
-    const cls = ['mnode', i < step ? 'done' : '', isEnd ? 'chestn' : '', i > step + 8 ? 'far' : ''].join(' ');
-    html += `<div class="${cls}" style="--x:${f(p.x)};--y:${f(p.y)};--i:${i}">${isEnd ? '🧰' : i}</div>`;
+    const cls = ['mnode', i < step ? 'done' : '', cn ? 'chestn' : '', i > step + 8 ? 'far' : ''].join(' ');
+    html += `<div class="${cls}" style="--x:${f(p.x)};--y:${f(p.y)};--i:${Math.min(i, 30)}">${cn ? `🧰<small>+${chestValue(cn)}</small>` : i}</div>`;
   }
   const hp = P(step);
   html += `<div class="mhero" style="--x:${f(hp.x)};--y:${f(hp.y)}"><span class="tag">TOI !</span><span class="avatar" style="background:#f6b73c">🦊</span></div>`;
@@ -137,8 +146,8 @@ function renderMap() {
 
   ranges.forEach(([a, b], t) => {
     const y = t === 0 ? MAPH - 44 : bottom(t), locked = t > tIdx;
-    const ri = Math.min(50, Math.max(1, Math.round((MAPH - BOT - y) / dy) + 1)), side = P(ri).x >= 180 ? 100 : 262;
-    html += `<div class="ribbon ${locked ? 'locked' : ''} ${t === tIdx ? 'now' : ''}" style="--x:${side};--y:${f(y)}"><span>${locked ? '🔒' : W.deco[t][0]}</span><div><b>${th.terr[t]}</b><small>${STARTS[t]}${t === 4 ? '+' : '–' + (STARTS[t + 1] - 1)} pépites</small></div></div>`;
+    const ri = Math.min(MAP_CELLS, Math.max(1, Math.round((MAPH - BOT - y) / dy) + 1)), side = P(ri).x >= 180 ? 100 : 262;
+    html += `<div class="ribbon ${locked ? 'locked' : ''} ${t === tIdx ? 'now' : ''}" style="--x:${side};--y:${f(y)}"><span>${locked ? '🔒' : W.deco[t][0]}</span><div><b>${th.terr[t]}</b><small>${t * 100}${t === 4 ? '–500' : '–' + (t * 100 + 99)} pas</small></div></div>`;
   });
   html += `<div class="summit" style="--y:46">🏆 Sommet !</div>`;
 
@@ -159,8 +168,8 @@ function renderShop() {
 }
 function renderBadges() {
   $('#medals').innerHTML = BADGES.map(([i, n, at]) => {
-    const got = state.lifetime >= at;
-    return `<div class="panel medal ${got ? '' : 'locked'}" style="margin:0"><div class="m">${got ? i : '🔒'}</div><b>${n}</b><small>${got ? 'Obtenu !' : `À ${at} pépites gagnées`}</small></div>`;
+    const got = state.steps >= at;
+    return `<div class="panel medal ${got ? '' : 'locked'}" style="margin:0"><div class="m">${got ? i : '🔒'}</div><b>${n}</b><small>${got ? 'Obtenu !' : `À ${at} pas`}</small></div>`;
   }).join('');
 }
 
@@ -181,6 +190,14 @@ function flyCoins(from, n = 5) {
     c.style.cssText = `left:${f.left + f.width / 2}px;top:${f.top}px;--dx:${to.left - f.left}px;--dy:${to.top - f.top}px;animation-delay:${i * 70}ms`;
     document.body.append(c); setTimeout(() => c.remove(), 1200 + i * 70);
   }
+}
+function addSteps(n) {
+  const before = chestsReached(state.steps);
+  state.steps += n;
+  let gained = 0;
+  for (let c = before + 1; c <= chestsReached(state.steps); c++) gained += chestValue(c);
+  if (gained) { state.balance += gained; setTimeout(() => { confetti(innerWidth / 2, innerHeight / 2, 70); toast(`🧰 Coffre ouvert ! +${gained} pépites`); }, 300); }
+  bump(); renderAll();
 }
 function bump() { const w = $('#wallet'); w.classList.remove('bump'); void w.offsetWidth; w.classList.add('bump'); $('#bal').textContent = state.balance; }
 function toast(t) { const e = document.createElement('div'); e.className = 'toast'; e.textContent = t; document.body.append(e); setTimeout(() => e.remove(), 2500); }
@@ -207,17 +224,18 @@ document.addEventListener('click', (e) => {
   const ok = e.target.closest('[data-ok]'), no = e.target.closest('[data-no]');
   if (ok || no) {
     const q = (ok || no).closest('.qi'); if (ok) { const r = ok.getBoundingClientRect(); confetti(r.left + r.width / 2, r.top, 26); }
+    if (ok && /a fait/.test(q.textContent)) { addSteps(1); toast('+1 pas 👣 pour Léa'); }
     q.classList.add('gone'); setTimeout(() => { q.remove(); $('#q-count').textContent = $$('.qi').length; }, 350);
   }
 });
 function roll() {
-  const die = $('#die'), faces = ['✖️2', '➕1', '🃏', '🎁'], texts = ['Pépites doublées ! +3', '+1 pépite bonus !', 'Carte joker : ton parent choisit', 'Petite surprise à venir !'];
+  const die = $('#die'), faces = ['✖️2', '➕1', '🃏', '🎁'], texts = ['Dernier coffre doublé ! +5 pépites', '+1 pépite bonus !', 'Carte joker : ton parent choisit', 'Petite surprise à venir !'];
   die.classList.remove('rolling'); void die.offsetWidth; die.classList.add('rolling'); $('#result').textContent = '…';
   const t = setInterval(() => (die.textContent = faces[Math.floor(Math.random() * 4)]), 90);
   setTimeout(() => {
     clearInterval(t); const k = Math.floor(Math.random() * 4); die.textContent = faces[k]; $('#result').textContent = texts[k];
     const r = die.getBoundingClientRect(); confetti(r.left + r.width / 2, r.top + r.height / 2, 60);
-    if (k < 2) { state.balance += k ? 1 : 3; state.lifetime += k ? 1 : 3; bump(); renderAll(); }
+    if (k < 2) { state.balance += k ? 1 : 5; bump(); renderAll(); }
   }, 900);
 }
 $('#roll').addEventListener('click', roll); $('#die').addEventListener('click', roll);
@@ -231,7 +249,8 @@ function route() {
   $$('.child-only').forEach((e) => (e.style.display = child ? '' : 'none'));
   $$('#nav a').forEach((a) => a.classList.toggle('on', a.dataset.s === s));
   window.scrollTo(0, 0);
-  if (s === 'carte') setTimeout(() => $('.mhero')?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 500);
+  const sy = new URLSearchParams(location.search).get('sy');
+  if (s === 'carte') setTimeout(() => (sy ? window.scrollTo(0, +sy) : $('.mhero')?.scrollIntoView({ block: 'center', behavior: 'smooth' })), 500);
 }
 const SKINS = { arcade: '🎮 Arcade', douceur: '☁️ Douceur', candy: '🍭 Candy', carnet: '📒 Carnet', nuit: '🌙 Nuit' };
 function applySkin(s) { document.body.dataset.skin = s; $$('#skinbar button').forEach((b) => b.classList.toggle('on', b.dataset.k === s)); }
@@ -242,6 +261,8 @@ $('#themebar').addEventListener('click', (e) => { const b = e.target.closest('bu
 addEventListener('hashchange', route);
 const q = new URLSearchParams(location.search).get('theme');
 if (new URLSearchParams(location.search).has('shot')) document.body.classList.add('shot');
+const cropY = new URLSearchParams(location.search).get('crop');
+if (cropY) { document.body.classList.add('crop'); document.body.style.setProperty('--crop', cropY + 'px'); }
 const sk = new URLSearchParams(location.search).get('skin');
 applySkin(SKINS[sk] ? sk : 'arcade');
 applyTheme(THEMES[q] ? q : 'aventuriers'); route();
