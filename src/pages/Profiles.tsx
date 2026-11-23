@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useChildren, useFamilyCtx, useWallets } from '../state/family';
+import InstallButton from '../ui/InstallButton';
 import { Avatar, Coins, Steps } from '../ui/kit';
 
 export default function Profiles() {
@@ -23,6 +24,7 @@ export default function Profiles() {
         {!children.isLoading && kids.length === 0 && <p className="empty">Aucun enfant pour l’instant. Ajoute-en depuis l’espace parent.</p>}
       </div>
       <Link to="/parent" className="btn ghost parent-link">🔑 Espace parent</Link>
+      <InstallButton className="install-bottom" />
     </main>
   );
 }

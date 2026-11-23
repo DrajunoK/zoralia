@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { errorMessage } from '../lib/errors';
 import { supabaseConfigured } from '../lib/supabase';
 import { applyTheme, DEFAULT_THEME } from '../lib/themes';
+import InstallButton from '../ui/InstallButton';
 import { signInWithGoogle } from '../state/session';
 import { useEffect } from 'react';
 
@@ -33,6 +34,7 @@ export default function Login() {
           </button>
         )}
         {(error || callbackError) && <p className="notice error" role="alert">La connexion a échoué : {error ?? callbackError}. Réessaie.</p>}
+        <InstallButton />
         <p className="fine">🔒 Espace familial privé. Seuls les parents se connectent ; les enfants n’ont pas de compte.</p>
       </div>
     </main>
