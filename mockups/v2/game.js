@@ -65,25 +65,90 @@ function renderMissions() {
   $('#home-missions').innerHTML = MISSIONS.map((m, i) => [m, i]).filter(([m]) => m.s === 'available' && m.c === 'daily' || m.s === 'claimed').slice(0, 3).map(([m, i]) => missionHTML(m, i)).join('');
 }
 
+/* ───────── Carte illustrée : un monde par univers ───────── */
+const MAPW = 360, MAPH = 3300, TOP = 130, BOT = 130;
+const WORLD = {
+  aventuriers: { road: '#f1d49b', fog: 'rgba(255,255,255,.55)', pal: ['#8ee09a', '#8ad9f2', '#e8d7a0', '#c3cedd', '#ffe7a0'],
+    deco: [['🌲', '🌳', '🍄', '🦌', '🌿', '🐿️'], ['🌊', '🐟', '🪷', '🦆', '🎣', '🐸'], ['🌷', '🚩', '⚔️', '🛡️', '🐎', '🌹'], ['⛰️', '🏔️', '🦅', '🪨', '🐐', '🌨️'], ['☁️', '🌈', '✨', '🦅', '👑', '💫']],
+    lm: ['🛖', '🌉', '🏰', '🏔️', '🐉'], amb: ['fireflies', 'bubbles', 'petals', 'snow', 'clouds'] },
+  princesses: { road: '#ffffff', fog: 'rgba(255,240,250,.6)', pal: ['#ffd1ea', '#bfe6ff', '#ffe0f5', '#d9ccff', '#fff2b8'],
+    deco: [['🌸', '🌷', '🦋', '🌺', '🐝', '🌼'], ['🦢', '🪷', '💧', '🐸', '🌙', '🐟'], ['👑', '💐', '🎀', '🕊️', '✨', '🪞'], ['☁️', '🌈', '🎈', '🦄', '🕊️', '💫'], ['⭐', '🌟', '🌙', '💎', '✨', '🔮']],
+    lm: ['⛲', '🛶', '🏰', '🌈', '🌟'], amb: ['petals', 'bubbles', 'sparkles', 'clouds', 'stars'] },
+  pirates: { road: '#f5deb0', fog: 'rgba(255,248,225,.55)', pal: ['#ffe2a8', '#8fe0a0', '#8be4ee', '#ffd98a', '#4fa8e0'],
+    deco: [['⚓', '⛵', '🦀', '🛶', '🪝', '🐚'], ['🌴', '🦜', '🐒', '🌺', '🐍', '🥥'], ['🏖️', '🐚', '🦀', '🪸', '🐠', '⛱️'], ['💎', '🗺️', '☠️', '🌴', '🪙', '🔑'], ['🌊', '🐋', '🐙', '⛈️', '🦈', '🧭']],
+    lm: ['🚢', '🛖', '🏝️', '🏴‍☠️', '🐋'], amb: ['birds', 'fireflies', 'bubbles', 'sparkles', 'bubbles'] },
+  espace: { road: '#cfd6ff', fog: 'rgba(10,10,50,.55)', pal: ['#2b3a8c', '#4a4f7a', '#8a3a4a', '#3a2a7a', '#14123a'],
+    deco: [['🛰️', '🔭', '📡', '🚀', '🛸', '🌍'], ['🌙', '🌑', '👨‍🚀', '⭐', '🪨', '🛸'], ['🪐', '🔴', '🛸', '☄️', '🌋', '👽'], ['🌌', '💫', '✨', '🔮', '🌠', '🪐'], ['⭐', '🌟', '✨', '💫', '🔭', '🌠']],
+    lm: ['🛰️', '🌙', '🛸', '🌌', '🌟'], amb: ['stars', 'stars', 'embers', 'sparkles', 'stars'] },
+  dinosaures: { road: '#efd9a2', fog: 'rgba(255,250,225,.55)', pal: ['#bfe36a', '#6fcf7a', '#e8d08a', '#ff9a5a', '#d9c7a0'],
+    deco: [['⛺', '🔥', '🌿', '🥚', '🪵', '🦴'], ['🦕', '🌴', '🌿', '🦎', '🐊', '🦋'], ['🦖', '🌾', '🪨', '🐢', '🌄', '🦴'], ['🌋', '🔥', '🪨', '🦇', '💨', '🦖'], ['🦴', '🐚', '🪨', '🦕', '💎', '🏜️']],
+    lm: ['⛺', '🦕', '🦖', '🌋', '🏜️'], amb: ['fireflies', 'fireflies', 'birds', 'embers', 'dust'] },
+};
+const AMB = { fireflies: ['dot', 'glow'], bubbles: ['dot', 'rise'], embers: ['dot', 'ember'], sparkles: ['dot', 'twinkle'], stars: ['dot', 'twinkle'], dust: ['dot', 'rise'],
+  petals: ['🌸', 'fall'], snow: ['❄️', 'fall'], clouds: ['☁️', 'cloud'], birds: ['🕊️', 'fly'] };
+const rng = (seed) => { let s = seed % 2147483647; if (s <= 0) s += 2147483646; return () => ((s = (s * 16807) % 2147483647) - 1) / 2147483646; };
+
 function renderMap() {
-  const step = mapStep(state.lifetime), t = THEMES[state.theme];
-  const ranges = STARTS.map((s, i) => { const first = Math.max(1, Math.ceil((s || 1) / 5)), last = i === 4 ? 50 : Math.ceil(STARTS[i + 1] / 5) - 1; return [first, last]; });
-  $('#map').innerHTML = ranges.map(([a, b], ti) => {
-    const cells = Array.from({ length: b - a + 1 }, (_, k) => a + k), rows = [];
-    for (let i = 0; i < cells.length; i += 5) rows.push(cells.slice(i, i + 5));
-    const locked = a > step + 1 && ti > terrOf(state.lifetime);
-    const html = rows.map((r, ri) => {
-      const rev = ri % 2 === 1, done = r.filter((c) => c <= step).length;
-      const fill = Math.round((Math.max(0, done - (r.includes(step + 1) ? 0 : 0)) / Math.max(1, r.length - 1)) * 100);
-      const nodes = r.map((c) => {
-        const chest = c === b, cls = ['node', c <= step ? 'done' : '', c === step ? 'here' : '', chest ? 'chest' : '', c > step + 6 ? 'far' : ''].join(' ');
-        return `<div class="${cls}">${c === step ? '🦊' : chest ? '🎁' : c}</div>`;
-      });
-      return `<div class="prow ${rev ? 'rev' : ''}" style="--fill:${Math.min(100, fill)}%">${nodes.join('')}</div>`;
-    }).join('');
-    return `<div class="territory"><div class="banner ${locked ? 'locked' : ''}"><span>${t.decor[ti]}</span><b>${t.terr[ti]}</b><small>${STARTS[ti]}${ti === 4 ? '+' : '–' + (STARTS[ti + 1] - 1)} ${coin()}</small></div><div class="panel path">${html}</div></div>`;
-  }).join('');
-  const here = $('.node.here'); if (here && location.hash === '#carte') setTimeout(() => here.scrollIntoView({ block: 'center', behavior: 'smooth' }), 400);
+  const W = WORLD[state.theme], th = THEMES[state.theme], step = mapStep(state.lifetime), tIdx = terrOf(state.lifetime);
+  const dy = (MAPH - TOP - BOT) / 49;
+  const P = (i) => ({ x: 180 + 98 * Math.sin(i * 0.55 + 0.6), y: MAPH - BOT - (i - 1) * dy });
+  const f = (n) => n.toFixed(1);
+  const seg = (a, b) => {
+    const p0 = P(a - 1), p1 = P(a), p2 = P(b), p3 = P(b + 1);
+    return `C${f(p1.x + (p2.x - p0.x) / 6)} ${f(p1.y + (p2.y - p0.y) / 6)} ${f(p2.x - (p3.x - p1.x) / 6)} ${f(p2.y - (p3.y - p1.y) / 6)} ${f(p2.x)} ${f(p2.y)}`;
+  };
+  const pathTo = (end) => { let d = `M${f(P(0).x)} ${f(P(0).y)}`; for (let i = 0; i < end; i++) d += seg(i, i + 1); return d; };
+  const full = pathTo(50), done = step > 0 ? pathTo(step) : '';
+  const ranges = STARTS.map((s, i) => [Math.max(1, Math.ceil((s || 1) / 5)), i === 4 ? 50 : Math.ceil(STARTS[i + 1] / 5) - 1]);
+  const bound = (t) => (t < 0 ? MAPH : t > 4 ? 0 : t === 4 ? 0 : (P(ranges[t][1]).y + P(ranges[t][1] + 1).y) / 2); // frontière en haut du territoire t
+  const top = (t) => bound(t), bottom = (t) => (t === 0 ? MAPH : bound(t - 1));
+  const pct = (y) => ((y / MAPH) * 100).toFixed(1);
+
+  const stops = [4, 3, 2, 1, 0].map((t) => `${W.pal[t]} ${pct((top(t) + bottom(t)) / 2)}%`).join(',');
+  let html = '';
+
+  ranges.forEach(([a, b], t) => {
+    const r = rng(t * 97 + Object.keys(WORLD).indexOf(state.theme) * 13 + 5), y0 = top(t), y1 = bottom(t);
+    const items = W.deco[t].concat(W.deco[t].slice(0, 4));
+    items.forEach((e, k) => {
+      const y = y0 + 40 + r() * (y1 - y0 - 80), i = Math.min(50, Math.max(1, Math.round((MAPH - BOT - y) / dy) + 1)), rx = P(i).x;
+      const x = rx >= 180 ? 14 + r() * Math.max(10, rx - 105) : Math.min(346, rx + 105) + r() * Math.max(10, 346 - rx - 105);
+      html += `<i class="deco ${k % 3 === 0 ? 'sway' : 'bobd'}" style="--x:${f(x)};--y:${f(y)};--s:${28 + Math.floor(r() * 26)};--d:${(r() * 4).toFixed(1)}s">${e}</i>`;
+    });
+    const lp = P(b), lx = lp.x >= 180 ? 18 + r() * 40 : 270 + r() * 40;
+    html += `<i class="deco landmark" style="--x:${f(lx + 20)};--y:${f(lp.y - 6)};--s:76">${W.lm[t]}</i>`;
+    const [kind, anim] = AMB[W.amb[t]];
+    for (let k = 0; k < 14; k++) {
+      const y = y0 + r() * (y1 - y0), x = r() * 350;
+      html += `<i class="amb ${anim}${kind === 'dot' ? ' dotp' : ''}" style="--x:${f(x)};--y:${f(y)};--d:${(r() * 6).toFixed(1)}s;--t:${(5 + r() * 6).toFixed(1)}s;--s:${kind === 'dot' ? 6 + Math.floor(r() * 7) : 24 + Math.floor(r() * 16)}">${kind === 'dot' ? '' : kind === '🕊️' && state.theme === 'dinosaures' ? '🦅' : kind === '🕊️' && state.theme === 'pirates' ? '🦜' : kind}</i>`;
+    }
+    if (t > tIdx) html += `<div class="fog" style="top:${pct(y0)}%;height:${pct(y1 - y0)}%;background:${W.fog}"></div>`;
+  });
+
+  for (let i = 1; i <= 50; i++) {
+    const p = P(i), isEnd = ranges.some(([, b]) => b === i);
+    if (i === step) continue;
+    const cls = ['mnode', i < step ? 'done' : '', isEnd ? 'chestn' : '', i > step + 8 ? 'far' : ''].join(' ');
+    html += `<div class="${cls}" style="--x:${f(p.x)};--y:${f(p.y)};--i:${i}">${isEnd ? '🧰' : i}</div>`;
+  }
+  const hp = P(step);
+  html += `<div class="mhero" style="--x:${f(hp.x)};--y:${f(hp.y)}"><span class="tag">TOI !</span><span class="avatar" style="background:#f6b73c">🦊</span></div>`;
+  html += `<div class="mstart" style="--x:${f(P(0).x)};--y:${f(P(0).y + 30)}">🚩 Départ</div>`;
+
+  ranges.forEach(([a, b], t) => {
+    const y = t === 0 ? MAPH - 44 : bottom(t), locked = t > tIdx;
+    const ri = Math.min(50, Math.max(1, Math.round((MAPH - BOT - y) / dy) + 1)), side = P(ri).x >= 180 ? 100 : 262;
+    html += `<div class="ribbon ${locked ? 'locked' : ''} ${t === tIdx ? 'now' : ''}" style="--x:${side};--y:${f(y)}"><span>${locked ? '🔒' : W.deco[t][0]}</span><div><b>${th.terr[t]}</b><small>${STARTS[t]}${t === 4 ? '+' : '–' + (STARTS[t + 1] - 1)} pépites</small></div></div>`;
+  });
+  html += `<div class="summit" style="--y:46">🏆 Sommet !</div>`;
+
+  const L = done ? '1' : '0';
+  $('#map').innerHTML = `<div class="worldmap" style="height:calc(var(--u) * ${MAPH});background:linear-gradient(to bottom,${stops})">
+    <svg viewBox="0 0 ${MAPW} ${MAPH}" aria-hidden="true">
+      <path d="${full}" class="r-ink"/><path d="${full}" class="r-road" style="stroke:${W.road}"/><path d="${full}" class="r-dash"/>
+      ${done ? `<path d="${done}" class="r-ink gold"/><path d="${done}" class="r-gold" id="rdone"/>` : ''}
+    </svg>${html}</div>`;
+  const rd = $('#rdone'); if (rd) rd.style.setProperty('--L', Math.ceil(rd.getTotalLength()));
 }
 
 function renderShop() {
@@ -166,7 +231,7 @@ function route() {
   $$('.child-only').forEach((e) => (e.style.display = child ? '' : 'none'));
   $$('#nav a').forEach((a) => a.classList.toggle('on', a.dataset.s === s));
   window.scrollTo(0, 0);
-  if (s === 'carte') setTimeout(() => $('.node.here')?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 500);
+  if (s === 'carte') setTimeout(() => $('.mhero')?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 500);
 }
 $('#themebar').innerHTML = Object.entries(THEMES).map(([k, t]) => `<button data-t="${k}">${t.hero} ${t.name}</button>`).join('');
 $('#themebar').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) applyTheme(b.dataset.t); });

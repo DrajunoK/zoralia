@@ -8,7 +8,8 @@ Inspirée de Botz : aplats vifs, gros contours encre, boutons 3D qui s'enfoncent
 
 - **Boutons et tuiles** : ombre pleine, appui = le bouton s'enfonce. Cible tactile ≥ 48 px.
 - **Pépites** : vraies pièces dessinées en CSS (la même dans les 5 univers), compteur qui rebondit à chaque gain.
-- **Barre de progression** rayée animée ; **carte en serpentin** par territoire avec le héros qui saute sur l'étape actuelle.
+- **Barre de progression** rayée animée.
+- **Carte illustrée par univers** : un chemin qui serpente du départ (bas) jusqu'au sommet (haut), avec 5 territoires peints (décors, point de repère par territoire, ambiance animée : lucioles, bulles, pétales, neige, nuages, étoiles, braises, oiseaux), des bannières, un brouillard sur les territoires pas encore atteints, la route dorée qui se dessine jusqu'à l'étape actuelle et le héros qui saute. Décors et ambiance viennent de `WORLD` dans `game.js` : changer d'univers change tout le monde de la carte.
 - **Récompenses visuelles** : confettis et pièces qui volent vers le compteur quand on termine une mission, qu'on donne au coffre ou qu'on lance le dé ; coffre qui tremble ; médailles qui brillent.
 - **Univers = tokens** (`[data-theme]` dans `game.css`) : fond, couleur d'action, couleur de bandeau, décor (emojis flottants), libellés de territoires. Aucun composant ne change.
 - **Accessibilité** : `prefers-reduced-motion` coupe toutes les animations ; contrastes encre sur panneaux clairs ; libellés sous chaque icône.
