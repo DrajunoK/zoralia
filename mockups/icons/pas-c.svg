@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7ad0ff"/><stop offset="1" stop-color="#3a7de0"/></linearGradient></defs>
+    <rect x="5" y="8" width="54" height="54" rx="16" fill="#000" opacity=".14"/>
+    <rect x="5" y="5" width="54" height="54" rx="16" fill="url(#b)" stroke="#1f4ea0" stroke-width="3"/>
+    <g transform="translate(9 8) scale(.7)">
+  <g fill="#fff" stroke="#fff" stroke-width="0" stroke-linejoin="round" paint-order="stroke">
+    <path d="M26 24 C34 20 44 24 45 33 C46 40 41 43 40.5 48 C40 55 36 60 30 60 C24 60 21 55 22.5 49 C24 43 19 40 19.5 33 C20 28 22 25.5 26 24 Z"/>
+    <ellipse cx="20.5" cy="17.5" rx="6.4" ry="7.8" transform="rotate(-14 20.5 17.5)"/>
+    <ellipse cx="32" cy="12.5" rx="5" ry="6" transform="rotate(-4 32 12.5)"/>
+    <ellipse cx="41" cy="14.5" rx="4.5" ry="5.4" transform="rotate(8 41 14.5)"/>
+    <ellipse cx="48" cy="20.5" rx="4" ry="4.8" transform="rotate(18 48 20.5)"/>
+    <ellipse cx="52" cy="28.5" rx="3.4" ry="4.2" transform="rotate(26 52 28.5)"/>
+  </g></g>
+    <path d="M12 18 A16 16 0 0 1 22 10" stroke="#fff" stroke-opacity=".6" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <polygon points="52.00,7.00 53.06,10.94 57.00,12.00 53.06,13.06 52.00,17.00 50.94,13.06 47.00,12.00 50.94,10.94" fill="#fff"/></svg>

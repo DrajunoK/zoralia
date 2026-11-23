@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><radialGradient id="g" cx=".35" cy=".28" r=".95"><stop offset="0" stop-color="#fff8c2"/><stop offset=".42" stop-color="#ffcb36"/><stop offset="1" stop-color="#e38d06"/></radialGradient></defs>
+    <polygon points="32.00,7.50 40.82,24.36 59.58,27.54 46.27,41.14 49.05,59.96 32.00,51.50 14.95,59.96 17.73,41.14 4.42,27.54 23.18,24.36" fill="#b36a00" opacity=".32" stroke="#b36a00" stroke-opacity=".32" stroke-width="7" stroke-linejoin="round"/>
+    <polygon points="32.00,6.00 40.82,21.86 58.63,25.35 46.27,38.64 48.46,56.65 32.00,49.00 15.54,56.65 17.73,38.64 5.37,25.35 23.18,21.86" fill="url(#g)" stroke="#8a5200" stroke-width="3" stroke-linejoin="round"/>
+    <polygon points="32.00,20.00 36.70,28.53 46.27,30.36 39.61,37.47 40.82,47.14 32.00,43.00 23.18,47.14 24.39,37.47 17.73,30.36 27.30,28.53" fill="#fff3a0" opacity=".55" stroke="#c47a00" stroke-opacity=".5" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M20 22 L28 12" stroke="#fff" stroke-opacity=".9" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="26" cy="38" r="1.7" fill="#7a4600"/><circle cx="38" cy="38" r="1.7" fill="#7a4600"/><path d="M28.5 43 Q32 46 35.5 43" stroke="#7a4600" stroke-width="1.9" fill="none" stroke-linecap="round"/></svg>
