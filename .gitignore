@@ -29,3 +29,6 @@ dist-ssr
 # Vidéo : fichiers générés pendant la fabrication
 video/timeline.js
 video/node_modules
+
+# Échantillons de voix issus de modèles sous licence AGPL / CC BY-SA : pour écouter, pas pour publier
+video/voice-samples-garcon/
