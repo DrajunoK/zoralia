@@ -16,6 +16,10 @@ npm run dev                  # http://localhost:5173
 
 Mise en place de Supabase, de Google et du déploiement : [`docs/SETUP.md`](docs/SETUP.md).
 
+## Codes d'accès
+
+Chaque enfant peut avoir un code à 4 chiffres (espace parent → Enfants → Modifier), et l'espace parent a le sien (0000 par défaut, à changer dans Réglages). C'est un verrou contre les petites mains, pas une sécurité forte : la connexion Google du parent reste la vraie authentification. Les codes sont hachés côté base et jamais relisibles.
+
 ## PWA
 
 L'appli est installable (manifeste + service worker `public/sw.js` qui ne met en cache que l'interface, jamais les données). Bouton « Installer l'appli » sur la connexion et les profils ; sur iPhone, mode d'emploi (Partager → Sur l'écran d'accueil). Le service worker n'est actif que dans la version déployée (pas en `npm run dev`).
