@@ -109,6 +109,6 @@
       }
     }
   ],
-  "pitch_semitones": 5,
-  "_note": "La voix de base (siwis, 208 Hz) est montée de 5 demi-tons (≈ 266 Hz) avec rubberband pour sonner comme un petit garçon ; 0 pour la voix d'origine."
+  "pitch_semitones": 3,
+  "_note": "La voix de base (siwis, 208 Hz) est montée de 3 demi-tons (≈ 237 Hz) avec rubberband ; 0 pour la voix d'origine."
 }
