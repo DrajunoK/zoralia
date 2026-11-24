@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="gv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset=".5" stop-color="#ffc21a"/><stop offset="1" stop-color="#d98200"/></linearGradient></defs>
+    <ellipse cx="32" cy="56" rx="22" ry="4" fill="#000" opacity=".12"/>
+    <path d="M9 40 L14 24 L27 12 L44 11 L55 22 L57 38 L47 53 L28 55 L13 51 Z" fill="url(#gv)" stroke="#8a5200" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M14 24 L27 12 L44 11 L38 26 L22 32 Z" fill="#fff0a0" opacity=".85"/>
+    <path d="M44 11 L55 22 L57 38 L46 34 L38 26 Z" fill="#ffd44d"/>
+    <path d="M22 32 L38 26 L46 34 L47 53 L28 55 L13 51 L9 40 Z" fill="#f0a410" opacity=".75"/>
+    <path d="M22 32 L28 55 M38 26 L28 55 M46 34 L28 55" stroke="#b86f00" stroke-opacity=".5" stroke-width="1.8" fill="none"/>
+    <path d="M18 24 L26 16" stroke="#fff" stroke-width="3.2" stroke-linecap="round" opacity=".9"/>
+    <polygon points="52.00,4.00 53.27,8.73 58.00,10.00 53.27,11.27 52.00,16.00 50.73,11.27 46.00,10.00 50.73,8.73" fill="#fff"/><polygon points="10.00,10.00 10.85,13.15 14.00,14.00 10.85,14.85 10.00,18.00 9.15,14.85 6.00,14.00 9.15,13.15" fill="#fff"/></svg>

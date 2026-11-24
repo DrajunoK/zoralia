@@ -1,0 +1,47 @@
+/* Mockup « missions illustrées » : s'ajoute à app.css (la copie du style de l'appli). */
+body { padding-top: 0; }
+.bar { position: sticky; top: 0; z-index: 30; display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center; padding: 8px 10px; background: rgba(35, 26, 51, .92); color: #fff; font-size: .85rem; }
+.bar .grp { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; } .bar .grp > span { opacity: .7; margin-right: 4px; }
+.bar button { border: 0; border-radius: 99px; padding: 3px 12px; font: inherit; font-weight: 600; background: rgba(255,255,255,.14); color: #fff; cursor: pointer; }
+.bar button.on { background: #fff; color: #231a33; }
+.phone { max-width: 440px; margin: 0 auto; padding: 8px 12px 60px; }
+.hero-bar { padding-left: 4px; padding-right: 4px; }
+
+/* ── routines : liste complète avec icônes ── */
+.routines .card-head h2 { font-size: 1.15rem; }
+.list.missions > li { gap: 12px; padding: 9px 0; }
+.mission .mission-main { gap: 3px; } .mission .mission-main b { line-height: 1.2; font-size: 1rem; }
+.mission .coins { width: max-content; padding: 1px 10px 1px 6px; font-size: .85rem; box-shadow: none; background: color-mix(in srgb, var(--soft) 55%, #fff); }
+.mission .ico { width: 1.2em; height: 1.2em; }
+.mission .btn { min-height: 42px; padding: 6px 14px; font-size: .92rem; white-space: nowrap; }
+.mission.done { opacity: .62; } .mission.done .m-ic { filter: grayscale(.6); }
+.state.ok { color: #2a8a4a; }
+.more-hint { text-align: center; color: var(--muted); margin: 8px 0 0; }
+
+/* icônes : trois présentations à comparer */
+.list > li.mission > .m-ic { flex: none; display: grid; place-items: center; line-height: 1; }
+.icons-chip .list > li.mission > .m-ic, .icons-chip .m-ic { width: 50px; height: 50px; font-size: 1.7rem; border-radius: 16px; background: hsl(var(--h) 85% 92%); }
+.icons-bare .m-ic { width: 46px; font-size: 2.3rem; filter: drop-shadow(0 3px 0 rgba(0,0,0,.14)); }
+.icons-ring .list > li.mission > .m-ic, .icons-ring .m-ic { width: 52px; height: 52px; font-size: 1.7rem; border-radius: 50%; background: hsl(var(--h) 80% 86%); box-shadow: 0 0 0 3px #fff, 0 0 0 5px hsl(var(--h) 70% 70%); margin: 2px; }
+
+/* ── bloc des défis héroïques ── */
+.heroes { position: relative; overflow: hidden; margin: 18px 0; padding: 16px 14px 14px; border-radius: 30px; color: #fff;
+  background: linear-gradient(140deg, var(--primary), color-mix(in srgb, var(--primary) 40%, #ff5fa8) 55%, #8b5cf6);
+  box-shadow: 0 14px 34px color-mix(in srgb, #8b5cf6 38%, transparent); text-shadow: 0 1px 3px rgba(0,0,0,.28); }
+.heroes::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 12% 8%, rgba(255,255,255,.35), transparent 38%), radial-gradient(circle at 92% 90%, rgba(255,255,255,.22), transparent 40%); pointer-events: none; }
+.heroes::after { content: ""; position: absolute; top: -40%; left: -60%; width: 40%; height: 180%; background: rgba(255,255,255,.28); transform: rotate(20deg); animation: shine 5s ease-in-out infinite; pointer-events: none; }
+@keyframes shine { 0%, 60% { left: -60%; } 100% { left: 140%; } }
+.heroes header { position: relative; display: grid; gap: 2px; margin-bottom: 12px; } .heroes h2 { margin: 0; font-size: 1.35rem; } .heroes p { margin: 0; font-weight: 600; opacity: .95; }
+.hero-count { justify-self: start; margin-top: 6px; background: rgba(255,255,255,.28); border-radius: 99px; padding: 1px 12px; font-weight: 700; font-size: .85rem; text-shadow: none; }
+.hero-grid { position: relative; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.hero-tile { position: relative; display: grid; justify-items: center; align-content: start; gap: 6px; padding: 18px 8px 12px; border-radius: 22px; background: rgba(255,255,255,.97); color: #4a4266; text-align: center; text-shadow: none; box-shadow: 0 8px 18px rgba(0,0,0,.14); }
+.hero-tile b { font-size: .92rem; line-height: 1.2; min-height: 2.4em; display: grid; align-items: center; }
+.hero-ic { font-size: 2.7rem; line-height: 1; filter: drop-shadow(0 4px 0 rgba(0,0,0,.14)); animation: bob 3.2s ease-in-out infinite; }
+.hero-tile:nth-child(2n) .hero-ic { animation-delay: -1.2s; }
+@keyframes bob { 50% { transform: translateY(-5px) rotate(4deg); } }
+.hero-pts { position: absolute; top: -8px; right: -6px; display: inline-flex; align-items: center; gap: 3px; padding: 2px 10px 2px 6px; border-radius: 99px; background: var(--gold); color: #3b2f1a; font-weight: 800; font-size: .9rem; box-shadow: 0 4px 10px rgba(0,0,0,.2); }
+.hero-pts .ico { width: 1.35em; height: 1.35em; }
+.hero-tile .btn { min-height: 40px; padding: 6px 12px; font-size: .88rem; width: 100%; }
+.hero-tile.done { opacity: .8; background: rgba(255,255,255,.82); } .hero-tile.done .hero-ic { animation: none; }
+.hero-tile.wait { background: rgba(255,246,214,.97); }
+@media (prefers-reduced-motion: reduce) { .heroes::after, .hero-ic { animation: none; } }
