@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 const SRC = '/video/zoralia-aventure.mp4';
 
-/** Lecteur de la vidéo « Comment ça marche ? » : plein écran sur téléphone, sous-titres français, fermeture à la touche Échap. */
+/** Lecteur de la vidéo « Comment ça marche ? » : plein écran sur téléphone, fermeture à la touche Échap. */
 export function IntroVideoPlayer({ onClose }: { onClose: () => void }) {
   const video = useRef<HTMLVideoElement>(null);
   useEffect(() => {
@@ -17,12 +17,11 @@ export function IntroVideoPlayer({ onClose }: { onClose: () => void }) {
         <button type="button" className="video-close" onClick={onClose} aria-label="Fermer la vidéo">
           <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg>
         </button>
-        <video ref={video} controls playsInline preload="metadata" poster="/video/zoralia-aventure.jpg" crossOrigin="anonymous">
+        <video ref={video} controls playsInline preload="metadata" poster="/video/zoralia-aventure.jpg">
           <source src={SRC} type="video/mp4" />
-          <track kind="captions" srcLang="fr" label="Français" src="/video/zoralia-aventure.fr.vtt" default />
           Ton navigateur ne sait pas lire cette vidéo.
         </video>
-        <p className="video-credit">Voix de synthèse : Piper, modèle « siwis » (CC BY 4.0). Musique et bruitages créés pour Zoralia.</p>
+        <p className="video-credit">Voix de synthèse (Piper, modèle « siwis », CC BY 4.0), rendue plus aiguë. Musique et bruitages créés pour Zoralia.</p>
       </div>
     </div>
   );

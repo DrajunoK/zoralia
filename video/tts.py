@@ -1,6 +1,6 @@
 """Voix off : une phrase par scène, voix française Piper (fr_FR-siwis-medium, CC BY 4.0).
 Usage : PIPER_LIB=… VOICE_DIR=… python3 tts.py <dossier de sortie>   → scene-<id>.wav et timeline.json (durées)."""
-import json, os, sys, wave
+import json, os, subprocess, sys, wave
 sys.path.insert(0, os.environ['PIPER_LIB'])
 import piper
 from piper import SynthesisConfig
@@ -10,12 +10,17 @@ script = json.load(open(os.path.join(os.path.dirname(__file__), 'script.json')))
 d = os.environ['VOICE_DIR']
 voice = piper.PiperVoice.load(f'{d}/{script["voice"]}.onnx', config_path=f'{d}/{script["voice"]}.onnx.json')
 cfg = SynthesisConfig(length_scale=script['length_scale'])
+pitch = script.get('pitch_semitones', 0)
 t = 0.6  # petit silence avant la première phrase
 timeline = []
 for sc in script['scenes']:
     path = os.path.join(out, f'scene-{sc["id"]}.wav')
     with wave.open(path, 'wb') as w:
         voice.synthesize_wav(sc['text'], w, syn_config=cfg)
+    if pitch:   # voix d'enfant : on monte la hauteur et les formants (vocal tract plus petit), sans changer le rythme
+        tmp = path + '.tmp.wav'
+        subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', path, '-af', f'rubberband=pitch={2 ** (pitch / 12):.5f}:formant=shifted:pitchq=quality', '-ac', '1', tmp], check=True)
+        os.replace(tmp, path)
     with wave.open(path, 'rb') as w:
         dur = w.getnframes() / w.getframerate()
     # repère de chaque mot-clé : la voix avance à peu près au rythme des caractères, on place l'image un souffle avant le mot

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Refait la vidéo « Comment ça marche ? » de A à Z : voix off → dessin animé image par image → mixage → mp4.
+# Refait la vidéo « Comment ça marche ? » de A à Z : voix off → dessin animé image par image → mixage → mp4 (sans sous-titres).
 #
 # Prérequis (rien de tout ça n'est dans le dépôt) :
 #   - ffmpeg, un Chromium, node avec `playwright-core` installé dans ./node_modules
@@ -21,11 +21,4 @@ ffmpeg -y -loglevel error -i "$WORK/silent.mp4" -i "$WORK/mix.wav" \
   -c:v copy -c:a aac -b:a 112k -ac 2 -shortest -movflags +faststart "$OUT/zoralia-aventure.mp4"
 ffmpeg -y -loglevel error -ss 2.9 -i "$OUT/zoralia-aventure.mp4" -frames:v 1 -vf scale=960:-1 -q:v 4 "$OUT/zoralia-aventure.jpg"
 
-python3 - "$WORK/audio/timeline.json" "$OUT/zoralia-aventure.fr.vtt" <<'PY'                 # sous-titres
-import json, sys
-t = json.load(open(sys.argv[1]))
-ts = lambda x: f"{int(x // 3600):02d}:{int(x % 3600 // 60):02d}:{x % 60:06.3f}"
-cues = [f"{i}\n{ts(s['start'])} --> {ts(s['start'] + s['voice'] + 0.2)}\n{s['text']}\n" for i, s in enumerate(t['scenes'], 1)]
-open(sys.argv[2], 'w').write('WEBVTT\n\n' + '\n'.join(cues))
-PY
 echo "→ $OUT/zoralia-aventure.mp4"

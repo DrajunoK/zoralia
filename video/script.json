@@ -1,7 +1,7 @@
 {
   "title": "Zoralia — comment ça marche ?",
   "voice": "fr_FR-siwis-medium",
-  "length_scale": 1.1,
+  "length_scale": 1.05,
   "scenes": [
     {
       "id": "intro",
@@ -108,5 +108,7 @@
         "aventure": "une nouvelle aventure"
       }
     }
-  ]
+  ],
+  "pitch_semitones": 5,
+  "_note": "La voix de base (siwis, 208 Hz) est montée de 5 demi-tons (≈ 266 Hz) avec rubberband pour sonner comme un petit garçon ; 0 pour la voix d'origine."
 }
