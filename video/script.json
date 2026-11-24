@@ -1,0 +1,112 @@
+{
+  "title": "Zoralia — comment ça marche ?",
+  "voice": "fr_FR-siwis-medium",
+  "length_scale": 1.1,
+  "scenes": [
+    {
+      "id": "intro",
+      "gap": 0.5,
+      "text": "Salut ! Je suis Roux le renard. Bienvenue dans Zoralia, le pays des aventuriers !",
+      "cues": {
+        "salut": "Salut",
+        "roux": "Roux le renard",
+        "bienvenue": "Bienvenue",
+        "pays": "le pays des aventuriers"
+      }
+    },
+    {
+      "id": "missions",
+      "gap": 0.5,
+      "text": "Chaque jour, tu as des missions : mettre la table, te brosser les dents, ranger ta chambre.",
+      "cues": {
+        "chaque": "Chaque jour",
+        "table": "mettre la table",
+        "dents": "te brosser les dents",
+        "chambre": "ranger ta chambre"
+      }
+    },
+    {
+      "id": "valider",
+      "gap": 0.5,
+      "text": "Quand tu as fini, appuie sur : J'ai terminé ! Papa ou maman vérifient, et valident ta mission.",
+      "cues": {
+        "quand": "Quand tu as fini",
+        "appuie": "J'ai terminé",
+        "parents": "Papa ou maman",
+        "valident": "valident ta mission"
+      }
+    },
+    {
+      "id": "pas",
+      "gap": 0.5,
+      "text": "Bravo ! Chaque mission validée te donne des pas. Un pas, c'est une case de plus sur la carte !",
+      "cues": {
+        "bravo": "Bravo",
+        "pas": "des pas",
+        "case": "une case de plus",
+        "carte": "sur la carte"
+      }
+    },
+    {
+      "id": "carte",
+      "gap": 0.5,
+      "text": "Avance de case en case, à travers les forêts, les rivières et les montagnes.",
+      "cues": {
+        "avance": "Avance",
+        "forets": "les forêts",
+        "rivieres": "les rivières",
+        "montagnes": "les montagnes"
+      }
+    },
+    {
+      "id": "coffre",
+      "gap": 0.5,
+      "text": "Sur ta route, il y a des coffres au trésor. Quand tu en atteins un, il s'ouvre, et tu gagnes des pépites !",
+      "cues": {
+        "sur": "Sur ta route",
+        "coffres": "des coffres au trésor",
+        "ouvre": "il s'ouvre",
+        "pepites": "des pépites"
+      }
+    },
+    {
+      "id": "boutique",
+      "gap": 0.5,
+      "text": "Avec tes pépites, va à la boutique : une soirée télé, du bowling, ou une soirée pyjama avec un copain !",
+      "cues": {
+        "pepites": "Avec tes pépites",
+        "tele": "une soirée télé",
+        "bowling": "du bowling",
+        "pyjama": "une soirée pyjama"
+      }
+    },
+    {
+      "id": "defis",
+      "gap": 0.5,
+      "text": "Et pour gagner encore plus de pas, relève les défis héroïques !",
+      "cues": {
+        "pour": "pour gagner",
+        "defis": "les défis héroïques"
+      }
+    },
+    {
+      "id": "jamais",
+      "gap": 0.5,
+      "text": "Tu ne recules jamais : tes pas sont à toi pour toujours. Alors, à toi de jouer, aventurier !",
+      "cues": {
+        "jamais": "Tu ne recules jamais",
+        "toi": "à toi pour toujours",
+        "jouer": "à toi de jouer"
+      }
+    },
+    {
+      "id": "fin",
+      "gap": 1.2,
+      "text": "Zoralia : chaque jour, une nouvelle aventure !",
+      "cues": {
+        "zoralia": "Zoralia",
+        "aventure": "une nouvelle aventure"
+      }
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import type { Child } from '../lib/types';
 import { useChildren, useFamilyCtx, useWallets } from '../state/family';
 import { useLock } from '../state/lock';
 import InstallButton from '../ui/InstallButton';
+import IntroVideoButton from '../ui/IntroVideo';
 import { Avatar, Coins, Steps } from '../ui/kit';
 import PinPad from '../ui/PinPad';
 
@@ -42,6 +43,7 @@ export default function Profiles() {
         {!children.isLoading && kids.length === 0 && <p className="empty">Aucun enfant pour l’instant. Ajoute-en depuis l’espace parent.</p>}
       </div>
       <button type="button" className="btn ghost parent-link" onClick={() => setAsking({ kind: 'parent' })}>🔑 Espace parent</button>
+      <div className="profile-extras"><IntroVideoButton /></div>
       <InstallButton className="install-bottom" />
 
       {asking?.kind === 'child' && (

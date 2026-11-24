@@ -314,3 +314,12 @@ input[type=checkbox] { min-height: 0; width: 22px; height: 22px; accent-color: v
 .gauge i { min-width: 8px; }
 .chest-line { margin-top: 10px; padding-top: 10px; border-top: 1px dashed color-mix(in srgb, var(--sky2) 25%, #fff); } .chest-line p { margin: 0; }
 .chest-line .gauge { height: 10px; margin: 6px 0 2px; } .chest-line .gauge i { background: linear-gradient(90deg, #ffe27a, #ffb11f); }
+
+/* vidéo « comment ça marche ? » */
+.profile-extras { display: flex; justify-content: center; margin: 12px 0 0; }
+.video-backdrop { position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; padding: 12px; background: rgba(20, 14, 34, .82); backdrop-filter: blur(4px); animation: toastin .2s; }
+.video-card { position: relative; width: min(960px, 100%); background: #000; border-radius: 22px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+.video-card video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; }
+.video-close { position: absolute; z-index: 2; top: 10px; right: 10px; width: 46px; height: 46px; border: 0; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.92); color: var(--ink); cursor: pointer; box-shadow: var(--shadow-s); }
+.video-credit { margin: 0; padding: 8px 14px; font-size: .78rem; font-weight: 500; color: #c9c2e0; background: #1b1530; text-align: center; }
+@media (max-height: 520px) { .video-credit { display: none; } }

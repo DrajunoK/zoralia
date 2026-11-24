@@ -25,3 +25,7 @@ dist-ssr
 
 # Sandbox
 .sbxw-artifacts/
+
+# Vidéo : fichiers générés pendant la fabrication
+video/timeline.js
+video/node_modules
