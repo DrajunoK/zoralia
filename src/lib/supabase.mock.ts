@@ -36,8 +36,8 @@ const rows: Record<string, unknown[]> = {
     mission(10, 'Ranger mes chaussures', 'daily', 1, '👟'), mission(11, 'J’écoute du 1er coup', 'daily', 1, '👂'),
     mission(12, 'Je reste dans mon lit la nuit', 'daily', 1, '🛌'),
     mission(6, 'Je maîtrise mes émotions', 'heroic', 3, '🧘'), mission(7, 'Très bon travail à l’école', 'heroic', 5, '📚'),
-    mission(13, 'Je suis courageux(se)', 'heroic', 3, '🦁'), mission(14, 'J’aide mes parents à sortir les affaires de la voiture', 'heroic', 3, '🚗'),
-    mission(15, 'Très bon comportement à la maison et en famille', 'heroic', 5, '🏡'), mission(16, 'Gérer une dispute calmement', 'heroic', 4, '🕊️'),
+    mission(13, 'Je suis courageux(se)', 'heroic', 3, '🦁'), mission(14, 'J’aide mes parents à sortir les affaires de la voiture', 'daily', 1, '🚗'),
+    mission(15, 'Très bon comportement à la maison et en famille', 'heroic', 5, '🏡'), mission(16, 'Gérer une dispute calmement', 'heroic', 3, '🕊️'),
   ],
   mission_children: [],
   mission_occurrences: [

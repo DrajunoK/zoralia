@@ -236,7 +236,7 @@ const flyPep = Array.from({ length: 5 }, (_, i) => { const e = Object.assign(doc
 /* boutique, défis */
 const SHOP = [['📺', '30 min de TV', 5], ['🎳', 'Bowling', 20], ['🛏️', 'Soirée pyjama avec un(e) ami(e)', 30]];
 $('#shopcards').innerHTML = SHOP.map(([e, ti, p], i) => `<div class="rcard" id="rc${i}"><div class="e">${e}</div><div>${ti}</div><span class="pr"><img src="../public/icons/pepite.svg" alt="">${p}</span></div>`).join('');
-const HEROES = [['🚗', 'J’aide mes parents', 3], ['🦁', 'Je suis courageux(se)', 3], ['📚', 'Très bon travail à l’école', 5], ['🏡', 'Très bon comportement', 5]];
+const HEROES = [['🧘', 'Je maîtrise mes émotions', 3], ['🦁', 'Je suis courageux(se)', 3], ['✏️', 'Mes devoirs sans râler', 2], ['📚', 'Très bon travail à l’école', 5]];
 $('#tiles').innerHTML = HEROES.map(([e, ti, p], i) => `<div class="tile" id="ht${i}"><span class="pts"><img src="../public/icons/pas.svg" alt="">+${p}</span><span class="e">${e}</span><b>${ti}</b><span class="btn bt">Relever le défi</span></div>`).join('');
 
 /* particules déterministes */

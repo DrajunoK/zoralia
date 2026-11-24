@@ -61,12 +61,16 @@ select zoralia_private.seed_starter_rewards((select v from ctx where k='famA'));
 select t.eq('semis boutique idempotent', (select count(*) from zoralia.shop_rewards where family_id = (select v from ctx where k='famA')), 14::bigint);
 
 -- Liste de départ : 22 missions, renommées « à la première personne », créées une seule fois
-select t.eq('25 missions de départ', (select count(*) from zoralia.missions where family_id = (select v from ctx where k='famA')), 25::bigint);
+select t.eq('26 missions de départ', (select count(*) from zoralia.missions where family_id = (select v from ctx where k='famA')), 26::bigint);
 select t.eq('mission renommée présente', (select count(*) from zoralia.missions where title = 'Ranger ma chambre' and family_id = (select v from ctx where k='famA')), 1::bigint);
 select t.eq('chaque mission de départ a son icône', (select count(*) from zoralia.missions where family_id = (select v from ctx where k='famA') and icon = '⭐'), 0::bigint);
 select t.eq('icône du pyjama', (select icon from zoralia.missions where title = 'Je mets mon pyjama' and family_id = (select v from ctx where k='famA')), '👘');
 select zoralia_private.seed_starter_missions((select v from ctx where k='famA'), 'aaaaaaaa-0000-0000-0000-000000000001');
-select t.eq('semis idempotent', (select count(*) from zoralia.missions where family_id = (select v from ctx where k='famA')), 25::bigint);
+select t.eq('voiture : routine quotidienne à 1 pas', (select category || points from zoralia.missions where title like 'J''aide mes parents à sortir%' and family_id = (select v from ctx where k='famA')), 'daily1');
+select t.eq('dispute à 3 pas', (select points from zoralia.missions where title = 'Gérer une dispute calmement' and family_id = (select v from ctx where k='famA')), 3);
+select t.eq('terminer mes missions à 2 pas', (select points from zoralia.missions where title = 'Je termine mes missions' and family_id = (select v from ctx where k='famA')), 2);
+select t.eq('devoirs : défi héroïque à 2 pas', (select category || points from zoralia.missions where title like 'Je fais mes devoirs%' and family_id = (select v from ctx where k='famA')), 'heroic2');
+select t.eq('semis idempotent', (select count(*) from zoralia.missions where family_id = (select v from ctx where k='famA')), 26::bigint);
 
 select t.login('bbbbbbbb-0000-0000-0000-000000000002');
 insert into ctx select 'famB', create_family('Famille B');
@@ -230,12 +234,12 @@ select t.eq('plus de badges', (select count(*) from child_badges), 0::bigint);
 select t.eq('soldes à zéro', (select sum(balance + steps)::int from child_wallet_summary), 0);
 select t.eq('trésor vidé et actif', (select current_points || status from family_treasures), '0active');
 select t.eq('les enfants restent', (select count(*) from children), 2::bigint);
-select t.eq('les missions restent', (select count(*) from missions), 25::bigint);
+select t.eq('les missions restent', (select count(*) from missions), 26::bigint);
 select t.eq('la boutique reste', (select count(*) > 0 from shop_rewards), true);
 select t.eq('on peut refaire la mission du jour', (select claim_mission((select v from ctx where k='m1'), (select v from ctx where k='lea')) is not null), true);
 select t.logout();
 select t.login('bbbbbbbb-0000-0000-0000-000000000002');
-select t.eq('le foyer B n''a pas été touché', (select count(*) from missions), 25::bigint);
+select t.eq('le foyer B n''a pas été touché', (select count(*) from missions), 26::bigint);
 select t.logout();
 select t.login('aaaaaaaa-0000-0000-0000-000000000001');
 
