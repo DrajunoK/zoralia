@@ -4,6 +4,7 @@ import { useChild } from '../../state/child';
 import { useFamilyCtx, useRewards, useTreasure } from '../../state/family';
 import { Card, Coins, Empty, Gauge, Nugget } from '../../ui/kit';
 import IntroVideoButton from '../../ui/IntroVideo';
+import DiceBanner from './DiceBanner';
 import Fellowship, { useFellowship } from './Fellowship';
 import MissionBoard from './MissionBoard';
 import WaitingBanner from './WaitingBanner';
@@ -25,6 +26,8 @@ export default function Home() {
         <h1>Bienvenue dans ton aventure, {child.display_name} ! <span aria-hidden>{theme.heroEmoji}</span></h1>
         <IntroVideoButton label="🎬 Comment ça marche ?" />
       </Card>
+
+      <DiceBanner />
 
       <Card title="🗺️ Ma carte" action={<Link to="carte" className="link">Voir la carte</Link>}>
         <p>Case <b>{cell}</b> sur {MAP_CELLS} · {theme.territories[territory]}</p>

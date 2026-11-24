@@ -10,6 +10,7 @@ const MESSAGES: Record<string, string> = {
   exceeds_target: 'Ça dépasse l’objectif du coffre.',
   invalid_amount: 'Montant invalide.',
   not_eligible: 'Le dé n’est pas encore disponible.',
+  already_rolled: 'Tu as déjà lancé le dé aujourd’hui.',
   invalid_pin: 'Le code doit contenir exactement 4 chiffres.',
   already_in_family: 'Tu as déjà un foyer.',
 };

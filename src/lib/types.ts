@@ -1,10 +1,11 @@
+import type { RollPayload } from './dice';
 import type { Recurrence } from './game';
 
 export type Category = 'daily' | 'heroic' | 'surprise';
 
 export interface Family { id: string; name: string; timezone: string; active_theme_id: string | null }
 export interface FamilySettings {
-  family_id: string; dice_enabled: boolean; dice_mode: 'weekly' | 'quests'; dice_quest_threshold: number;
+  family_id: string; dice_enabled: boolean; dice_quest_threshold: number;
   treasure_enabled: boolean; approval_required: boolean; settings: { badge_thresholds?: Record<string, number>; show_siblings?: boolean };
 }
 export interface ThemeRow { id: string; slug: string; name: string }
@@ -26,7 +27,7 @@ export interface Redemption { id: string; child_id: string; reward_id: string; c
 export interface Treasure { id: string; title: string; target_points: number; current_points: number; reward_description: string; status: 'active' | 'reached' | 'claimed' | 'archived' }
 export interface Contribution { id: string; treasure_id: string; child_id: string; amount: number; created_at: string }
 export interface Transaction { id: string; child_id: string; amount: number; type: string; description: string; created_at: string }
-export interface DiceRoll { id: string; child_id: string; result_key: 'double' | 'plus_one' | 'joker' | 'surprise'; result_payload: { bonus?: number; resolved?: boolean }; rolled_at: string }
-export interface DiceState { enabled: boolean; mode: 'weekly' | 'quests'; eligible: boolean; progress: number; threshold: number }
+export interface DiceRoll { id: string; child_id: string; result_key: 'lose' | 'steps1' | 'steps2' | 'pep1' | 'pep2' | 'chest2' | 'double' | 'plus_one' | 'joker' | 'surprise'; result_payload: RollPayload; rolled_at: string }
+export interface DiceState { enabled: boolean; eligible: boolean; rolled: boolean; progress: number; threshold: number }
 export interface Badge { id: string; slug: string; name: string; description: string; icon_key: string; threshold: { steps?: number } }
 export interface ChildBadge { child_id: string; badge_id: string; earned_at: string }

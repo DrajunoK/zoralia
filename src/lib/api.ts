@@ -60,7 +60,6 @@ export const api = {
   contribute: async (treasure: string, child: string, amount: number) =>
     ok(await supabase.rpc('contribute_to_treasure', { p_treasure: treasure, p_child: child, p_amount: amount })),
   rollDice: async (child: string) => ok(await supabase.rpc('roll_dice', { p_child: child })) as { id: string; result_key: DiceRoll['result_key']; result_payload: DiceRoll['result_payload'] },
-  resolveRoll: async (id: string) => ok(await supabase.rpc('resolve_dice_roll', { p_roll: id })),
   adjustSteps: async (child: string, amount: number, reason: string) =>
     ok(await supabase.rpc('parent_adjust_steps', { p_child: child, p_amount: amount, p_reason: reason })),
   adjustPoints: async (child: string, amount: number, reason: string) =>

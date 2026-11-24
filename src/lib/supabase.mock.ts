@@ -21,7 +21,7 @@ const mission = (n: number, title: string, category: string, points: number, ico
 const rows: Record<string, unknown[]> = {
   family_members: [{ user_id: U(2), families: { id: FAMILY, name: 'Bobo Family', timezone: 'Europe/Paris', active_theme_id: activeTheme.id } }],
   themes,
-  family_settings: [{ family_id: FAMILY, dice_enabled: true, dice_mode: 'quests', dice_quest_threshold: 5, treasure_enabled: true, approval_required: true, settings: {} }],
+  family_settings: [{ family_id: FAMILY, dice_enabled: true, dice_quest_threshold: 10, treasure_enabled: true, approval_required: true, settings: {} }],
   children: [
     { id: LEA, family_id: FAMILY, display_name: 'Léa', avatar_key: 'fox', color_key: 'sun', is_active: true, has_pin: true },
     { id: TOM, family_id: FAMILY, display_name: 'Tom', avatar_key: 'panda', color_key: 'sky', is_active: true, has_pin: false },
@@ -60,7 +60,10 @@ const rows: Record<string, unknown[]> = {
   points_transactions: [{ id: U(700), child_id: LEA, amount: 5, type: 'chest_reward', description: 'Coffre n°3', created_at: new Date().toISOString() }],
   step_transactions: [{ id: U(710), child_id: LEA, amount: 1, type: 'mission_steps', description: 'Pendre mon manteau', created_at: new Date().toISOString() }],
   chest_claims: [{ child_id: LEA, chest_no: 1, pepites: 0, claimed_at: '' }],
-  dice_rolls: [],
+  dice_rolls: [
+    { id: U(900), family_id: FAMILY, child_id: LEA, result_key: 'steps2', result_payload: { steps: 2 }, rolled_at: new Date(Date.now() - 86400000).toISOString() },
+    { id: U(901), family_id: FAMILY, child_id: TOM, result_key: 'chest2', result_payload: { chest: 2 }, rolled_at: new Date(Date.now() - 3600000).toISOString() },
+  ],
   badges: [['petit-aventurier', 'Petit aventurier', 'seedling', 10], ['explorateur', 'Explorateur', 'compass', 75], ['gardien-de-la-maison', 'Gardien de la maison', 'shield', 175], ['heros-confirme', 'Héros confirmé', 'medal', 300], ['maitre-des-missions', 'Maître des missions', 'trophy', 500]]
     .map(([slug, name, icon_key, steps], i) => ({ id: U(800 + i), slug, name, description: 'Bravo !', icon_key, threshold: { steps } })),
   child_badges: [{ child_id: LEA, badge_id: U(800), earned_at: '' }],
@@ -85,8 +88,8 @@ export const supabase = {
   schema: () => supabase,
   rpc: (name: string, args?: Record<string, unknown>) => Promise.resolve({
     data: name === 'verify_child_pin' ? args?.p_pin === '1234' : name === 'verify_parent_pin' ? args?.p_pin === '0000' : name === 'parent_pin_is_default' ? true
-      : name === 'dice_eligibility' ? { enabled: true, mode: 'quests', eligible: true, progress: 5, threshold: 5 }
-      : name === 'roll_dice' ? { id: 'r', result_key: 'double', result_payload: { bonus: 5 } } : null,
+      : name === 'dice_eligibility' ? { enabled: true, eligible: true, rolled: false, progress: 10, threshold: 10 }
+      : name === 'roll_dice' ? { id: 'r', result_key: 'pep2', result_payload: { pepites: 2 } } : null,
     error: null,
   }),
   auth: {

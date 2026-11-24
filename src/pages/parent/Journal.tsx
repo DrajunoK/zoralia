@@ -1,20 +1,15 @@
-import { useChildren, useStepTransactions, useTransactions } from '../../state/family';
+import { buildActivity } from '../../lib/activity';
+import { useChildren, useDiceRolls, useStepTransactions, useTransactions } from '../../state/family';
 import { Card, Empty, Footprint, formatDate, Nugget } from '../../ui/kit';
 
-export const TYPE_LABELS: Record<string, string> = {
-  mission_reward: 'Mission', shop_purchase: 'Boutique', family_treasure_contribution: 'Trésor', dice_bonus: 'Dé du destin',
-  parent_adjustment_credit: 'Bonus parent', parent_adjustment_debit: 'Retrait parent', refund: 'Remboursement', chest_reward: 'Coffre de la carte',
-  mission_steps: 'Mission', parent_adjustment_steps: 'Pas ajoutés', migration: 'Gains passés',
-};
+export function Amount({ unit, amount }: { unit: 'steps' | 'pepites' | 'chest' | 'none'; amount: number }) {
+  if (unit === 'none') return <b className="muted">0</b>;
+  return <b className={amount > 0 ? 'plus' : 'minus'}>{amount > 0 ? '+' : ''}{amount} {unit === 'steps' ? <Footprint /> : unit === 'pepites' ? <Nugget /> : <span aria-label="coffre de la famille">🧰</span>}</b>;
+}
 
 export default function Journal() {
-  const tx = useTransactions();
-  const steps = useStepTransactions();
   const children = useChildren();
-  const rows = [
-    ...(tx.data ?? []).map((x) => ({ ...x, unit: 'coins' as const })),
-    ...(steps.data ?? []).map((x) => ({ ...x, unit: 'steps' as const })),
-  ].sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 80);
+  const rows = buildActivity({ points: useTransactions().data ?? [], steps: useStepTransactions().data ?? [], rolls: useDiceRolls().data ?? [] }).slice(0, 80);
   return (
     <>
       <h1>📜 Journal d’activité</h1>
@@ -22,14 +17,14 @@ export default function Journal() {
         {rows.length === 0 ? <Empty>Aucune opération pour l’instant.</Empty> : (
           <ul className="list">
             {rows.map((x) => (
-              <li key={`${x.unit}${x.id}`}>
-                <span><strong>{children.data?.find((c) => c.id === x.child_id)?.display_name}</strong> · {TYPE_LABELS[x.type] ?? x.type}{x.description ? ` — ${x.description}` : ''}<small>{formatDate(x.created_at)}</small></span>
-                <b className={x.amount > 0 ? 'plus' : 'minus'}>{x.amount > 0 ? '+' : ''}{x.amount} {x.unit === 'steps' ? <Footprint /> : <Nugget />}</b>
+              <li key={x.key} className={x.dice ? 'dice-row' : ''}>
+                <span><strong>{children.data?.find((c) => c.id === x.child_id)?.display_name}</strong> · {x.dice && <span aria-hidden>🎲 </span>}{x.label}{x.detail ? ` — ${x.detail}` : ''}<small>{formatDate(x.created_at)}</small></span>
+                <Amount unit={x.unit} amount={x.amount} />
               </li>
             ))}
           </ul>
         )}
-        <small className="muted">Le journal est immuable : les dernières opérations sont affichées (pas et pépites).</small>
+        <small className="muted">Le journal est immuable : les dernières opérations sont affichées (pas, pépites et lancers du dé 🎲).</small>
       </Card>
     </>
   );

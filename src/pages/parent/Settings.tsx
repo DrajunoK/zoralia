@@ -65,17 +65,10 @@ export default function Settings() {
         <label className="check"><input type="checkbox" checked={settings.treasure_enabled} onChange={(e) => set({ treasure_enabled: e.target.checked })} /> Trésor commun activé</label>
         <label className="check"><input type="checkbox" checked={settings.dice_enabled} onChange={(e) => set({ dice_enabled: e.target.checked })} /> Dé du destin activé</label>
         {settings.dice_enabled && (
-          <div className="row wrap">
-            <Field label="Le dé se débloque">
-              <select value={settings.dice_mode} onChange={(e) => set({ dice_mode: e.target.value as 'weekly' | 'quests' })}>
-                <option value="quests">après N missions validées</option><option value="weekly">une fois par semaine</option>
-              </select>
-            </Field>
-            {settings.dice_mode === 'quests' && (
-              <Field label="Nombre de missions"><input type="number" min={1} max={50} defaultValue={settings.dice_quest_threshold}
-                onBlur={(e) => { const n = Math.min(50, Math.max(1, Number(e.target.value) || 5)); if (n !== settings.dice_quest_threshold) set({ dice_quest_threshold: n }); }} /></Field>
-            )}
-          </div>
+          <Field label="Missions validées dans la journée pour débloquer le dé" hint="Un lancer par jour et par enfant, 6 faces à chances égales.">
+            <input type="number" min={1} max={50} defaultValue={settings.dice_quest_threshold}
+              onBlur={(e) => { const n = Math.min(50, Math.max(1, Number(e.target.value) || 10)); if (n !== settings.dice_quest_threshold) set({ dice_quest_threshold: n }); }} />
+          </Field>
         )}
       </Card>
 

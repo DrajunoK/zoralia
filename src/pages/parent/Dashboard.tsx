@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { MAP_CELLS, mapCell, nextChest } from '../../lib/game';
 import { groupPending } from '../../lib/pending';
-import { useAction, useChildren, useDiceRolls, useFamilyCtx, useMissions, useOccurrences, useRedemptions, useRewards, useTransactions, useTreasure, useWallets } from '../../state/family';
+import { useAction, useChildren, useDiceRolls, useFamilyCtx, useMissions, useOccurrences, useRedemptions, useRewards, useStepTransactions, useTransactions, useTreasure, useWallets } from '../../state/family';
 import { Avatar, Card, Coins, Empty, formatDate, formatTime, Footprint, Gauge, Nugget, Steps } from '../../ui/kit';
-import { FACES } from '../child/Dice';
-import { TYPE_LABELS } from './Journal';
+import { buildActivity } from '../../lib/activity';
+import { Amount } from './Journal';
 
 export default function Dashboard() {
   
@@ -28,7 +28,6 @@ export default function Dashboard() {
   const adjust = useAction(api.adjustPoints, 'Pépites ajustées');
   const adjustSteps = useAction(api.adjustSteps, 'Pas ajoutés');
   const record = useAction(api.recordMission, 'Mission enregistrée ✅');
-  const resolve = useAction(api.resolveRoll, 'Noté comme honoré');
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [noteOpen, setNoteOpen] = useState<Record<string, boolean>>({});
   const { today } = useFamilyCtx();
@@ -42,8 +41,9 @@ export default function Dashboard() {
     if (window.confirm(`Valider ${what} ?`)) approveMany.run(items.map((i) => i.id));
   };
   const pendingR = (redemptions.data ?? []).filter((r) => r.status === 'requested');
-  const toHonor = (rolls.data ?? []).filter((r) => (r.result_key === 'joker' || r.result_key === 'surprise') && !r.result_payload.resolved);
   const t = treasure.data;
+  const steps = useStepTransactions();
+  const activity = buildActivity({ points: tx.data ?? [], steps: steps.data ?? [], rolls: rolls.data ?? [] });
 
   return (
     <>
@@ -107,17 +107,6 @@ export default function Dashboard() {
         )}
       </Card>
 
-      {toHonor.length > 0 && (
-        <Card title="Dé du destin : à honorer">
-          <ul className="list">
-            {toHonor.map((r) => (
-              <li key={r.id}><span><strong>{kid(r.child_id)?.display_name}</strong> · {FACES[r.result_key].icon} {FACES[r.result_key].label(r.result_payload)}</span>
-                <button className="btn ghost" onClick={() => resolve.run(r.id)}>C’est fait</button></li>
-            ))}
-          </ul>
-        </Card>
-      )}
-
       <Card title="Les enfants" action={<Link to="enfants" className="link">Gérer</Link>}>
         {kids.length === 0 && <Empty>Ajoute un premier enfant pour commencer.</Empty>}
         <div className="kids">
@@ -176,11 +165,11 @@ export default function Dashboard() {
       )}
 
       <Card title="Activité récente" action={<Link to="journal" className="link">Tout voir</Link>}>
-        {(tx.data ?? []).length === 0 ? <Empty>Aucune activité.</Empty> : (
+        {activity.length === 0 ? <Empty>Aucune activité.</Empty> : (
           <ul className="list">
-            {(tx.data ?? []).slice(0, 5).map((x) => (
-              <li key={x.id}><span>{kid(x.child_id)?.display_name} · {TYPE_LABELS[x.type] ?? x.type}{x.description ? ` — ${x.description}` : ''}</span>
-                <b className={x.amount > 0 ? 'plus' : 'minus'}>{x.amount > 0 ? '+' : ''}{x.amount} <Nugget /></b></li>
+            {activity.slice(0, 5).map((x) => (
+              <li key={x.key}><span>{kid(x.child_id)?.display_name} · {x.dice && <span aria-hidden>🎲 </span>}{x.label}{x.detail ? ` — ${x.detail}` : ''}</span>
+                <Amount unit={x.unit} amount={x.amount} /></li>
             ))}
           </ul>
         )}

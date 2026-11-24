@@ -168,8 +168,50 @@ select approve_mission((select v from ctx where k='occ2'));
 select t.eq('dé éligible', (dice_eligibility((select v from ctx where k='tom')) ->> 'eligible')::boolean, true);
 insert into ctx select 'roll1', (roll_dice((select v from ctx where k='tom')) ->> 'id')::uuid;
 select t.eq('lancer persisté', (select count(*) from dice_rolls where child_id = (select v from ctx where k='tom')), 1::bigint);
-select t.fails(format($$select roll_dice(%L)$$, (select v from ctx where k='tom')), 'not_eligible');
+select t.fails(format($$select roll_dice(%L)$$, (select v from ctx where k='tom')), 'already_rolled');
 select t.eq('dé consommé', (dice_eligibility((select v from ctx where k='tom')) ->> 'eligible')::boolean, false);
+
+-- Dé quotidien : seuil de missions validées dans la journée, un lancer par jour, six faces équiprobables avec leurs effets
+select t.eq('seuil par défaut à 10 pour un nouveau foyer', (select column_default from information_schema.columns where table_schema = 'zoralia' and table_name = 'family_settings' and column_name = 'dice_quest_threshold'), '10');
+update family_settings set dice_quest_threshold = 2;
+select t.eq('1 mission validée ne suffit pas à 2 de seuil', (dice_eligibility((select v from ctx where k='lea')) ->> 'eligible')::boolean, false);
+select t.eq('progression visible', (dice_eligibility((select v from ctx where k='lea')) ->> 'progress')::int, 1);
+select t.fails(format($$select roll_dice(%L)$$, (select v from ctx where k='lea')), 'not_eligible');
+update family_settings set dice_quest_threshold = 1;
+insert into children (family_id, display_name) select (select v from ctx where k='famA'), 'dé' || n from generate_series(1, 8) n;
+select t.logout();
+select t.eq('6 faces distinctes', (select count(distinct zoralia_private.dice_face(n)) from generate_series(0, 5) n), 6::bigint);
+select t.eq('chaque face a la même chance (6000 tirages, 800 à 1200 par face)',
+  (select bool_and(c between 800 and 1200) and count(*) = 6 from (select f, count(*) c from (select zoralia_private.pick_face() f from generate_series(1, 6000)) x group by f) y), true);
+create temp table tb as select current_points as v from family_treasures where family_id = (select v from ctx where k='famA');   -- le lancer réel de Tom a pu toucher le coffre : on compare à ce point de départ
+select zoralia_private.perform_roll(id, 'lose') from children where display_name = 'dé1';
+select zoralia_private.perform_roll(id, 'steps1') from children where display_name = 'dé2';
+select zoralia_private.perform_roll(id, 'steps2') from children where display_name = 'dé3';
+select zoralia_private.perform_roll(id, 'pep1') from children where display_name = 'dé4';
+select zoralia_private.perform_roll(id, 'pep2') from children where display_name = 'dé5';
+select zoralia_private.perform_roll(id, 'chest2') from children where display_name = 'dé6';
+select t.eq('pas de chance : rien ne bouge', (select count(*) from step_transactions s join children c on c.id = s.child_id where c.display_name = 'dé1') + (select count(*) from points_transactions p join children c on c.id = p.child_id where c.display_name = 'dé1'), 0::bigint);
+select t.eq('… mais le lancer est noté', (select count(*) from dice_rolls r join children c on c.id = r.child_id where c.display_name = 'dé1' and r.result_key = 'lose'), 1::bigint);
+select t.eq('+1 pas', (select steps from child_wallet_summary w join children c on c.id = w.child_id where c.display_name = 'dé2'), 1);
+select t.eq('+2 pas', (select steps from child_wallet_summary w join children c on c.id = w.child_id where c.display_name = 'dé3'), 2);
+select t.eq('+1 pépite', (select balance from child_wallet_summary w join children c on c.id = w.child_id where c.display_name = 'dé4'), 1);
+select t.eq('+2 pépites', (select balance from child_wallet_summary w join children c on c.id = w.child_id where c.display_name = 'dé5'), 2);
+select t.eq('les pas du dé sont notés « dice_steps »', (select count(*) from step_transactions s join children c on c.id = s.child_id where s.type = 'dice_steps' and c.display_name like 'dé%'), 2::bigint);
+select t.eq('les pépites du dé sont notées « dice_bonus »', (select count(*) from points_transactions p join children c on c.id = p.child_id where p.type = 'dice_bonus' and p.description = 'Dé du destin' and c.display_name like 'dé%'), 2::bigint);
+select t.eq('+2 dans le coffre famille : jauge', (select current_points from family_treasures where family_id = (select v from ctx where k='famA')) - (select v from tb), 2);
+select t.eq('… sans rien débiter à l''enfant', (select balance from child_wallet_summary w join children c on c.id = w.child_id where c.display_name = 'dé6'), 0);
+select t.eq('… et la contribution est enregistrée', (select count(*) from treasure_contributions t2 join children c on c.id = t2.child_id where t2.transaction_id is null and c.display_name = 'dé6'), 1::bigint);
+update family_treasures set current_points = target_points - 1 where family_id = (select v from ctx where k='famA');
+select zoralia_private.perform_roll(id, 'chest2') from children where display_name = 'dé7';
+select t.eq('coffre presque plein : seule la place restante est ajoutée', (select (result_payload ->> 'chest')::int from dice_rolls r join children c on c.id = r.child_id where c.display_name = 'dé7'), 1);
+select t.eq('… et il est atteint', (select status from family_treasures where family_id = (select v from ctx where k='famA')), 'reached');
+select zoralia_private.perform_roll(id, 'chest2') from children where display_name = 'dé8';
+select t.eq('coffre plein : l''enfant reçoit 2 pépites à la place', (select balance from child_wallet_summary w join children c on c.id = w.child_id where c.display_name = 'dé8'), 2);
+select t.eq('un enfant ne lance pas deux fois le même jour', (select count(*) from (select 1 from dice_rolls group by child_id having count(*) > 1) x), 0::bigint);
+delete from children where display_name like 'dé%';
+update family_treasures set current_points = (select v from tb), status = 'active' where family_id = (select v from ctx where k='famA');
+drop table tb;
+select t.login('aaaaaaaa-0000-0000-0000-000000000001');
 
 -- Codes d'accès : posés par le parent, jamais lisibles, vérifiés côté serveur
 select set_child_pin((select v from ctx where k='lea'), '1234');
