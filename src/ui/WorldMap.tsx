@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
-import { CELLS_PER_TERRITORY as T, CHEST_COUNT, MAP_CELLS, STEPS_PER_CELL, STEPS_PER_TERRITORY, chestCell, chestValue, territoryIndex } from '../lib/game';
+import { CELLS_PER_TERRITORY as T, CHEST_COUNT, MAP_CELLS, STEPS_PER_CELL, STEPS_PER_TERRITORY, chestCell, chestValue, chestsReached, territoryIndex } from '../lib/game';
 import { onFocusChild } from '../lib/mapfocus';
 import { WORLDS, buildScenery, layoutMap, rng, routePath, tokenShifts, type MapLayout, type Shape } from '../lib/worldmap';
 import { Avatar } from './kit';
+import TreasureChest from './TreasureChest';
 
 export interface MapMember { child: { id: string; display_name: string; avatar_key: string; color_key: string }; cell: number; steps: number; me: boolean }
 
@@ -142,12 +143,13 @@ export default function WorldMap({ worldKey, territories, members }: Props) {
         const p = layout.pts[i], no = chestAt.get(i), passed = i <= doneCell;
         const hereMe = i === doneCell, ten = i % 10 === 0;
         if (hereMe) return null;
-        const k = no ? 1.3 : ten ? 1.15 : 1;
+        const k = no ? 2.5 : ten ? 1.15 : 1;
+        const nextNo = chestsReached(doneCell) + 1;
         return (
-          <div key={i} className={`wm-node ${passed ? 'done' : ''} ${no ? 'chest' : ''} ${ten ? 'ten' : ''} ${i > doneCell + 12 ? 'far' : ''}`}
+          <div key={i} className={`wm-node ${passed ? 'done' : ''} ${no ? 'chest' : ''} ${no && no === nextNo ? 'next' : ''} ${ten ? 'ten' : ''} ${i > doneCell + 12 ? 'far' : ''}`}
             style={{ ...pos(p.x, p.y), width: px(nodeSize * k), height: px(nodeSize * k), fontSize: px((i >= 100 ? 11.5 : 14) * u), ['--i' as string]: Math.min(i, 24) } as CSSProperties}
             title={`Case ${i}${no ? ` · coffre : ${chestValue(no)} pépites` : ''}`}>
-            {no ? <><span style={{ fontSize: px(22 * u) }}>🧰</span><small style={{ fontSize: px(10 * u) }}>+{chestValue(no)}</small></> : i}
+            {no ? <><TreasureChest uid={`c${no}`} open={passed} next={no === nextNo} /><small className="chest-val" style={{ fontSize: px(12 * u) }}>+{chestValue(no)}</small></> : i}
           </div>
         );
       })}
