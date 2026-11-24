@@ -4,6 +4,7 @@ import type { Recurrence } from '../../lib/game';
 import type { Category, Mission } from '../../lib/types';
 import { useAction, useChildren, useFamilyCtx, useMissionChildren, useMissions } from '../../state/family';
 import { useSession } from '../../state/session';
+import { ICON_CHOICES } from '../../lib/missions';
 import { Banner, Card, Empty, Field, Steps } from '../../ui/kit';
 
 const CATS: Record<Category, string> = { daily: 'Quotidienne', heroic: 'Héroïque', surprise: 'Surprise' };
@@ -15,10 +16,10 @@ const CAT_HEAD: Record<Category, { icon: string; label: string; hint: string; co
 const DAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
 
 interface Draft {
-  id?: string; title: string; description: string; category: Category; points: number; recType: Recurrence['type']; days: number[];
+  id?: string; icon: string; title: string; description: string; category: Category; points: number; recType: Recurrence['type']; days: number[];
   starts_at: string; ends_at: string; requires_approval: boolean; is_active: boolean; childIds: string[];
 }
-const blank: Draft = { title: '', description: '', category: 'daily', points: 1, recType: 'daily', days: [1, 2, 3, 4, 5], starts_at: '', ends_at: '', requires_approval: true, is_active: true, childIds: [] };
+const blank: Draft = { icon: '⭐', title: '', description: '', category: 'daily', points: 1, recType: 'daily', days: [1, 2, 3, 4, 5], starts_at: '', ends_at: '', requires_approval: true, is_active: true, childIds: [] };
 
 export default function MissionsAdmin() {
   const { family } = useFamilyCtx();
@@ -31,7 +32,7 @@ export default function MissionsAdmin() {
 
   function edit(m: Mission) {
     setDraft({
-      id: m.id, title: m.title, description: m.description, category: m.category, points: m.points, recType: m.recurrence.type,
+      id: m.id, icon: m.icon, title: m.title, description: m.description, category: m.category, points: m.points, recType: m.recurrence.type,
       days: m.recurrence.type === 'weekly' ? m.recurrence.days : [1, 2, 3, 4, 5], starts_at: m.starts_at ?? '', ends_at: m.ends_at ?? '',
       requires_approval: m.requires_approval, is_active: m.is_active,
       childIds: (assignments.data ?? []).filter((a) => a.mission_id === m.id).map((a) => a.child_id),
@@ -43,7 +44,7 @@ export default function MissionsAdmin() {
     const recurrence: Recurrence = draft.recType === 'weekly' ? { type: 'weekly', days: draft.days } : { type: draft.recType };
     await save.run({
       ...(draft.id ? { id: draft.id } : {}), family_id: family.id, title: draft.title.trim(), description: draft.description.trim(),
-      category: draft.category, points: draft.points, recurrence, starts_at: draft.starts_at || null, ends_at: draft.ends_at || null,
+      category: draft.category, points: draft.points, icon: draft.icon, recurrence, starts_at: draft.starts_at || null, ends_at: draft.ends_at || null,
       requires_approval: draft.requires_approval, is_active: draft.is_active,
     }, draft.childIds, session!.user.id);
     setDraft(null);
@@ -66,7 +67,7 @@ export default function MissionsAdmin() {
                   const who = (assignments.data ?? []).filter((a) => a.mission_id === m.id).length;
                   return (
                     <li key={m.id} className={m.is_active ? '' : 'inactive'}>
-                      <span><strong>{m.title}</strong><small>{m.recurrence.type === 'daily' ? 'Tous les jours' : m.recurrence.type === 'once' ? 'Une seule fois' : 'Certains jours'} · {who ? `${who} enfant(s)` : 'Tous les enfants'}{m.requires_approval ? '' : ' · validation auto'}{m.is_active ? '' : ' · désactivée'}</small></span>
+                      <span className="admin-m"><span className="m-ic small" aria-hidden="true">{m.icon}</span><span><strong>{m.title}</strong><small>{m.recurrence.type === 'daily' ? 'Tous les jours' : m.recurrence.type === 'once' ? 'Une seule fois' : 'Certains jours'} · {who ? `${who} enfant(s)` : 'Tous les enfants'}{m.requires_approval ? '' : ' · validation auto'}{m.is_active ? '' : ' · désactivée'}</small></span></span>
                       <span className="row"><Steps n={m.points} /><button className="btn ghost" onClick={() => edit(m)}>Modifier</button></span>
                     </li>
                   );
@@ -80,6 +81,13 @@ export default function MissionsAdmin() {
       {draft && (
         <Card title={draft.id ? 'Modifier la mission' : 'Nouvelle mission'}>
           <Field label="Titre"><input value={draft.title} maxLength={80} onChange={(e) => setDraft({ ...draft, title: e.target.value })} /></Field>
+          <div className="field"><span>Icône <b className="icon-now" aria-hidden="true">{draft.icon}</b></span>
+            <div className="icon-grid" role="radiogroup" aria-label="Icône de la mission">
+              {ICON_CHOICES.map((e) => <button key={e} type="button" role="radio" aria-checked={draft.icon === e} className={`chip ${draft.icon === e ? 'on' : ''}`} onClick={() => setDraft({ ...draft, icon: e })}>{e}</button>)}
+            </div>
+            <small>Un dessin que l’enfant reconnaît tout de suite. Tu peux aussi coller n’importe quel emoji :</small>
+            <input aria-label="Autre emoji" className="icon-input" value={draft.icon} maxLength={12} onChange={(e) => setDraft({ ...draft, icon: e.target.value || '⭐' })} />
+          </div>
           <Field label="Description (facultatif)"><input value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} /></Field>
           <div className="row wrap">
             <Field label="Type"><select value={draft.category} onChange={(e) => setDraft({ ...draft, category: e.target.value as Category })}>

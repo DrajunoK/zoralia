@@ -56,6 +56,8 @@ select t.eq('valeur coffre 20', zoralia_private.chest_value(20), 20);
 -- Liste de départ : 22 missions, renommées « à la première personne », créées une seule fois
 select t.eq('25 missions de départ', (select count(*) from zoralia.missions where family_id = (select v from ctx where k='famA')), 25::bigint);
 select t.eq('mission renommée présente', (select count(*) from zoralia.missions where title = 'Ranger ma chambre' and family_id = (select v from ctx where k='famA')), 1::bigint);
+select t.eq('chaque mission de départ a son icône', (select count(*) from zoralia.missions where family_id = (select v from ctx where k='famA') and icon = '⭐'), 0::bigint);
+select t.eq('icône du pyjama', (select icon from zoralia.missions where title = 'Je mets mon pyjama' and family_id = (select v from ctx where k='famA')), '👘');
 select zoralia_private.seed_starter_missions((select v from ctx where k='famA'), 'aaaaaaaa-0000-0000-0000-000000000001');
 select t.eq('semis idempotent', (select count(*) from zoralia.missions where family_id = (select v from ctx where k='famA')), 25::bigint);
 
@@ -96,6 +98,10 @@ update children set display_name = 'piraté' where id = (select v from ctx where
 select t.eq('update inter-foyer sans effet', (select count(*) from children where display_name = 'piraté'), 0::bigint);
 select t.logout();
 
+select t.login('bbbbbbbb-0000-0000-0000-000000000002');
+update missions set icon = '💥' where family_id = (select v from ctx where k='famA');
+select t.logout();
+select t.eq('B ne peut pas changer les icônes de A', (select count(*) from zoralia.missions where icon = '💥'), 0::bigint);
 -- Colonnes protégées pour le parent lui-même
 select t.login('aaaaaaaa-0000-0000-0000-000000000001');
 select t.fails($$update family_treasures set current_points = 100$$, 'permission denied');

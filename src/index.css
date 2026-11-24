@@ -228,3 +228,38 @@ input[type=checkbox] { min-height: 0; width: 22px; height: 22px; accent-color: v
 /* installation de l'appli (PWA) */
 .install { display: grid; justify-items: center; gap: 8px; margin-top: 14px; } .install-bottom { margin: 16px auto 0; }
 .install-help { margin: 0; background: #fff; border-radius: 16px; padding: 10px 14px; box-shadow: var(--shadow-s); text-align: center; font-size: .95rem; }
+
+/* missions illustrées (grande icône) et bloc des défis héroïques */
+.list.missions > li.mission { gap: 12px; padding: 10px 0; }
+.list > li.mission > .m-ic { flex: none; width: 48px; display: grid; place-items: center; font-size: 2.3rem; line-height: 1; filter: drop-shadow(0 3px 0 rgba(0,0,0,.14)); }
+.mission .mission-main { flex: 1; min-width: 0; display: grid; gap: 3px; } .mission .mission-main b { font-size: 1rem; line-height: 1.2; }
+.reward-chip { display: inline-flex; align-items: center; gap: 4px; width: max-content; font-weight: 700; font-size: .85rem; padding: 1px 10px 1px 5px; border-radius: 99px; background: color-mix(in srgb, var(--soft) 55%, #fff); }
+.reward-chip .ico { width: 1.25em; height: 1.25em; margin: 0; }
+.mission .btn { min-height: 42px; padding: 6px 14px; font-size: .92rem; white-space: nowrap; }
+.mission.approved { opacity: .62; } .mission.approved .m-ic { filter: grayscale(.6); }
+.state.ok { color: #2a8a4a; } .state.bad { color: var(--danger); }
+.cheer { margin: 4px 0 0; font-weight: 700; color: #2a8a4a; }
+
+.heroes { position: relative; overflow: hidden; margin: 18px 0; padding: 16px 14px 14px; border-radius: 30px; color: #fff;
+  background: linear-gradient(140deg, var(--primary), color-mix(in srgb, var(--primary) 40%, #ff5fa8) 55%, #8b5cf6);
+  box-shadow: 0 14px 34px color-mix(in srgb, #8b5cf6 38%, transparent); text-shadow: 0 1px 3px rgba(0,0,0,.28); }
+.heroes::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 12% 8%, rgba(255,255,255,.35), transparent 38%), radial-gradient(circle at 92% 90%, rgba(255,255,255,.22), transparent 40%); pointer-events: none; }
+.heroes::after { content: ""; position: absolute; top: -40%; left: -60%; width: 40%; height: 180%; background: rgba(255,255,255,.28); transform: rotate(20deg); animation: heroshine 5s ease-in-out infinite; pointer-events: none; }
+@keyframes heroshine { 0%, 60% { left: -60%; } 100% { left: 140%; } }
+.heroes header { position: relative; display: grid; gap: 2px; margin-bottom: 12px; } .heroes h2 { margin: 0; font-size: 1.35rem; } .heroes p { margin: 0; font-weight: 600; opacity: .95; }
+.hero-count { justify-self: start; margin-top: 6px; background: rgba(255,255,255,.28); border-radius: 99px; padding: 1px 12px; font-weight: 700; font-size: .85rem; text-shadow: none; }
+.hero-grid { position: relative; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.hero-tile { position: relative; display: grid; justify-items: center; align-content: start; gap: 6px; padding: 18px 8px 12px; border-radius: 22px; background: rgba(255,255,255,.97); color: var(--ink); text-align: center; text-shadow: none; box-shadow: 0 8px 18px rgba(0,0,0,.14); }
+.hero-tile b { font-size: .92rem; line-height: 1.2; min-height: 2.4em; display: grid; align-items: center; }
+.hero-ic { font-size: 2.7rem; line-height: 1; filter: drop-shadow(0 4px 0 rgba(0,0,0,.14)); animation: herobob 3.2s ease-in-out infinite; } .hero-tile:nth-child(2n) .hero-ic { animation-delay: -1.2s; }
+@keyframes herobob { 50% { transform: translateY(-5px) rotate(4deg); } }
+.hero-pts { position: absolute; top: -8px; right: -6px; display: inline-flex; align-items: center; gap: 3px; padding: 2px 10px 2px 6px; border-radius: 99px; background: var(--gold); color: #3b2f1a; font-weight: 800; font-size: .9rem; box-shadow: 0 4px 10px rgba(0,0,0,.2); }
+.hero-pts .ico { width: 1.35em; height: 1.35em; margin: 0; }
+.hero-tile .btn { min-height: 40px; padding: 6px 12px; font-size: .88rem; width: 100%; }
+.hero-tile.approved { opacity: .8; background: rgba(255,255,255,.82); } .hero-tile.approved .hero-ic { animation: none; } .hero-tile.claimed { background: rgba(255,246,214,.97); }
+@media (prefers-reduced-motion: reduce) { .heroes::after, .hero-ic { animation: none; } }
+
+/* choix d'icône dans le formulaire d'une mission */
+.icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); gap: 6px; } .icon-grid .chip { width: 100%; }
+.icon-now { font-size: 1.5rem; margin-left: 6px; } .icon-input { width: 90px; text-align: center; font-size: 1.3rem; }
+.admin-m { display: flex; align-items: center; gap: 10px; min-width: 0; } .m-ic.small { font-size: 1.7rem; width: 36px; text-align: center; flex: none; }

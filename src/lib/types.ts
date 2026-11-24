@@ -13,7 +13,7 @@ export interface Wallet { child_id: string; balance: number; steps: number }
 export interface ChestClaim { child_id: string; chest_no: number; pepites: number; claimed_at: string }
 export interface StepTransaction { id: string; child_id: string; amount: number; type: string; description: string; created_at: string }
 export interface Mission {
-  id: string; family_id: string; title: string; description: string; category: Category; points: number;
+  id: string; family_id: string; title: string; description: string; category: Category; points: number; icon: string;
   recurrence: Recurrence; starts_at: string | null; ends_at: string | null; requires_approval: boolean; is_active: boolean;
 }
 export interface MissionChild { mission_id: string; child_id: string }

@@ -14,8 +14,8 @@ const FAMILY = U(1), LEA = U(11), TOM = U(12), MIA = U(13);
 const day = new Date().toISOString().slice(0, 10);
 const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
 
-const mission = (n: number, title: string, category: string, points: number, description = '') => ({
-  id: U(200 + n), family_id: FAMILY, title, description, category, points, recurrence: { type: 'daily' },
+const mission = (n: number, title: string, category: string, points: number, icon: string, description = '') => ({
+  id: U(200 + n), family_id: FAMILY, title, description, category, points, icon, recurrence: { type: 'daily' },
   starts_at: null, ends_at: null, requires_approval: true, is_active: true,
 });
 const rows: Record<string, unknown[]> = {
@@ -29,10 +29,15 @@ const rows: Record<string, unknown[]> = {
   ],
   child_wallet_summary: [{ child_id: LEA, family_id: FAMILY, balance: 14, steps: 62 }, { child_id: TOM, family_id: FAMILY, balance: 5, steps: 62 }, { child_id: MIA, family_id: FAMILY, balance: 30, steps: 205 }],
   missions: [
-    mission(1, 'Mettre la table', 'daily', 1), mission(2, 'Ranger ma chambre', 'daily', 1),
-    mission(3, 'Je mange correctement', 'daily', 1, 'Avec ma fourchette et mon couteau, et je ne me lève pas de table.'),
-    mission(4, 'Je me brosse les dents', 'daily', 1), mission(5, 'Pendre mon manteau', 'daily', 1),
-    mission(6, 'Je maîtrise mes émotions', 'heroic', 3), mission(7, 'Très bon travail à l’école', 'heroic', 5),
+    mission(1, 'Mettre la table', 'daily', 1, '🍽️'), mission(2, 'Ranger ma chambre', 'daily', 1, '🧸'),
+    mission(3, 'Je mange correctement', 'daily', 1, '🍴', 'Avec ma fourchette et mon couteau, et je ne me lève pas de table.'),
+    mission(4, 'Je me brosse les dents', 'daily', 1, '🪥'), mission(5, 'Pendre mon manteau', 'daily', 1, '🧥'),
+    mission(8, 'Je mets mon pyjama', 'daily', 1, '👘'), mission(9, 'Je me lave les mains', 'daily', 1, '🧼'),
+    mission(10, 'Ranger mes chaussures', 'daily', 1, '👟'), mission(11, 'J’écoute du 1er coup', 'daily', 1, '👂'),
+    mission(12, 'Je reste dans mon lit la nuit', 'daily', 1, '🛌'),
+    mission(6, 'Je maîtrise mes émotions', 'heroic', 3, '🧘'), mission(7, 'Très bon travail à l’école', 'heroic', 5, '📚'),
+    mission(13, 'Je suis courageux(se)', 'heroic', 3, '🦁'), mission(14, 'J’aide mes parents à sortir les affaires de la voiture', 'heroic', 3, '🚗'),
+    mission(15, 'Très bon comportement à la maison et en famille', 'heroic', 5, '🏡'), mission(16, 'Gérer une dispute calmement', 'heroic', 4, '🕊️'),
   ],
   mission_children: [],
   mission_occurrences: [

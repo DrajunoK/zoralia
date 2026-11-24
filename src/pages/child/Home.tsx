@@ -4,7 +4,7 @@ import { useChild } from '../../state/child';
 import { useFamilyCtx, useRewards, useTreasure } from '../../state/family';
 import { Card, Coins, Empty, Gauge, Nugget } from '../../ui/kit';
 import Fellowship, { useFellowship } from './Fellowship';
-import MissionCard from './MissionCard';
+import MissionBoard from './MissionBoard';
 import WaitingBanner from './WaitingBanner';
 
 export default function Home() {
@@ -15,7 +15,6 @@ export default function Home() {
   const fellows = useFellowship(child?.id);
   if (!child) return null;
 
-  const todo = missionViews.filter((v) => v.state === 'available' || v.state === 'claimed').slice(0, 4);
   const affordable = (rewards.data ?? []).filter((r) => r.is_active && r.cost <= balance).slice(0, 2);
   const t = treasure.data;
 
@@ -32,17 +31,14 @@ export default function Home() {
         {chest && <p className="muted">🧰 Prochain coffre dans <b>{chest.missing} pas</b> : +{chest.value} <Nugget /> pépites</p>}
       </Card>
 
+      <WaitingBanner />
+      <MissionBoard views={missionViews} childId={child.id} />
+
       {fellows.length > 1 && (
         <Card title="👨‍👩‍👧 Les aventuriers" action={<Link to="carte" className="link">La carte</Link>}>
           <Fellowship currentId={child.id} />
         </Card>
       )}
-
-      <WaitingBanner />
-      <Card title="⚔️ Missions du jour" action={<Link to="missions" className="link">Toutes les missions</Link>}>
-        {todo.length === 0 ? <Empty>Plus rien à faire aujourd’hui, bravo ! 🎉</Empty>
-          : <ul className="list">{todo.map((v) => <MissionCard key={v.mission.id} view={v} childId={child.id} />)}</ul>}
-      </Card>
 
       <div className="two-col">
         <Card title="🎁 Boutique" action={<Link to="boutique" className="link">Voir la boutique</Link>}>
