@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { CELLS_PER_TERRITORY as T, CHEST_COUNT, MAP_CELLS, STEPS_PER_CELL, STEPS_PER_TERRITORY, chestCell, chestValue, territoryIndex } from '../lib/game';
 import { onFocusChild } from '../lib/mapfocus';
-import { WORLDS, buildScenery, layoutMap, rng, routePath, type MapLayout, type Shape } from '../lib/worldmap';
+import { WORLDS, buildScenery, layoutMap, rng, routePath, tokenShifts, type MapLayout, type Shape } from '../lib/worldmap';
 import { Avatar } from './kit';
 
 export interface MapMember { child: { id: string; display_name: string; avatar_key: string; color_key: string }; cell: number; steps: number; me: boolean }
@@ -89,6 +89,7 @@ export default function WorldMap({ worldKey, territories, members }: Props) {
   const done = doneCell > 0 ? routePath(layout, doneCell) : '';
 
   const nodeSize = 34 * u;
+  const shifts = useMemo(() => tokenShifts(members.map((m) => ({ id: m.child.id, cell: m.cell }))), [members]);
 
   // ── défilement vers un enfant : à l'ouverture (l'enfant choisi), puis à la demande (liste, bouton « Où je suis ») ──
   const [pulse, setPulse] = useState<string | null>(null);
@@ -153,9 +154,9 @@ export default function WorldMap({ worldKey, territories, members }: Props) {
       <div className="wm-node finish" style={{ ...pos(layout.pts[MAP_CELLS].x, layout.pts[MAP_CELLS].y - 46), fontSize: px(34 * u) }} aria-label="Arrivée">🏆<small style={{ fontSize: px(10 * u) }}>ARRIVÉE</small></div>
       <div className="wm-start" style={{ ...pos(layout.pts[0].x + 40, layout.pts[0].y - 18), fontSize: px(12 * u) }}>🚩 DÉPART</div>
 
-      {members.map((m, idx) => {
-        const p = layout.pts[m.cell], others = members.filter((o) => !o.me);
-        const shift = m.me ? 0 : (others.indexOf(m) + 1) * 15 * u * (idx % 2 ? -1 : 1);
+      {members.map((m) => {
+        const p = layout.pts[m.cell];
+        const shift = (shifts.get(m.child.id) ?? 0) * u;
         const size = (m.me ? 46 : 31) * u;
         return (
           <div key={m.child.id} data-child={m.child.id} className={`wm-token ${m.me ? 'wm-me' : ''} ${pulse === m.child.id ? 'pulse' : ''}`} style={{ ...pos(p.x, p.y), ['--dx' as string]: px(shift), zIndex: m.me ? 9 : 8 } as CSSProperties} title={`${m.child.display_name} · case ${m.cell}`}>

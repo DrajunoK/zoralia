@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { MAP_CELLS } from './game';
-import { WORLDS, buildScenery, layoutMap, regionAtY, routePath } from './worldmap';
+import { WORLDS, buildScenery, layoutMap, regionAtY, routePath, tokenShifts } from './worldmap';
 
 describe('mise en page de la carte', () => {
   for (const [label, width] of [['téléphone', 390], ['grand écran', 900]] as const) {
@@ -53,5 +53,20 @@ describe('mise en page de la carte', () => {
       expect(a.decos).toEqual(b.decos);
       expect(WORLDS[key].regions).toHaveLength(5);
     }
+  });
+});
+
+describe('pions des enfants sur la carte', () => {
+  it('ne décale pas un enfant seul sur sa case, même si un autre est ailleurs', () => {
+    const s = tokenShifts([{ id: 'a', cell: 62 }, { id: 'b', cell: 14 }]);
+    expect(s.get('a')).toBe(0);
+    expect(s.get('b')).toBe(0);
+  });
+  it('écarte de part et d’autre les enfants qui partagent une case, autour de son centre', () => {
+    const s = tokenShifts([{ id: 'a', cell: 14 }, { id: 'b', cell: 14 }]);
+    expect(s.get('a')).toBe(-15);
+    expect(s.get('b')).toBe(15);
+    const trio = tokenShifts([{ id: 'a', cell: 5 }, { id: 'b', cell: 5 }, { id: 'c', cell: 5 }]);
+    expect([...trio.values()]).toEqual([-30, 0, 30]);
   });
 });

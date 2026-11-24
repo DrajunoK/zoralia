@@ -72,6 +72,16 @@ export function routePath(layout: MapLayout, upTo: number = MAP_CELLS): string {
   return smoothPath(layout.route.slice(0, end + 1).map((r) => r.p));
 }
 
+/** Décalage horizontal (en unités de la carte) de chaque pion : nul tant qu'un enfant est seul sur sa case,
+ *  sinon les enfants d'une même case s'étalent de part et d'autre, centrés sur la case. */
+export function tokenShifts(members: { id: string; cell: number }[], spacing = 30): Map<string, number> {
+  const groups = new Map<number, string[]>();
+  for (const m of members) groups.set(m.cell, [...(groups.get(m.cell) ?? []), m.id]);
+  const shifts = new Map<string, number>();
+  for (const ids of groups.values()) ids.forEach((id, k) => shifts.set(id, (k - (ids.length - 1) / 2) * spacing));
+  return shifts;
+}
+
 /** Générateur pseudo-aléatoire déterministe : le décor est le même à chaque affichage. */
 export function rng(seed: number): () => number {
   let s = Math.abs(Math.floor(seed)) % 2147483647 || 1;
