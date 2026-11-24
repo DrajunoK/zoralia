@@ -23,9 +23,9 @@ const rows: Record<string, unknown[]> = {
   themes,
   family_settings: [{ family_id: FAMILY, dice_enabled: true, dice_mode: 'quests', dice_quest_threshold: 5, treasure_enabled: true, approval_required: true, settings: {} }],
   children: [
-    { id: LEA, family_id: FAMILY, display_name: 'Léa', avatar_key: 'fox', color_key: 'sun', is_active: true },
-    { id: TOM, family_id: FAMILY, display_name: 'Tom', avatar_key: 'panda', color_key: 'sky', is_active: true },
-    { id: MIA, family_id: FAMILY, display_name: 'Mia', avatar_key: 'unicorn', color_key: 'rose', is_active: true },
+    { id: LEA, family_id: FAMILY, display_name: 'Léa', avatar_key: 'fox', color_key: 'sun', is_active: true, has_pin: true },
+    { id: TOM, family_id: FAMILY, display_name: 'Tom', avatar_key: 'panda', color_key: 'sky', is_active: true, has_pin: false },
+    { id: MIA, family_id: FAMILY, display_name: 'Mia', avatar_key: 'unicorn', color_key: 'rose', is_active: true, has_pin: false },
   ],
   child_wallet_summary: [{ child_id: LEA, family_id: FAMILY, balance: 14, steps: 62 }, { child_id: TOM, family_id: FAMILY, balance: 5, steps: 62 }, { child_id: MIA, family_id: FAMILY, balance: 30, steps: 205 }],
   missions: [
@@ -83,8 +83,9 @@ const session = { user: { id: U(2), user_metadata: { full_name: 'Justin' } } };
 export const supabase = {
   from: (t: string) => query(t),
   schema: () => supabase,
-  rpc: (name: string) => Promise.resolve({
-    data: name === 'dice_eligibility' ? { enabled: true, mode: 'quests', eligible: true, progress: 5, threshold: 5 }
+  rpc: (name: string, args?: Record<string, unknown>) => Promise.resolve({
+    data: name === 'verify_child_pin' ? args?.p_pin === '1234' : name === 'verify_parent_pin' ? args?.p_pin === '0000' : name === 'parent_pin_is_default' ? true
+      : name === 'dice_eligibility' ? { enabled: true, mode: 'quests', eligible: true, progress: 5, threshold: 5 }
       : name === 'roll_dice' ? { id: 'r', result_key: 'double', result_payload: { bonus: 5 } } : null,
     error: null,
   }),

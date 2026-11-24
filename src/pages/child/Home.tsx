@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MAP_CELLS, chestSegment } from '../../lib/game';
+import { MAP_CELLS } from '../../lib/game';
 import { useChild } from '../../state/child';
 import { useFamilyCtx, useRewards, useTreasure } from '../../state/family';
 import { Card, Coins, Empty, Gauge, Nugget } from '../../ui/kit';
@@ -10,7 +10,6 @@ import WaitingBanner from './WaitingBanner';
 export default function Home() {
   const { theme, settings } = useFamilyCtx();
   const { child, balance, steps, cell, territory, chest, missionViews } = useChild();
-  const seg = chestSegment(steps);
   const rewards = useRewards();
   const treasure = useTreasure();
   const fellows = useFellowship(child?.id);
@@ -27,10 +26,14 @@ export default function Home() {
 
       <Card title="🗺️ Ma carte" action={<Link to="carte" className="link">Voir la carte</Link>}>
         <p>Case <b>{cell}</b> sur {MAP_CELLS} · {theme.territories[territory]}</p>
-        {seg && <Gauge value={seg.done} max={seg.size} label="Pas faits vers le prochain coffre" />}
-        {chest
-          ? <p>🧰 Plus que <b>{chest.missing} pas</b> pour le coffre : +{chest.value} <Nugget /> pépites</p>
-          : <p className="muted">Tous les coffres sont ouverts, bravo !</p>}
+        <Gauge value={cell} max={MAP_CELLS} label={`Carte : case ${cell} sur ${MAP_CELLS}`} />
+        {chest ? (
+          <div className="chest-line">
+            <p>🧰 Prochain coffre : plus que <b>{chest.missing} pas</b> pour +{chest.value} <Nugget /> pépites</p>
+            <Gauge value={steps} max={chest.at} label={`Coffre : ${steps} pas sur ${chest.at}`} />
+            <small className="muted">{steps} / {chest.at} pas</small>
+          </div>
+        ) : <p className="muted">Tous les coffres sont ouverts, bravo !</p>}
       </Card>
 
       <WaitingBanner />

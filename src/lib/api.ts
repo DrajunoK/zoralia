@@ -66,6 +66,12 @@ export const api = {
   adjustPoints: async (child: string, amount: number, reason: string) =>
     ok(await supabase.rpc('parent_adjust_points', { p_child: child, p_amount: amount, p_reason: reason })),
   exportFamily: async (f: string) => ok(await supabase.rpc('export_family', { p_family: f })),
+  /** Pose le code (4 chiffres) d'un enfant, ou le supprime avec `null`. */
+  setChildPin: async (child: string, pin: string | null) => ok(await supabase.rpc('set_child_pin', { p_child: child, p_pin: pin })),
+  verifyChildPin: async (child: string, pin: string) => ok(await supabase.rpc('verify_child_pin', { p_child: child, p_pin: pin })) as boolean,
+  setParentPin: async (family: string, pin: string) => ok(await supabase.rpc('set_parent_pin', { p_family: family, p_pin: pin })),
+  verifyParentPin: async (family: string, pin: string) => ok(await supabase.rpc('verify_parent_pin', { p_family: family, p_pin: pin })) as boolean,
+  parentPinIsDefault: async (family: string) => ok(await supabase.rpc('parent_pin_is_default', { p_family: family })) as boolean,
   resetActivity: async (f: string) => ok(await supabase.rpc('reset_family_activity', { p_family: f })),
   deleteFamily: async (f: string) => ok(await supabase.rpc('delete_family', { p_family: f })),
 

@@ -17,7 +17,7 @@ export default function MapPage() {
       <h1>🗺️ La carte</h1>
       <section className="card">
         <p>Tu es à la <b>case {cell}</b> sur {MAP_CELLS} · <b>{steps}</b> <Footprint /> pas</p>
-        <Gauge value={cell} max={MAP_CELLS} label="Progression sur la carte" />
+        <Gauge value={cell} max={MAP_CELLS} label={`Carte : case ${cell} sur ${MAP_CELLS}`} />
         <p className="muted">{cell >= MAP_CELLS ? 'Bravo, tu as terminé la carte ! 🏆' : 'Chaque pas fait avancer d’une case.'} Les pas ne se dépensent jamais : ta carte ne recule pas.</p>
         {chest && <p>🧰 Prochain coffre dans <b>{chest.missing} pas</b> : +{chest.value} <Nugget /> pépites</p>}
       </section>

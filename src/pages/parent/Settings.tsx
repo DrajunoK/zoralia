@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { api } from '../../lib/api';
 import { errorMessage } from '../../lib/errors';
 import { THEMES } from '../../lib/themes';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAction, useBadges, useFamilyCtx } from '../../state/family';
 import { useSession } from '../../state/session';
 import { useToast } from '../../state/toast';
 import { Card, Field } from '../../ui/kit';
+import PinEditor from '../../ui/PinEditor';
 
 export default function Settings() {
   const { family, settings, theme } = useFamilyCtx();
@@ -19,6 +20,10 @@ export default function Settings() {
   const [confirmName, setConfirmName] = useState('');
   const [confirmReset, setConfirmReset] = useState('');
   const reset = useAction(api.resetActivity, 'Activité remise à zéro ✨');
+  const setParent = useAction(api.setParentPin, 'Code parent enregistré 🔑');
+  const qc = useQueryClient();
+  const pinDefault = useQuery({ queryKey: ['parent-pin-default', family.id], queryFn: () => api.parentPinIsDefault(family.id) });
+  const parentDefault = pinDefault.data !== false;
   const overrides = settings.settings.badge_thresholds ?? {};
 
   async function download() {
@@ -86,6 +91,11 @@ export default function Settings() {
           </Field>
         ))}
         <small className="muted">S’applique aux prochains gains.</small>
+      </Card>
+
+      <Card title="🔑 Code de l’espace parent">
+        <p className="muted">{parentDefault ? 'Le code actuel est 0000 (code par défaut). Choisis-en un autre pour que les enfants ne puissent pas entrer dans cet espace.' : 'Un code personnel est défini. Tu peux le remplacer.'}</p>
+        <PinEditor confirm label="Enregistrer le code" onSave={async (pin) => { await setParent.run(family.id, pin); await qc.invalidateQueries({ queryKey: ['parent-pin-default'] }); }} />
       </Card>
 
       <Card title="Mes données">

@@ -189,8 +189,7 @@ input[type=checkbox] { min-height: 0; width: 22px; height: 22px; accent-color: v
 @keyframes wmrise { from { transform: translate(-50%, -50%); opacity: 0; } 15% { opacity: .9; } to { transform: translate(-50%, calc(-50% - 90px)); opacity: 0; } }
 @keyframes wmfall { from { transform: translate(-50%, -60px); opacity: 0; } 15% { opacity: 1; } to { transform: translate(calc(-50% + 30px), 90px); opacity: 0; } }
 .wm-node { z-index: 4; display: grid; place-items: center; align-content: center; border-radius: 50%; background: #fff7df; border: 2.5px solid var(--ink); color: var(--ink); font-weight: 700; box-shadow: 0 3px 0 rgba(0,0,0,.25); }
-.wm-node.done { background: #ffc93c; animation: wmnode .45s cubic-bezier(.3, 1.8, .5, 1) both; animation-delay: calc(var(--i) * 50ms + .2s); }
-@keyframes wmnode { from { transform: translate(-50%, -50%) scale(0); } }
+.wm-node.done { background: #ffc93c; }
 .wm-node.far { opacity: .85; }
 .wm-node.chest { border-radius: 30%; background: #ffe8b0; } .wm-node.chest.done { background: #ffc93c; } .wm-node.chest small { position: absolute; bottom: -9px; background: var(--ink); color: #fff; border-radius: 99px; padding: 0 6px; font-weight: 700; white-space: nowrap; }
 .wm-node.finish { width: auto; height: auto; background: none; border: 0; box-shadow: none; filter: drop-shadow(0 4px 0 rgba(0,0,0,.25)); animation: wmbob 2.6s ease-in-out infinite; } .wm-node.finish small { background: var(--ink); color: #fff; border-radius: 99px; padding: 0 8px; font-weight: 700; margin-top: 2px; }
@@ -294,3 +293,24 @@ input[type=checkbox] { min-height: 0; width: 22px; height: 22px; accent-color: v
 .reward { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .reward > strong { flex: 1; display: grid; align-items: center; line-height: 1.2; }
 .reward > .btn, .reward > .state { margin-top: 2px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+
+/* codes d'accès : clavier, points, saisie parent */
+.pin-backdrop { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 16px; background: rgba(35, 26, 51, .55); backdrop-filter: blur(4px); animation: toastin .2s; }
+.pin-card { width: min(340px, 100%); background: #fff; border-radius: 30px; padding: 22px 20px 20px; text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,.35); outline: none; }
+.pin-card h2 { margin: 0 0 2px; } .pin-card p { margin: 0; }
+.pin-dots { display: flex; justify-content: center; gap: 14px; margin: 16px 0 6px; } .pin-dots i { width: 20px; height: 20px; border-radius: 50%; border: 3px solid var(--ink); background: transparent; transition: background .12s, transform .12s; } .pin-dots i.on { background: var(--primary); border-color: var(--ink); transform: scale(1.12); }
+.pin-msg { min-height: 1.4em; color: var(--danger); font-weight: 700; font-size: .9rem; visibility: hidden; } .pin-msg.show { visibility: visible; }
+.pin-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px; }
+.pin-keys button { min-height: 60px; border: 0; border-radius: 20px; font: inherit; font-weight: 700; font-size: 1.6rem; color: var(--ink); background: color-mix(in srgb, var(--sky1) 14%, #fff); box-shadow: var(--shadow-s); cursor: pointer; transition: transform .08s; }
+.pin-keys button:active { transform: scale(.94); } .pin-keys button.alt { font-size: 1.3rem; background: #fff; }
+.pin-card.shake { animation: pinshake .4s; } @keyframes pinshake { 20%, 60% { transform: translateX(-9px); } 40%, 80% { transform: translateX(9px); } }
+.lock-ico { font-size: .8em; }
+.profile-card { border: 0; font: inherit; cursor: pointer; }
+.pin-box { margin-top: 18px; padding-top: 14px; border-top: 1px dashed color-mix(in srgb, var(--sky2) 25%, #fff); } .pin-box h3 { margin: 0 0 4px; }
+.pin-input { width: 110px; text-align: center; font-size: 1.4rem; letter-spacing: .3em; } .pin-editor .field { margin: 0; } .pin-editor .btn { align-self: flex-end; }
+.bad { color: var(--danger); font-weight: 700; }
+
+/* barre de la carte (un petit début reste visible) et barre du coffre, plus fine, en or */
+.gauge i { min-width: 8px; }
+.chest-line { margin-top: 10px; padding-top: 10px; border-top: 1px dashed color-mix(in srgb, var(--sky2) 25%, #fff); } .chest-line p { margin: 0; }
+.chest-line .gauge { height: 10px; margin: 6px 0 2px; } .chest-line .gauge i { background: linear-gradient(90deg, #ffe27a, #ffb11f); }

@@ -1,6 +1,7 @@
 import { Link, NavLink, Navigate, Outlet } from 'react-router-dom';
 import { useChild } from '../../state/child';
 import { useFamilyCtx } from '../../state/family';
+import { useLock } from '../../state/lock';
 import { Avatar, Coins, Steps } from '../../ui/kit';
 
 // Barre du bas : les 5 écrans du quotidien ; le dé et les badges sont des tuiles sur l'accueil.
@@ -11,8 +12,11 @@ const TABS = [
 export default function ChildLayout() {
   const { theme } = useFamilyCtx();
   const { child, balance, steps, loading } = useChild();
+  const lock = useLock();
   if (loading) return <div className="splash">Chargement…</div>;
   if (!child || !child.is_active) return <Navigate to="/profils" replace />;
+  // Un enfant protégé par un code n'est accessible qu'après l'avoir tapé (lien direct, rechargement, onglet ancien…).
+  if (child.has_pin && !lock.childOpen(child.id)) return <Navigate to="/profils" replace />;
 
   return (
     <div className="shell">

@@ -147,7 +147,7 @@ export default function WorldMap({ worldKey, territories, members }: Props) {
         const nextNo = chestsReached(doneCell) + 1;
         return (
           <div key={i} className={`wm-node ${passed ? 'done' : ''} ${no ? 'chest' : ''} ${no && no === nextNo ? 'next' : ''} ${ten ? 'ten' : ''} ${i > doneCell + 12 ? 'far' : ''}`}
-            style={{ ...pos(p.x, p.y), width: px(nodeSize * k), height: px(nodeSize * k), fontSize: px((i >= 100 ? 11.5 : 14) * u), ['--i' as string]: Math.min(i, 24) } as CSSProperties}
+            style={{ ...pos(p.x, p.y), width: px(nodeSize * k), height: px(nodeSize * k), fontSize: px((i >= 100 ? 11.5 : 14) * u) } as CSSProperties}
             title={`Case ${i}${no ? ` · coffre : ${chestValue(no)} pépites` : ''}`}>
             {no ? <><TreasureChest uid={`c${no}`} open={passed} next={no === nextNo} /><small className="chest-val" style={{ fontSize: px(10.5 * u) }}>+{chestValue(no)}</small></> : i}
           </div>

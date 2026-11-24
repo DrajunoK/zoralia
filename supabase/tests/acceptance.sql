@@ -167,6 +167,35 @@ select t.eq('lancer persisté', (select count(*) from dice_rolls where child_id 
 select t.fails(format($$select roll_dice(%L)$$, (select v from ctx where k='tom')), 'not_eligible');
 select t.eq('dé consommé', (dice_eligibility((select v from ctx where k='tom')) ->> 'eligible')::boolean, false);
 
+-- Codes d'accès : posés par le parent, jamais lisibles, vérifiés côté serveur
+select set_child_pin((select v from ctx where k='lea'), '1234');
+select t.eq('has_pin visible', (select has_pin from children where id = (select v from ctx where k='lea')), true);
+select t.eq('bon code enfant', verify_child_pin((select v from ctx where k='lea'), '1234'), true);
+select t.eq('mauvais code enfant', verify_child_pin((select v from ctx where k='lea'), '0000'), false);
+select t.eq('sans code : accès libre', verify_child_pin((select v from ctx where k='tom'), '9999'), true);
+select t.fails(format($$select set_child_pin(%L, '12a4')$$, (select v from ctx where k='lea')), 'invalid_pin');
+select t.fails(format($$select set_child_pin(%L, '123')$$, (select v from ctx where k='lea')), 'invalid_pin');
+select t.fails($$select pin_hash from zoralia.child_pins$$, 'permission denied');
+select t.fails($$select pin_hash from zoralia.family_pins$$, 'permission denied');
+select t.fails(format($$update zoralia.children set has_pin = false where id = %L$$, (select v from ctx where k='lea')), 'permission denied');
+select t.eq('code parent par défaut 0000', verify_parent_pin((select v from ctx where k='famA'), '0000'), true);
+select t.eq('code parent faux', verify_parent_pin((select v from ctx where k='famA'), '1111'), false);
+select t.eq('code parent encore par défaut', parent_pin_is_default((select v from ctx where k='famA')), true);
+select set_parent_pin((select v from ctx where k='famA'), '4321');
+select t.eq('nouveau code parent accepté', verify_parent_pin((select v from ctx where k='famA'), '4321'), true);
+select t.eq('ancien 0000 refusé', verify_parent_pin((select v from ctx where k='famA'), '0000'), false);
+select t.eq('plus par défaut', parent_pin_is_default((select v from ctx where k='famA')), false);
+select set_child_pin((select v from ctx where k='lea'), null);
+select t.eq('code enfant supprimé', (select has_pin from children where id = (select v from ctx where k='lea')), false);
+select t.logout();
+select t.login('bbbbbbbb-0000-0000-0000-000000000002');
+select t.fails(format($$select set_child_pin(%L, '1111')$$, (select v from ctx where k='lea')), 'forbidden');
+select t.fails(format($$select verify_child_pin(%L, '1111')$$, (select v from ctx where k='lea')), 'forbidden');
+select t.fails(format($$select set_parent_pin(%L, '1111')$$, (select v from ctx where k='famA')), 'forbidden');
+select t.fails(format($$select verify_parent_pin(%L, '0000')$$, (select v from ctx where k='famA')), 'forbidden');
+select t.logout();
+select t.login('aaaaaaaa-0000-0000-0000-000000000001');
+
 -- Export / suppression
 select t.eq('export contient les pas', jsonb_array_length(export_family((select v from ctx where k='famA')) -> 'steps') > 0, true);
 select t.eq('export contient les enfants', jsonb_array_length(export_family((select v from ctx where k='famA')) -> 'children'), 2);

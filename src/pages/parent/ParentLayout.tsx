@@ -1,5 +1,6 @@
-import { Link, NavLink, Outlet } from 'react-router-dom';
+import { Link, NavLink, Navigate, Outlet } from 'react-router-dom';
 import { useFamilyCtx, useOccurrences, useRedemptions } from '../../state/family';
+import { useLock } from '../../state/lock';
 
 const TABS = [
   ['', '🏠 Famille'], ['enfants', '👧 Enfants'], ['missions', '⚔️ Missions'], ['boutique', '🎁 Boutique'],
@@ -8,9 +9,11 @@ const TABS = [
 
 export default function ParentLayout() {
   const { family } = useFamilyCtx();
+  const lock = useLock();
   const occurrences = useOccurrences();
   const redemptions = useRedemptions();
   const waiting = (occurrences.data ?? []).filter((o) => o.status === 'claimed').length + (redemptions.data ?? []).filter((r) => r.status === 'requested').length;
+  if (!lock.parentOpen()) return <Navigate to="/profils" replace />;
   return (
     <div className="shell">
       <header className="hero-bar parent">
