@@ -18,20 +18,20 @@ export function useFellowship(currentId: string | undefined) {
   return members;
 }
 
-/** Liste « les aventuriers » : avatar, étape et jauge de chacun, pour voir qui avance où. */
-export default function Fellowship({ currentId }: { currentId: string }) {
+/** Liste « les aventuriers » : avatar, case et jauge de chacun ; avec `onPick`, un clic retrouve l'enfant sur la carte. */
+export default function Fellowship({ currentId, onPick }: { currentId: string; onPick?: (childId: string) => void }) {
   const members = useFellowship(currentId);
   if (members.length < 2) return null;
   return (
     <ul className="list fellowship">
       {members.map(({ child, steps, cell, me }) => (
-        <li key={child.id} className={me ? 'me' : ''}>
+        <li key={child.id} className={me ? 'me' : ''} {...(onPick ? { role: 'button', tabIndex: 0, onClick: () => onPick(child.id), onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onPick(child.id); } } } : {})}>
           <Avatar avatar={child.avatar_key} color={child.color_key} size={40} />
           <div className="fw-main">
             <strong>{child.display_name}{me ? ' (toi)' : ''}</strong>
-            <Gauge value={cell} max={MAP_CELLS} label={`Étape de ${child.display_name}`} />
+            <Gauge value={cell} max={MAP_CELLS} label={`Case de ${child.display_name}`} />
           </div>
-          <span className="fw-num">étape <b>{cell}</b><small><Footprint /> {steps}</small></span>
+          <span className="fw-num">case <b>{cell}</b><small><Footprint /> {steps}</small></span>
         </li>
       ))}
     </ul>

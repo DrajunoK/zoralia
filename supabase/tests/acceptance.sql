@@ -110,7 +110,7 @@ select t.fails($$insert into points_transactions (family_id, child_id, amount, t
 
 -- 5/6. Les pas font avancer la carte ; les coffres versent des pépites une seule fois ; dépenser ne fait pas reculer
 select parent_adjust_steps((select v from ctx where k='lea'), 24, 'test');
-select t.eq('25 pas => case 5', (select map_step from child_map_progress where child_id = (select v from ctx where k='lea')), 5);
+select t.eq('25 pas => case 25 (une case par pas)', (select map_step from child_map_progress where child_id = (select v from ctx where k='lea')), 25);
 select t.eq('coffre 1 (10 pas) ouvert', (select chests_opened from child_map_progress where child_id = (select v from ctx where k='lea')), 1);
 select t.eq('coffre 1 verse 5 pépites', (select balance from child_wallet_summary where child_id = (select v from ctx where k='lea')), 5);
 select parent_adjust_steps((select v from ctx where k='lea'), 10, 'test');
@@ -125,7 +125,7 @@ insert into ctx select 'red1', request_reward((select v from ctx where k='lea'),
 select t.eq('demande ne débite pas', (select balance from child_wallet_summary where child_id = (select v from ctx where k='lea')), 10);
 select approve_reward((select v from ctx where k='red1'));
 select t.eq('approbation débite', (select balance from child_wallet_summary where child_id = (select v from ctx where k='lea')), 0);
-select t.eq('carte inchangée après dépense', (select map_step from child_map_progress where child_id = (select v from ctx where k='lea')), 7);
+select t.eq('carte inchangée après dépense', (select map_step from child_map_progress where child_id = (select v from ctx where k='lea')), 36);
 select t.eq('pas inchangés après dépense', (select steps from child_wallet_summary where child_id = (select v from ctx where k='lea')), 36);
 select t.fails(format($$select approve_reward(%L)$$, (select v from ctx where k='red1')), 'invalid_state');
 
@@ -175,7 +175,7 @@ reset role;
 select t.login('aaaaaaaa-0000-0000-0000-000000000001');
 update families set active_theme_id = (select id from themes where slug = 'pirates');
 select t.eq('solde conservé', (select balance from child_wallet_summary where child_id = (select v from ctx where k='lea')), 10);
-select t.eq('carte conservée', (select map_step from child_map_progress where child_id = (select v from ctx where k='lea')), 7);
+select t.eq('carte conservée', (select map_step from child_map_progress where child_id = (select v from ctx where k='lea')), 36);
 -- Remise à zéro : l'activité disparaît, la configuration reste, les autres foyers et autres parents sont intacts
 select t.logout();
 select t.login('bbbbbbbb-0000-0000-0000-000000000002');

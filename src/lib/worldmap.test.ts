@@ -26,11 +26,16 @@ describe('mise en page de la carte', () => {
       expect(L.route.length).toBeGreaterThan(MAP_CELLS + 1);
     });
   }
-  it('la carte est bien moins haute sur grand écran, et reste courte sur téléphone', () => {
+  it('compte 500 cases : 7 par rangée sur téléphone, 14 sur grand écran', () => {
     const phone = layoutMap(390), wide = layoutMap(900);
+    expect(phone.cols).toBe(7); expect(wide.cols).toBe(14);
+    expect(phone.rows).toBe(Math.ceil(MAP_CELLS / 7)); expect(wide.rows).toBe(Math.ceil(MAP_CELLS / 14));
     expect(wide.rows).toBeLessThan(phone.rows);
-    expect(phone.H * (390 / phone.W)).toBeLessThan(2000); // anciennement ≈ 5600 px
-    expect(wide.H * (900 / wide.W)).toBeLessThan(1700);
+    expect(MAP_CELLS).toBe(500);
+  });
+  it('reste raisonnable en hauteur : la carte défile mais ne devient pas démesurée', () => {
+    expect(layoutMap(390).H * (390 / 360)).toBeLessThan(9000);
+    expect(layoutMap(900).H * (900 / 720)).toBeLessThan(6000);
   });
   it('le chemin parcouru est un préfixe de la route', () => {
     const L = layoutMap(390);

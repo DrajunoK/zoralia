@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   CHEST_COUNT,
   chestCell,
+  chestSegment,
   chestsReached,
   chestThreshold,
   chestValue,
@@ -17,26 +18,26 @@ import {
 } from './game';
 
 describe('carte', () => {
-  it('avance d’une étape toutes les 5 pas', () => {
+  it('avance d’une case par pas', () => {
     expect(mapCell(0)).toBe(0);
-    expect(mapCell(4)).toBe(0);
-    expect(mapCell(5)).toBe(1);
-    expect(mapCell(36)).toBe(7);
+    expect(mapCell(1)).toBe(1);
+    expect(mapCell(36)).toBe(36);
+    expect(mapCell(-4)).toBe(0);
   });
-  it('plafonne à 100 étapes', () => {
-    expect(mapCell(500)).toBe(100);
-    expect(mapCell(9999)).toBe(100);
+  it('plafonne à 500 cases', () => {
+    expect(mapCell(500)).toBe(500);
+    expect(mapCell(9999)).toBe(500);
     expect(nextCellAt(500)).toBeNull();
   });
-  it('indique l’étape suivante', () => {
-    expect(nextCellAt(18)).toBe(20);
-    expect(nextCellAt(20)).toBe(25);
+  it('indique la case suivante', () => {
+    expect(nextCellAt(18)).toBe(19);
+    expect(nextCellAt(0)).toBe(1);
   });
   it('découpe cinq territoires de 100 pas', () => {
     expect([0, 99, 100, 199, 200, 399, 400, 500].map(territoryIndex)).toEqual([0, 0, 1, 1, 2, 3, 4, 4]);
-    expect(territoryOfCell(20)).toBe(0);
-    expect(territoryOfCell(21)).toBe(1);
-    expect(territoryOfCell(100)).toBe(4);
+    expect(territoryOfCell(100)).toBe(0);
+    expect(territoryOfCell(101)).toBe(1);
+    expect(territoryOfCell(500)).toBe(4);
   });
 });
 
@@ -49,10 +50,17 @@ describe('coffres', () => {
     const total = Array.from({ length: CHEST_COUNT }, (_, i) => chestValue(i + 1)).reduce((a, b) => a + b, 0);
     expect(total).toBe(232);
   });
-  it('place chaque coffre sur une étape de la carte', () => {
-    expect(chestCell(1)).toBe(2);
-    expect(chestCell(2)).toBe(7);
-    expect(chestCell(20)).toBe(97);
+  it('place chaque coffre sur la case de son seuil', () => {
+    expect(chestCell(1)).toBe(10);
+    expect(chestCell(2)).toBe(35);
+    expect(chestCell(20)).toBe(485);
+  });
+  it('mesure l’avancement vers le prochain coffre', () => {
+    expect(chestSegment(0)).toEqual({ done: 0, size: 10 });
+    expect(chestSegment(4)).toEqual({ done: 4, size: 10 });
+    expect(chestSegment(10)).toEqual({ done: 0, size: 25 });
+    expect(chestSegment(62)).toEqual({ done: 2, size: 25 });
+    expect(chestSegment(485)).toBeNull();
   });
   it('compte les coffres atteints et annonce le suivant', () => {
     expect(chestsReached(9)).toBe(0);

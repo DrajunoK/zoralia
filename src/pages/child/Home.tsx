@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { MAP_CELLS, STEPS_PER_CELL } from '../../lib/game';
+import { MAP_CELLS, chestSegment } from '../../lib/game';
 import { useChild } from '../../state/child';
 import { useFamilyCtx, useRewards, useTreasure } from '../../state/family';
 import { Card, Coins, Empty, Gauge, Nugget } from '../../ui/kit';
@@ -9,7 +9,8 @@ import WaitingBanner from './WaitingBanner';
 
 export default function Home() {
   const { theme, settings } = useFamilyCtx();
-  const { child, balance, steps, cell, nextAt, territory, chest, missionViews } = useChild();
+  const { child, balance, steps, cell, territory, chest, missionViews } = useChild();
+  const seg = chestSegment(steps);
   const rewards = useRewards();
   const treasure = useTreasure();
   const fellows = useFellowship(child?.id);
@@ -25,10 +26,11 @@ export default function Home() {
       </Card>
 
       <Card title="🗺️ Ma carte" action={<Link to="carte" className="link">Voir la carte</Link>}>
-        <p><b>{cell}</b> / {MAP_CELLS} étapes · {theme.territories[territory]}</p>
-        <Gauge value={steps % STEPS_PER_CELL} max={STEPS_PER_CELL} label="Progression vers l’étape suivante" />
-        <p className="muted">{nextAt ? `Encore ${nextAt - steps} pas pour la prochaine étape.` : 'Tu as atteint le bout de la carte !'}</p>
-        {chest && <p className="muted">🧰 Prochain coffre dans <b>{chest.missing} pas</b> : +{chest.value} <Nugget /> pépites</p>}
+        <p>Case <b>{cell}</b> sur {MAP_CELLS} · {theme.territories[territory]}</p>
+        {seg && <Gauge value={seg.done} max={seg.size} label="Pas faits vers le prochain coffre" />}
+        {chest
+          ? <p>🧰 Plus que <b>{chest.missing} pas</b> pour le coffre : +{chest.value} <Nugget /> pépites</p>
+          : <p className="muted">Tous les coffres sont ouverts, bravo !</p>}
       </Card>
 
       <WaitingBanner />

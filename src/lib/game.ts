@@ -1,21 +1,22 @@
 // Règles de jeu pures (affichage). Le serveur (RPC Supabase) reste l'autorité pour tout gain ou débit.
 //
 // Deux monnaies : les pas (missions → carte, jamais dépensés) et les pépites (coffres → boutique, trésor).
-// Carte : 100 étapes de 5 pas = 500 pas, 5 territoires de 100 pas. Miroir de supabase/migrations/0005_pas_et_coffres.sql.
+// Carte : une case par pas, 500 cases, 5 territoires de 100 cases. Miroir de supabase/migrations/0005_pas_et_coffres.sql
+// (coffres) et 0008_map_one_cell_per_step.sql (vue child_map_progress).
 
-export const STEPS_PER_CELL = 5;
-export const MAP_CELLS = 100;
-export const CELLS_PER_TERRITORY = 20;
+export const STEPS_PER_CELL = 1;
+export const MAP_CELLS = 500;
+export const CELLS_PER_TERRITORY = 100;
 export const STEPS_PER_TERRITORY = STEPS_PER_CELL * CELLS_PER_TERRITORY;
 export const CHEST_COUNT = 20;
 const CHEST_VALUES = [5, 8, 10, 15, 20]; // pépites par territoire (4 coffres chacun)
 
-/** Étape atteinte sur la carte : 1 étape toutes les 5 pas, plafonnée à 100. */
+/** Case atteinte sur la carte : une case par pas, plafonnée à 500. */
 export function mapCell(steps: number): number {
   return Math.min(MAP_CELLS, Math.floor(Math.max(0, steps) / STEPS_PER_CELL));
 }
 
-/** Total de pas pour atteindre l'étape suivante (null si la carte est finie). */
+/** Total de pas pour atteindre la case suivante (null si la carte est finie). */
 export function nextCellAt(steps: number): number | null {
   const cell = mapCell(steps);
   return cell >= MAP_CELLS ? null : (cell + 1) * STEPS_PER_CELL;
@@ -31,7 +32,7 @@ export function chestValue(n: number): number {
   return CHEST_VALUES[Math.floor((n - 1) / 4)];
 }
 
-/** Étape de la carte où se trouve le coffre n. */
+/** Case de la carte où se trouve le coffre n (une case par pas : la case = le seuil). */
 export function chestCell(n: number): number {
   return Math.ceil(chestThreshold(n) / STEPS_PER_CELL);
 }
@@ -49,11 +50,19 @@ export function nextChest(steps: number): { no: number; at: number; value: numbe
   return { no, at: chestThreshold(no), value: chestValue(no), missing: chestThreshold(no) - steps };
 }
 
+/** Avancement vers le prochain coffre : pas faits depuis le coffre précédent sur la distance qui les sépare (null si tous ouverts). */
+export function chestSegment(steps: number): { done: number; size: number } | null {
+  const reached = chestsReached(steps);
+  if (reached >= CHEST_COUNT) return null;
+  const from = reached === 0 ? 0 : chestThreshold(reached);
+  return { done: Math.max(0, steps - from), size: chestThreshold(reached + 1) - from };
+}
+
 export function territoryIndex(steps: number): number {
   return Math.min(4, Math.floor(Math.max(0, steps) / STEPS_PER_TERRITORY));
 }
 
-/** Territoire de l'étape (1..100). */
+/** Territoire de la case (1..500). */
 export function territoryOfCell(cell: number): number {
   return Math.min(4, Math.floor((cell - 1) / CELLS_PER_TERRITORY));
 }

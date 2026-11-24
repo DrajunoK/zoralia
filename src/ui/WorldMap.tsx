@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
-import { CHEST_COUNT, MAP_CELLS, STEPS_PER_TERRITORY, chestCell, chestValue, territoryIndex } from '../lib/game';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { CELLS_PER_TERRITORY as T, CHEST_COUNT, MAP_CELLS, STEPS_PER_CELL, STEPS_PER_TERRITORY, chestCell, chestValue, territoryIndex } from '../lib/game';
+import { onFocusChild } from '../lib/mapfocus';
 import { WORLDS, buildScenery, layoutMap, rng, routePath, type MapLayout, type Shape } from '../lib/worldmap';
 import { Avatar } from './kit';
 
@@ -75,11 +76,11 @@ export default function WorldMap({ worldKey, territories, members }: Props) {
 
   const me = members.find((m) => m.me);
   const lead = members.reduce((best, m) => Math.max(best, m.cell), 0);
-  const reachedRegion = territoryIndex(lead * 5);
+  const reachedRegion = territoryIndex(lead * STEPS_PER_CELL);
   const pos = (x: number, y: number): CSSProperties => ({ left: `${(x / W) * 100}%`, top: `${(y / H) * 100}%` });
 
   // fond : dégradé vertical, une couleur de sol par territoire
-  const regionTop = (t: number) => (t >= 4 ? 0 : (layout.pts[t * 20 + 20].y + layout.pts[t * 20 + 21].y) / 2);
+  const regionTop = (t: number) => (t >= 4 ? 0 : (layout.pts[t * T + T].y + layout.pts[t * T + T + 1].y) / 2);
   const regionBottom = (t: number) => (t === 0 ? H : regionTop(t - 1));
   const stops = [4, 3, 2, 1, 0].flatMap((t) => [`${world.regions[t].ground[0]} ${((regionTop(t) / H) * 100).toFixed(1)}%`, `${world.regions[t].ground[1]} ${((regionBottom(t) / H) * 100).toFixed(1)}%`]).join(',');
 
@@ -87,14 +88,39 @@ export default function WorldMap({ worldKey, territories, members }: Props) {
   const doneCell = me?.cell ?? 0;
   const done = doneCell > 0 ? routePath(layout, doneCell) : '';
 
-  const nodeSize = 31 * u;
+  const nodeSize = 34 * u;
+
+  // ── défilement vers un enfant : à l'ouverture (l'enfant choisi), puis à la demande (liste, bouton « Où je suis ») ──
+  const [pulse, setPulse] = useState<string | null>(null);
+  const [meVisible, setMeVisible] = useState(true);
+  const scrollToChild = useCallback((id: string, smooth: boolean) => {
+    const el = wrap.current?.querySelector<HTMLElement>(`[data-child="${id}"]`);
+    if (!el) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ block: 'center', behavior: smooth && !reduced ? 'smooth' : 'auto' });
+    setPulse(id);
+    window.setTimeout(() => setPulse((p) => (p === id ? null : p)), 1700);
+  }, []);
+
+  const placed = useRef(false);
+  const meId = me?.child.id;
+  useEffect(() => {
+    if (placed.current || !meId) return;
+    placed.current = true; // une seule fois, quand la position de l'enfant est connue
+    window.setTimeout(() => scrollToChild(meId, false), 80);
+  }, [meId, scrollToChild]);
+  useEffect(() => onFocusChild((id) => scrollToChild(id, true)), [scrollToChild]);
 
   useEffect(() => {
     const el = wrap.current?.querySelector('.wm-me');
-    if (el && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) setTimeout(() => el.scrollIntoView({ block: 'center', behavior: 'smooth' }), 400);
-  }, [worldKey]);
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setMeVisible(e.isIntersecting), { rootMargin: '-70px 0px -130px 0px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [meId, layout]);
 
   return (
+    <>
     <div ref={wrap} className="wm" role="group" aria-label="Carte de l’aventure" style={{ height: px(H * u), background: `linear-gradient(to bottom, ${stops})`, ['--u' as string]: u } as CSSProperties}>
       <svg className="wm-svg" viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
         {scenery.shapes.map((s, i) => <ShapeSvg key={i} s={s} layout={layout} ground={world.regions[s.region].ground[1]} />)}
@@ -113,13 +139,14 @@ export default function WorldMap({ worldKey, territories, members }: Props) {
 
       {Array.from({ length: MAP_CELLS }, (_, k) => k + 1).map((i) => {
         const p = layout.pts[i], no = chestAt.get(i), passed = i <= doneCell;
-        const hereMe = i === doneCell;
+        const hereMe = i === doneCell, ten = i % 10 === 0;
         if (hereMe) return null;
+        const k = no ? 1.3 : ten ? 1.15 : 1;
         return (
-          <div key={i} className={`wm-node ${passed ? 'done' : ''} ${no ? 'chest' : ''} ${i > doneCell + 9 ? 'far' : ''}`}
-            style={{ ...pos(p.x, p.y), width: px(nodeSize * (no ? 1.25 : 1)), height: px(nodeSize * (no ? 1.25 : 1)), fontSize: px(11 * u), ['--i' as string]: Math.min(i, 24) } as CSSProperties}
-            title={`Étape ${i} · ${i * 5} pas${no ? ` · coffre : ${chestValue(no)} pépites` : ''}`}>
-            {no ? <><span style={{ fontSize: px(19 * u) }}>🧰</span><small style={{ fontSize: px(9 * u) }}>+{chestValue(no)}</small></> : i}
+          <div key={i} className={`wm-node ${passed ? 'done' : ''} ${no ? 'chest' : ''} ${ten ? 'ten' : ''} ${i > doneCell + 12 ? 'far' : ''}`}
+            style={{ ...pos(p.x, p.y), width: px(nodeSize * k), height: px(nodeSize * k), fontSize: px((i >= 100 ? 11.5 : 14) * u), ['--i' as string]: Math.min(i, 24) } as CSSProperties}
+            title={`Case ${i}${no ? ` · coffre : ${chestValue(no)} pépites` : ''}`}>
+            {no ? <><span style={{ fontSize: px(22 * u) }}>🧰</span><small style={{ fontSize: px(10 * u) }}>+{chestValue(no)}</small></> : i}
           </div>
         );
       })}
@@ -131,7 +158,7 @@ export default function WorldMap({ worldKey, territories, members }: Props) {
         const shift = m.me ? 0 : (others.indexOf(m) + 1) * 15 * u * (idx % 2 ? -1 : 1);
         const size = (m.me ? 46 : 31) * u;
         return (
-          <div key={m.child.id} className={`wm-token ${m.me ? 'wm-me' : ''}`} style={{ ...pos(p.x, p.y), ['--dx' as string]: px(shift), zIndex: m.me ? 9 : 8 } as CSSProperties} title={`${m.child.display_name} · étape ${m.cell}`}>
+          <div key={m.child.id} data-child={m.child.id} className={`wm-token ${m.me ? 'wm-me' : ''} ${pulse === m.child.id ? 'pulse' : ''}`} style={{ ...pos(p.x, p.y), ['--dx' as string]: px(shift), zIndex: m.me ? 9 : 8 } as CSSProperties} title={`${m.child.display_name} · case ${m.cell}`}>
             {m.me && <span className="wm-tag" style={{ fontSize: px(11 * u) }}>TOI !</span>}
             {!m.me && <span className="wm-name" style={{ fontSize: px(9.5 * u) }}>{m.child.display_name}</span>}
             <Avatar avatar={m.child.avatar_key} color={m.child.color_key} size={size} />
@@ -140,9 +167,9 @@ export default function WorldMap({ worldKey, territories, members }: Props) {
       })}
 
       {territories.map((name, t) => {
-        const y = t === 0 ? H - 26 : layout.pts[t * 20 + 1].y + layout.rowH * 0.5;
+        const y = t === 0 ? H - 26 : layout.pts[t * T + 1].y + layout.rowH * 0.5;
         const locked = t > reachedRegion;
-        const range = `${t * STEPS_PER_TERRITORY}–${t === 4 ? MAP_CELLS * 5 : (t + 1) * STEPS_PER_TERRITORY - 1} pas`;
+        const range = `${t * STEPS_PER_TERRITORY}–${t === 4 ? MAP_CELLS * STEPS_PER_CELL : (t + 1) * STEPS_PER_TERRITORY - 1} pas`;
         return (
           <div key={name} className={`wm-ribbon ${locked ? 'locked' : ''} ${t === reachedRegion ? 'now' : ''}`} style={{ ...pos(W / 2, y), fontSize: px(12 * u) }} title={`${name} · ${range}`}>
             <span>{locked ? '🔒' : world.regions[t].landmark}</span><b>{name}</b>
@@ -154,5 +181,7 @@ export default function WorldMap({ worldKey, territories, members }: Props) {
         <div key={`fog${t}`} className="wm-fog" style={{ top: `${(regionTop(t) / H) * 100}%`, height: `${((regionBottom(t) - regionTop(t)) / H) * 100}%`, background: world.night ? 'rgba(8,8,40,.3)' : 'rgba(255,255,255,.22)' }} />
       ))}
     </div>
+    {me && !meVisible && <button className="wm-locate" onClick={() => scrollToChild(me.child.id, true)}>📍 Où je suis</button>}
+    </>
   );
 }

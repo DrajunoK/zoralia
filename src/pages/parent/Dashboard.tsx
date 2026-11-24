@@ -128,7 +128,7 @@ export default function Dashboard() {
               <article key={c.id} className="kid-card">
                 <div className="row"><Avatar avatar={c.avatar_key} color={c.color_key} /><strong>{c.display_name}</strong><span className="counters"><Steps n={w?.steps ?? 0} /><Coins n={w?.balance ?? 0} /></span></div>
                 <Gauge value={mapCell(w?.steps ?? 0)} max={MAP_CELLS} label="Carte" />
-                <small className="muted">Étape {mapCell(w?.steps ?? 0)} / {MAP_CELLS} · {w?.steps ?? 0} pas{nextChest(w?.steps ?? 0) ? ` · coffre dans ${nextChest(w?.steps ?? 0)!.missing} pas` : ''}</small>
+                <small className="muted">Case {mapCell(w?.steps ?? 0)} / {MAP_CELLS} · {w?.steps ?? 0} pas{nextChest(w?.steps ?? 0) ? ` · coffre dans ${nextChest(w?.steps ?? 0)!.missing} pas` : ''}</small>
                 <div className="row">
                   <select aria-label="Enregistrer une mission" value="" onChange={(e) => e.target.value && record.run(e.target.value, c.id)}>
                     <option value="">+ Mission accomplie…</option>

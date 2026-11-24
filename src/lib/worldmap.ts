@@ -1,15 +1,16 @@
 // Carte illustrée : mise en page en serpentin (pure, testable) et décors par univers.
-// La carte occupe toute la largeur : 7 cases par rangée sur téléphone, 14 sur grand écran, donc peu de défilement.
+// La carte occupe toute la largeur : 7 cases par rangée sur téléphone, 14 sur grand écran.
+// Une case par pas (500 cases) : la carte est longue, c'est voulu, l'appli défile jusqu'à l'enfant.
 
-import { MAP_CELLS } from './game';
+import { CELLS_PER_TERRITORY as T, MAP_CELLS } from './game';
 
 export interface Pt { x: number; y: number }
 
 export interface MapLayout {
   W: number; H: number; cols: number; rows: number; rowH: number;
-  /** Index 0 = départ, 1..100 = étapes. */
+  /** Index 0 = départ, 1..500 = cases (une par pas). */
   pts: Pt[];
-  /** Points de la route dans l'ordre (étapes + virages) ; `node` = numéro d'étape ou -1 pour un virage. */
+  /** Points de la route dans l'ordre (étapes + virages) ; `node` = numéro de case ou -1 pour un virage. */
   route: { p: Pt; node: number }[];
   /** y du milieu de chaque interligne entre la rangée r et la rangée r+1 (de bas en haut). */
   gaps: number[];
@@ -64,7 +65,7 @@ export function smoothPath(points: Pt[]): string {
   return d;
 }
 
-/** Route entière, ou jusqu'à l'étape `upTo` incluse (chemin déjà parcouru). */
+/** Route entière, ou jusqu'à la case `upTo` incluse (chemin déjà parcouru). */
 export function routePath(layout: MapLayout, upTo: number = MAP_CELLS): string {
   const idx = layout.route.findIndex((r) => r.node === upTo);
   const end = idx < 0 ? layout.route.length - 1 : idx;
@@ -137,7 +138,7 @@ export interface Shape { kind: 'river' | 'lake' | 'mountain' | 'cloud' | 'lava' 
 export function regionAtY(layout: MapLayout, y: number): number {
   let best = 0, bestDist = Infinity;
   for (let t = 0; t < 5; t++) {
-    const a = layout.pts[t * 20 + 1].y, b = layout.pts[t * 20 + 20].y;
+    const a = layout.pts[t * T + 1].y, b = layout.pts[t * T + T].y;
     const mid = (a + b) / 2, dist = Math.abs(y - mid);
     if (dist < bestDist) { bestDist = dist; best = t; }
   }
@@ -151,7 +152,7 @@ export function buildScenery(layout: MapLayout, worldKey: string): Scenery {
   const r = rng(worldKey.length * 977 + layout.cols * 31 + 7);
   const decos: Deco[] = [], particles: Particle[] = [], shapes: Shape[] = [], landmarks: Scenery['landmarks'] = [];
   const { W } = layout;
-  const perGap = layout.cols === 14 ? 9 : 5;
+  const perGap = layout.cols === 14 ? 7 : 4; // 500 cases = beaucoup de rangées : on garde le décor léger
 
   layout.gaps.forEach((gy, g) => {
     const region = regionAtY(layout, gy);
@@ -172,16 +173,19 @@ export function buildScenery(layout: MapLayout, worldKey: string): Scenery {
       const y = gy + (r() - 0.5) * (layout.rowH * 0.46);
       decos.push({ x, y, size: 26 + Math.floor(r() * 24), e: reg.deco[Math.floor(r() * reg.deco.length)], sway: r() > 0.55, delay: r() * 4 });
     }
-    for (let k = 0; k < (layout.cols === 14 ? 10 : 6); k++) {
+    for (let k = 0; k < (layout.cols === 14 ? 4 : 2); k++) {
       particles.push({ x: r() * W, y: gy + (r() - 0.5) * layout.rowH * 1.4, size: 6 + Math.floor(r() * 8), kind: reg.ambient, delay: r() * 6, dur: 5 + r() * 6 });
     }
   });
 
-  // un point de repère par territoire, à la fin de son dernier rang, du côté opposé à la route
+  // des points de repère par territoire (au quart, à la moitié, aux trois quarts, puis à la fin), du côté opposé à la route
   for (let t = 0; t < 5; t++) {
-    const p = layout.pts[Math.min(100, t * 20 + 20)];
-    const lx = p.x > W / 2 ? p.x - 62 : p.x + 62;
-    landmarks.push({ x: lx, y: p.y - (t === 4 ? 4 : layout.rowH * 0.5), e: world.regions[t].landmark });
+    for (let q = 1; q <= 4; q++) {
+      const p = layout.pts[Math.min(MAP_CELLS, t * T + (q * T) / 4)];
+      const lx = p.x > W / 2 ? p.x - 62 : p.x + 62;
+      const emoji = q === 4 ? world.regions[t].landmark : world.regions[t].deco[(q * 2 + t) % world.regions[t].deco.length];
+      landmarks.push({ x: lx, y: p.y - (q === 4 && t === 4 ? 4 : layout.rowH * 0.5), e: emoji });
+    }
   }
   return { decos, particles, shapes, landmarks };
 }
