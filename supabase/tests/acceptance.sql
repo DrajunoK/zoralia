@@ -53,6 +53,13 @@ select t.eq('valeur coffre 1', zoralia_private.chest_value(1), 5);
 select t.eq('valeur coffre 5', zoralia_private.chest_value(5), 8);
 select t.eq('valeur coffre 20', zoralia_private.chest_value(20), 20);
 
+-- Boutique de départ : 14 récompenses, Soirée TV remplace « Choisir le film », semis rejouable sans doublon
+select t.eq('14 récompenses de départ', (select count(*) from zoralia.shop_rewards where family_id = (select v from ctx where k='famA')), 14::bigint);
+select t.eq('Soirée TV à 15 pépites', (select cost from zoralia.shop_rewards where title = 'Soirée TV' and family_id = (select v from ctx where k='famA')), 15);
+select t.eq('plus de « Choisir le film »', (select count(*) from zoralia.shop_rewards where title like 'Choisir le film%' and family_id = (select v from ctx where k='famA')), 0::bigint);
+select zoralia_private.seed_starter_rewards((select v from ctx where k='famA'));
+select t.eq('semis boutique idempotent', (select count(*) from zoralia.shop_rewards where family_id = (select v from ctx where k='famA')), 14::bigint);
+
 -- Liste de départ : 22 missions, renommées « à la première personne », créées une seule fois
 select t.eq('25 missions de départ', (select count(*) from zoralia.missions where family_id = (select v from ctx where k='famA')), 25::bigint);
 select t.eq('mission renommée présente', (select count(*) from zoralia.missions where title = 'Ranger ma chambre' and family_id = (select v from ctx where k='famA')), 1::bigint);
