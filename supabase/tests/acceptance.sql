@@ -53,12 +53,14 @@ select t.eq('valeur coffre 1', zoralia_private.chest_value(1), 5);
 select t.eq('valeur coffre 5', zoralia_private.chest_value(5), 8);
 select t.eq('valeur coffre 20', zoralia_private.chest_value(20), 20);
 
--- Boutique de départ : 14 récompenses, Soirée TV remplace « Choisir le film », semis rejouable sans doublon
-select t.eq('14 récompenses de départ', (select count(*) from zoralia.shop_rewards where family_id = (select v from ctx where k='famA')), 14::bigint);
+-- Boutique de départ : 16 récompenses, Soirée TV remplace « Choisir le film », semis rejouable sans doublon
+select t.eq('16 récompenses de départ', (select count(*) from zoralia.shop_rewards where family_id = (select v from ctx where k='famA')), 16::bigint);
 select t.eq('Soirée TV à 15 pépites', (select cost from zoralia.shop_rewards where title = 'Soirée TV' and family_id = (select v from ctx where k='famA')), 15);
 select t.eq('plus de « Choisir le film »', (select count(*) from zoralia.shop_rewards where title like 'Choisir le film%' and family_id = (select v from ctx where k='famA')), 0::bigint);
 select zoralia_private.seed_starter_rewards((select v from ctx where k='famA'));
-select t.eq('semis boutique idempotent', (select count(*) from zoralia.shop_rewards where family_id = (select v from ctx where k='famA')), 14::bigint);
+select t.eq('semis boutique idempotent', (select count(*) from zoralia.shop_rewards where family_id = (select v from ctx where k='famA')), 16::bigint);
+select t.eq('nouveaux prix', (select string_agg(cost::text, ',' order by title collate "C") from zoralia.shop_rewards where family_id = (select v from ctx where k='famA') and title in ('1h de jeux vidéo sur la Switch', 'Choisir le jeu en famille', 'Crêperie', 'Cuisiner avec un parent', 'Jungle park', 'Petit cadeau surprise', 'Piscine')), '20,5,25,10,25,30,25');
+select t.eq('dessert et sortie retirés', (select count(*) from zoralia.shop_rewards where family_id = (select v from ctx where k='famA') and (title = 'Choisir le dessert' or title like 'Sortie choisie%')), 0::bigint);
 
 -- Liste de départ : 22 missions, renommées « à la première personne », créées une seule fois
 select t.eq('26 missions de départ', (select count(*) from zoralia.missions where family_id = (select v from ctx where k='famA')), 26::bigint);

@@ -50,9 +50,9 @@ const rows: Record<string, unknown[]> = {
   ],
   shop_rewards: [
     ['30 min de TV', 5, 'tv'], ['Se coucher 15 minutes plus tard', 5, 'moon'], ['15 min de jeux vidéo sur le téléphone', 10, 'phone'],
-    ['Choisir le dessert', 10, 'dessert'], ['Choisir le jeu en famille', 10, 'game'], ['Soirée TV', 15, 'popcorn'],
-    ['1h de jeux vidéo sur la Switch', 15, 'gamepad'], ['Sortie choisie', 15, 'outing'], ['Bowling', 20, 'bowling'],
-    ['Petit cadeau surprise', 25, 'gift'], ['Soirée pyjama avec un(e) ami(e)', 30, 'pajama'], ['Journée « c’est moi qui décide »', 40, 'crown'],
+    ['Cuisiner avec un parent', 10, 'chef'], ['Choisir le jeu en famille', 5, 'game'], ['Soirée TV', 15, 'popcorn'],
+    ['1h de jeux vidéo sur la Switch', 20, 'gamepad'], ['Piscine', 25, 'pool'], ['Bowling', 20, 'bowling'],
+    ['Petit cadeau surprise', 30, 'gift'], ['Soirée pyjama avec un(e) ami(e)', 30, 'pajama'], ['Journée « c’est moi qui décide »', 40, 'crown'],
   ].map(([title, cost, image_key], i) => ({ id: U(400 + i), family_id: FAMILY, title, description: '', cost, image_key, stock: null, is_active: true })),
   reward_redemptions: [{ id: U(500), child_id: TOM, reward_id: U(402), cost_snapshot: 10, status: 'requested', requested_at: new Date().toISOString() }],
   family_treasures: [{ id: U(600), family_id: FAMILY, title: 'Le coffre de la famille', target_points: 100, current_points: 48, reward_description: 'Une soirée pizza-cinéma 🍕', status: 'active' }],
