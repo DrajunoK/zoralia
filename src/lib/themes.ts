@@ -78,5 +78,5 @@ export const COLORS: Record<string, string> = {
 
 export const REWARD_ICONS: Record<string, string> = {
   tv: '📺', popcorn: '🍿', phone: '📱', gamepad: '🎮', bowling: '🎳', pajama: '🛏️', film: '🎬',
-  moon: '🌙', dessert: '🍰', game: '🎲', outing: '🥞', chef: '🧑‍🍳', pool: '🏊', crepe: '🥞', jungle: '🌴', book: '📖', menu: '🍽️', art: '🎨', tent: '⛺', friend: '🧑‍🤝‍🧑', heart: '💞', gift: '🎁', crown: '👑',
+  moon: '🌙', dessert: '🍰', game: '🎲', outing: '🥞', chef: '🧑‍🍳', pool: '🏊', crepe: '🥞', jungle: '🌴', book: '📖', menu: '🍽️', art: '🎨', tent: '⛺', climb: '🧗', burger: '🍔', friend: '🧑‍🤝‍🧑', heart: '💞', gift: '🎁', crown: '👑',
 };
