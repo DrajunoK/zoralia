@@ -345,3 +345,7 @@ input[type=checkbox] { min-height: 0; width: 22px; height: 22px; accent-color: v
 @keyframes dice-pulse { 50% { transform: scale(1.025); } }
 @keyframes dice-wiggle { 0%, 100% { transform: rotate(-12deg); } 50% { transform: rotate(14deg); } }
 @media (prefers-reduced-motion: reduce) { .dice-banner.ready, .dice-banner.ready .db-die { animation: none; } }
+
+/* univers par enfant */
+.welcome-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.hero-bar .theme-chip { color: var(--muted); font-size: .85rem; text-decoration: underline; text-underline-offset: 3px; }

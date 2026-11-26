@@ -107,6 +107,14 @@ select t.fails($$insert into points_transactions (family_id, child_id, amount, t
 select t.fails(format($$insert into children (family_id, display_name) values (%L, 'intrus')$$, (select v from ctx where k='famA')), 'row-level security');
 update children set display_name = 'piraté' where id = (select v from ctx where k='lea');
 select t.eq('update inter-foyer sans effet', (select count(*) from children where display_name = 'piraté'), 0::bigint);
+update children set theme_id = (select id from themes where slug = 'pirates') where id = (select v from ctx where k='lea');
+select t.logout();
+select t.eq('univers inter-foyer sans effet', (select count(*) from zoralia.children where theme_id is not null), 0::bigint);
+select t.login('aaaaaaaa-0000-0000-0000-000000000001');
+update children set theme_id = (select id from themes where slug = 'princesses') where id = (select v from ctx where k='lea');
+select t.eq('un enfant a son univers, pas les autres', (select count(*) from children where theme_id is not null), 1::bigint);
+select t.logout();
+select t.login('bbbbbbbb-0000-0000-0000-000000000002');
 select t.logout();
 
 select t.login('bbbbbbbb-0000-0000-0000-000000000002');

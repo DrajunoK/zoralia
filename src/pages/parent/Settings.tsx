@@ -44,8 +44,8 @@ export default function Settings() {
   return (
     <>
       <h1>⚙️ Réglages</h1>
-      <Card title="Univers">
-        <p className="muted">Changer d’univers ne touche ni aux pépites ni à la progression.</p>
+      <Card title="Univers par défaut">
+        <p className="muted">Pour l’écran des profils, l’espace parent et les enfants qui n’ont pas encore choisi. Chaque enfant choisit le sien dans son espace (« Mon univers »).</p>
         <div className="universes">
           {THEMES.map((u) => {
             const row = themes.data?.find((t) => t.slug === u.slug);

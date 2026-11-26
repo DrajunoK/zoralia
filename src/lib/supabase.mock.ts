@@ -1,6 +1,6 @@
 // Faux client Supabase pour travailler le design sans backend : `npm run dev:mock`.
 // Branché à la place de ./supabase par l'alias de vite.config.ts quand le mode est « mock ».
-// Les écritures sont ignorées ; `?theme=pirates` choisit l'univers, `?logout` affiche l'écran de connexion.
+// Les écritures sont ignorées (sauf l'univers d'un enfant) ; `?theme=pirates` choisit l'univers, `?logout` affiche l'écran de connexion.
 
 const params = new URLSearchParams(location.search);
 export const supabaseConfigured = true;
@@ -25,7 +25,7 @@ const rows: Record<string, unknown[]> = {
   children: [
     { id: LEA, family_id: FAMILY, display_name: 'Léa', avatar_key: 'fox', color_key: 'sun', is_active: true, has_pin: true },
     { id: TOM, family_id: FAMILY, display_name: 'Tom', avatar_key: 'panda', color_key: 'sky', is_active: true, has_pin: false },
-    { id: MIA, family_id: FAMILY, display_name: 'Mia', avatar_key: 'unicorn', color_key: 'rose', is_active: true, has_pin: false },
+    { id: MIA, family_id: FAMILY, display_name: 'Mia', avatar_key: 'unicorn', color_key: 'rose', is_active: true, has_pin: false, theme_id: U(101) },
   ],
   child_wallet_summary: [{ child_id: LEA, family_id: FAMILY, balance: 14, steps: 62 }, { child_id: TOM, family_id: FAMILY, balance: 5, steps: 62 }, { child_id: MIA, family_id: FAMILY, balance: 30, steps: 205 }],
   missions: [
@@ -73,9 +73,15 @@ type Row = Record<string, unknown>;
 function query(table: string) {
   let data: unknown = rows[table] ?? [];
   let single = false;
+  let patch: Row | null = null;
   const q: Record<string, unknown> = {
-    select: () => q, order: () => q, limit: () => q, or: () => q, neq: () => q, insert: () => q, update: () => q, delete: () => q,
-    eq: (field: string, value: unknown) => { data = (data as Row[]).filter((r) => !(field in r) || r[field] === value); return q; },
+    select: () => q, order: () => q, limit: () => q, or: () => q, neq: () => q, insert: () => q, delete: () => q,
+    // seule écriture simulée : l'univers d'un enfant, pour essayer le sélecteur
+    update: (p: Row) => { if (table === 'children' && 'theme_id' in p) patch = p; return q; },
+    eq: (field: string, value: unknown) => {
+      if (patch) rows[table] = (rows[table] as Row[]).map((r) => (r[field] === value ? { ...r, ...patch } : r));
+      data = (data as Row[]).filter((r) => !(field in r) || r[field] === value); return q;
+    },
     maybeSingle: () => { single = true; return q; }, single: () => { single = true; return q; },
     then: (resolve: (v: unknown) => unknown) => resolve({ data: single ? (data as Row[])[0] ?? null : data, error: null }),
   };

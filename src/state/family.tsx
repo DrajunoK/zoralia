@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createContext, useContext, useEffect, useMemo, useRef, type ReactNode } from 'react';
+import { useMatch } from 'react-router-dom';
 import { api } from '../lib/api';
 import { errorMessage } from '../lib/errors';
 import { useToday } from './today';
@@ -34,7 +35,11 @@ export function FamilyProvider({ userId, fallback, children }: { userId: string;
     lastDay.current = today;
   }, [today, qc]);
 
-  const slug = themesQ.data?.find((t) => t.id === family?.active_theme_id)?.slug;
+  // Dans l'espace d'un enfant, son univers prime ; partout ailleurs, celui du foyer.
+  const childId = useMatch('/enfant/:childId/*')?.params.childId;
+  const childrenQ = useQuery({ queryKey: ['fam', family?.id, 'children'], queryFn: () => api.children(family!.id), enabled: !!family });
+  const themeId = childrenQ.data?.find((c) => c.id === childId)?.theme_id ?? family?.active_theme_id;
+  const slug = themesQ.data?.find((t) => t.id === themeId)?.slug;
   const theme = themeBySlug(slug);
   useEffect(() => { applyTheme(theme); }, [theme]);
 

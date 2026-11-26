@@ -23,7 +23,7 @@ export default function ChildLayout() {
       <header className="hero-bar">
         <Link to="/profils" className="back" aria-label="Changer de profil"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/></svg></Link>
         <Avatar avatar={child.avatar_key} color={child.color_key} size={52} />
-        <div className="who"><strong>{child.display_name}</strong><small>{theme.name}</small></div>
+        <div className="who"><strong>{child.display_name}</strong><Link to="univers" className="theme-chip" aria-label={`Univers : ${theme.name}. Changer`}>{theme.name} 🎨</Link></div>
         <div className="counters"><Steps n={steps} /><Coins n={balance} big /></div>
       </header>
       <main className="page"><Outlet /></main>

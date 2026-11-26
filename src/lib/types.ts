@@ -9,7 +9,7 @@ export interface FamilySettings {
   treasure_enabled: boolean; approval_required: boolean; settings: { badge_thresholds?: Record<string, number>; show_siblings?: boolean };
 }
 export interface ThemeRow { id: string; slug: string; name: string }
-export interface Child { id: string; family_id: string; display_name: string; avatar_key: string; color_key: string; is_active: boolean; has_pin: boolean }
+export interface Child { id: string; family_id: string; display_name: string; avatar_key: string; color_key: string; is_active: boolean; has_pin: boolean; theme_id: string | null }
 export interface Wallet { child_id: string; balance: number; steps: number }
 export interface ChestClaim { child_id: string; chest_no: number; pepites: number; claimed_at: string }
 export interface StepTransaction { id: string; child_id: string; amount: number; type: string; description: string; created_at: string }

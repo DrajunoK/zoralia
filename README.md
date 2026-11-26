@@ -42,5 +42,5 @@ L'appli est installable (manifeste + service worker `public/sw.js` qui ne met en
 - **Les pépites ne se modifient que côté serveur.** Le navigateur n'écrit jamais dans `points_transactions` : tout passe par des RPC `security definer` (`claim_mission`, `approve_mission`, `approve_reward`, `contribute_to_treasure`, `roll_dice`, `parent_adjust_points`…) qui vérifient l'utilisateur, le foyer, l'état et le solde.
 - **Projet Supabase partagé avec Popote** : tout Zoralia vit dans le schéma `zoralia` ; le schéma `public` (Popote) n'est jamais touché. Les comptes Google (`auth.users`) sont communs.
 - **Un seul compte : le parent.** Les enfants sont des profils de jeu sur l'appareil familial (pas une frontière de sécurité).
-- **Univers = design tokens** (`src/lib/themes.ts`) ; règles et données sont partagées.
+- **Univers = design tokens** (`src/lib/themes.ts`) ; règles et données sont partagées. Chaque enfant choisit le sien (« Mon univers »), le foyer garde un univers par défaut.
 - **Deux monnaies** : les pas 👣 (missions) font avancer la carte et ne se dépensent jamais ; les pépites 🪙 viennent des coffres de la carte (et du dé) et se dépensent en boutique ou dans le trésor. Carte : une case par pas, 500 cases, 20 coffres (1er à 10 pas, puis un tous les 25 pas). Détail : `supabase/migrations/0005_pas_et_coffres.sql`.

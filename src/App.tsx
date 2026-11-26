@@ -7,6 +7,7 @@ import ChildShop from './pages/child/Shop';
 import ChildTreasure from './pages/child/Treasure';
 import ChildDice from './pages/child/Dice';
 import ChildBadges from './pages/child/Badges';
+import ChildUniverse from './pages/child/Universe';
 import Login from './pages/Login';
 import Onboarding from './pages/Onboarding';
 import Profiles from './pages/Profiles';
@@ -39,6 +40,7 @@ export default function App() {
           <Route path="tresor" element={<ChildTreasure />} />
           <Route path="de" element={<ChildDice />} />
           <Route path="badges" element={<ChildBadges />} />
+          <Route path="univers" element={<ChildUniverse />} />
         </Route>
         <Route path="/parent" element={<ParentLayout />}>
           <Route index element={<Dashboard />} />

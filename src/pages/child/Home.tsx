@@ -24,7 +24,10 @@ export default function Home() {
     <>
       <Card className="welcome">
         <h1>Bienvenue dans ton aventure, {child.display_name} ! <span aria-hidden>{theme.heroEmoji}</span></h1>
-        <IntroVideoButton label="🎬 Comment ça marche ?" />
+        <div className="welcome-actions">
+          <Link to="univers" className="btn ghost">🎨 Mon univers</Link>
+          <IntroVideoButton label="🎬 Comment ça marche ?" />
+        </div>
       </Card>
 
       <DiceBanner />
