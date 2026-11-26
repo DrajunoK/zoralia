@@ -60,6 +60,7 @@ select t.eq('plus de « Choisir le film »', (select count(*) from zoralia.shop_
 select zoralia_private.seed_starter_rewards((select v from ctx where k='famA'));
 select t.eq('semis boutique idempotent', (select count(*) from zoralia.shop_rewards where family_id = (select v from ctx where k='famA')), 23::bigint);
 select t.eq('nouveaux prix', (select string_agg(cost::text, ',' order by title collate "C") from zoralia.shop_rewards where family_id = (select v from ctx where k='famA') and title in ('1h de jeux vidéo sur la Switch', 'Choisir le jeu en famille', 'Crêperie', 'Cuisiner avec un parent', 'Jungle park', 'Petit cadeau surprise', 'Piscine')), '20,5,25,10,25,30,25');
+select t.eq('cinéma à 30 pépites', (select cost from zoralia.shop_rewards where title = 'Séance de cinéma' and family_id = (select v from ctx where k='famA')), 30);
 select t.eq('dessert et sortie retirés', (select count(*) from zoralia.shop_rewards where family_id = (select v from ctx where k='famA') and (title = 'Choisir le dessert' or title like 'Sortie choisie%')), 0::bigint);
 
 -- Liste de départ : 22 missions, renommées « à la première personne », créées une seule fois
